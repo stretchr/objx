@@ -40,10 +40,10 @@ func (o *O) Get(selector interface{}) *O {
 						current = a[index]
 					}
 				}
-			}
-
-			if m, ok := current.(map[string]interface{}); ok {
-				current = m[field]
+			} else {
+				if m, ok := current.(map[string]interface{}); ok {
+					current = m[field]
+				}
 			}
 
 		}
