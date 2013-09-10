@@ -50,15 +50,9 @@ var getFixtures = []struct {
 func TestGetFixtures(t *testing.T) {
 
 	for index, fixture := range getFixtures {
-
 		o := MustJson(fixture.data)
-
-		// call Get
 		newO := o.Get(fixture.get)
-
-		// ensure
 		assert.Equal(t, fixture.output, newO.Obj, "Get fixture %d failed: %v", index+1, fixture)
-
 	}
 
 }
