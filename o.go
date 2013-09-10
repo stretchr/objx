@@ -6,3 +6,6 @@ type O struct {
 	// O object.
 	Obj interface{}
 }
+
+// Nil represents a nil O.
+var Nil *O = nil
