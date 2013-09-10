@@ -45,6 +45,11 @@ var getFixtures = []struct {
 		get:    "types.tags[1]",
 		output: "two",
 	},
+	{
+		data:   `{"tags": [{"name":"one"}, {"name":"two"}, {"name":"three"}]}`,
+		get:    "tags[1].name",
+		output: "two",
+	},
 	// array number
 	{
 		data:   `["one", "two", "three"]`,
