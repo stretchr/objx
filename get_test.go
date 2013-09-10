@@ -39,6 +39,12 @@ var getFixtures = []struct {
 		get:    "tags[1]",
 		output: "two",
 	},
+	// array [] notation in map
+	{
+		data:   `{"types": { "tags": ["one", "two", "three"]}}`,
+		get:    "types.tags[1]",
+		output: "two",
+	},
 	// array number
 	{
 		data:   `["one", "two", "three"]`,
