@@ -92,10 +92,10 @@ func (o *O) Where{4}(decider func(int, {1}) bool) *O {
 
 // Group{4} uses the specified grouper function to group the items
 // keyed by the return of the grouper.  The object contained in the
-// result will contain a map[interface{}][]{1}.
-func (o *O) Group{4}(grouper func(int, {1}) interface{}) *O {
+// result will contain a map[string][]{1}.
+func (o *O) Group{4}(grouper func(int, {1}) string) *O {
 
-	groups := make(map[interface{}][]{1})
+	groups := make(map[string][]{1})
 
 	for index, val := range o.Must{4}Slice() {
 		group := grouper(index, val)
@@ -193,12 +193,12 @@ func TestGroup{4}(t *testing.T) {
 
 	o := New([]{1}{ {1}({2}), {1}({2}), {1}({2}), {1}({2}), {1}({2}), {1}({2}) })
 
-	grouped := o.Group{4}(func(i int, val {1}) interface{} {
-		return i%2==0
-	}).Obj().(map[interface{}][]{1})
+	grouped := o.Group{4}(func(i int, val {1}) string {
+		return fmt.Sprintf("%v", i%2==0)
+	}).Obj().(map[string][]{1})
 
 	assert.Equal(t, 2, len(grouped))
-	assert.Equal(t, 3, len(grouped[true]))
-	assert.Equal(t, 3, len(grouped[false]))
+	assert.Equal(t, 3, len(grouped["true"]))
+	assert.Equal(t, 3, len(grouped["false"]))
 
 }
