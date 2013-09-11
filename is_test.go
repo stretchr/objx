@@ -81,32 +81,3 @@ func TestIsKind(t *testing.T) {
 	assert.True(t, o.IsKind(reflect.Map))
 
 }
-
-func TestIsSpecificTypes(t *testing.T) {
-
-	var o *O
-
-	o = New(bool(true))
-	assert.True(t, o.IsBool())
-
-	o = New(bool(false))
-	assert.True(t, o.IsBool())
-
-	o = New(string("1"))
-	assert.True(t, o.IsString())
-
-	o = New(func() {})
-	assert.True(t, o.IsFunc())
-
-	o = New(map[string]interface{}{"hello": "world"})
-	assert.True(t, o.IsMap())
-
-	o = New([]string{"hello", "world"})
-	assert.True(t, o.IsSlice())
-	assert.True(t, o.IsList())
-
-	o = New([2]string{"hello", "world"})
-	assert.True(t, o.IsArray())
-	assert.True(t, o.IsList())
-
-}
