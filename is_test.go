@@ -9,12 +9,13 @@ import (
 func TestIsNil(t *testing.T) {
 
 	n := New(nil)
-
 	assert.True(t, n.IsNil())
-
 	n.obj = "something"
-
 	assert.False(t, n.IsNil())
+
+	// check actual nil obejct too
+	n = nil
+	assert.True(t, n.IsNil())
 
 }
 

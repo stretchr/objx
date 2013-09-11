@@ -6,7 +6,7 @@ import (
 
 // IsNil gets whether the data is nil or not.
 func (o *O) IsNil() bool {
-	return o.Obj() == nil
+	return o == nil || o.Obj() == nil
 }
 
 // IsKind gets whether the object contained is of the
