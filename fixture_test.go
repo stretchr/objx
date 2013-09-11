@@ -102,9 +102,13 @@ func TestFixtures(t *testing.T) {
 			}
 		}
 
+		// get the value
 		newO := o.Get(fixture.get)
 
-		assert.Equal(t, fixture.output, newO.Obj(), "Get fixture \"%s\" failed: %v", fixture.name, fixture)
+		// make sure it matches
+		assert.Equal(t, fixture.output, newO.Obj(),
+			"Get fixture \"%s\" failed: %v", fixture.name, fixture,
+		)
 
 	}
 
