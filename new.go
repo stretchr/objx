@@ -9,12 +9,12 @@ func New(object interface{}) *O {
 	return &O{obj: object}
 }
 
-// MustJson creates a new O containing the data specified in the
+// MustFromJSON creates a new O containing the data specified in the
 // jsonString.
 //
 // Panics if the JSON is invalid.
-func MustJson(jsonString string) *O {
-	o, err := Json(jsonString)
+func MustFromJSON(jsonString string) *O {
+	o, err := FromJSON(jsonString)
 
 	if err != NoError {
 		panic("objx: " + err.Error())
@@ -23,11 +23,11 @@ func MustJson(jsonString string) *O {
 	return o
 }
 
-// Json creates a new O containing the data specified in the
+// FromJSON creates a new O containing the data specified in the
 // jsonString.
 //
 // Returns an error if the JSON is invalid.
-func Json(jsonString string) (*O, error) {
+func FromJSON(jsonString string) (*O, error) {
 
 	var data interface{}
 	err := json.Unmarshal([]byte(jsonString), &data)

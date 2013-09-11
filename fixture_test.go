@@ -93,7 +93,7 @@ func TestFixtures(t *testing.T) {
 
 	for _, fixture := range getFixtures {
 
-		o := MustJson(fixture.data)
+		o := MustFromJSON(fixture.data)
 
 		// do we need to do a set?
 		if fixture.set != nil {
