@@ -103,6 +103,7 @@ func TestFixtures(t *testing.T) {
 		}
 
 		// get the value
+		t.Logf("Running get fixture: \"%s\" (%v)", fixture.name, fixture)
 		newO := o.Get(fixture.get)
 
 		// make sure it matches
