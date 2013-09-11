@@ -6,11 +6,13 @@ import (
 
 // New creates a new O containing the specified object.
 func New(object interface{}) *O {
-	return &O{Obj: object}
+	return &O{obj: object}
 }
 
 // MustJson creates a new O containing the data specified in the
 // jsonString.
+//
+// Panics if the JSON is invalid.
 func MustJson(jsonString string) *O {
 	o, err := Json(jsonString)
 
@@ -23,6 +25,8 @@ func MustJson(jsonString string) *O {
 
 // Json creates a new O containing the data specified in the
 // jsonString.
+//
+// Returns an error if the JSON is invalid.
 func Json(jsonString string) (*O, error) {
 
 	var data interface{}

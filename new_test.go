@@ -10,7 +10,7 @@ func TestNew(t *testing.T) {
 	o := New(TestMap)
 
 	if assert.NotNil(t, o) {
-		assert.Equal(t, TestMap, o.Obj)
+		assert.Equal(t, TestMap, o.Obj())
 	}
 
 }
@@ -27,8 +27,8 @@ func TestJson(t *testing.T) {
 	o := MustJson(`{"name":"Mat"}`)
 
 	if assert.NotNil(t, o) {
-		if assert.NotNil(t, o.Obj) {
-			assert.Equal(t, "Mat", o.Obj.(map[string]interface{})["name"])
+		if assert.NotNil(t, o.Obj()) {
+			assert.Equal(t, "Mat", o.Obj().(map[string]interface{})["name"])
 		}
 	}
 
