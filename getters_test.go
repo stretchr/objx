@@ -24,6 +24,12 @@ func TestString(t *testing.T) {
 
 func TestStr(t *testing.T) {
 
-	//m := map[string]interface{}{"name": "Mat"}
+	m := map[string]interface{}{"name": "Mat", "age": 29}
+	assert.Equal(t, "Mat", New(m).Get("name").Str())
+	assert.Equal(t, "29", New(m).Get("age").Str())
+
+	assert.Panics(t, func() {
+		New(m).Get("age").MustStr()
+	})
 
 }

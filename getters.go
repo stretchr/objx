@@ -20,7 +20,8 @@ func (o *O) Get(selector interface{}) *O {
 }
 
 // String gets a string representation of the object
-// contained.
+// contained.  This is not to be confused with Str, which gets
+// the real string value currently contained.
 func (o *O) String() string {
 
 	// if the object has a string method, just call it
@@ -33,4 +34,9 @@ func (o *O) String() string {
 	// otherwise, let fmt do the work
 	return fmt.Sprintf(objxStringPrefix+"%v"+objxStringSuffix, o.obj)
 
+}
+
+// Str gets the string contained.
+func (o *O) Str() string {
+	return o.obj.(string)
 }
