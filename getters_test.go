@@ -12,3 +12,12 @@ func TestObj(t *testing.T) {
 	assert.Equal(t, o.Obj(), obj)
 
 }
+
+func TestString(t *testing.T) {
+
+	obj := "hello objx"
+	o := New(obj)
+	assert.Equal(t, o.Obj(), obj)
+	assert.Equal(t, objxStringPrefix+"hello objx"+objxStringSuffix, o.String())
+
+}

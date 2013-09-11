@@ -1,15 +1,37 @@
 package objx
 
 import (
+	"fmt"
 	"regexp"
 	"strconv"
 	"strings"
+)
+
+const (
+	objxStringPrefix = "•"
+	objxStringSuffix = "•"
 )
 
 // Obj gets the underlying object contained within this
 // O.
 func (o *O) Obj() interface{} {
 	return o.obj
+}
+
+// String gets a string representation of the object
+// contained.
+func (o *O) String() string {
+
+	// if the object has a string method, just call it
+	if s, ok := o.obj.(interface {
+		String() string
+	}); ok {
+		return objxStringPrefix + s.String() + objxStringSuffix
+	}
+
+	// otherwise, let fmt do the work
+	return fmt.Sprintf(objxStringPrefix+"%v"+objxStringSuffix, o.obj)
+
 }
 
 // arrayAccesRegexString is the regex used to extract the array number
