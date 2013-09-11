@@ -73,3 +73,31 @@ func TestFromBase64StringWithError(t *testing.T) {
 	})
 
 }
+
+func TestFromSignedBase64String(t *testing.T) {
+
+	base64String := "eyJuYW1lIjoiTWF0In0=_67ee82916f90b2c0d68c903266e8998c9ef0c3d6"
+
+	o, err := FromSignedBase64(base64String, "key")
+
+	if assert.NoError(t, err) {
+		assert.Equal(t, o.Get("name").Str(), "Mat")
+	}
+
+	assert.Equal(t, MustFromSignedBase64(base64String, "key").Get("name").Str(), "Mat")
+
+}
+
+func TestFromSignedBase64StringWithError(t *testing.T) {
+
+	base64String := "eyJuYW1lasdIjoiTWF0In0=_67ee82916f90b2c0d68c903266e8998c9ef0c3d6"
+
+	_, err := FromSignedBase64(base64String, "key")
+
+	assert.Error(t, err)
+
+	assert.Panics(t, func() {
+		MustFromSignedBase64(base64String, "key")
+	})
+
+}

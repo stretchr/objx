@@ -23,7 +23,7 @@ func (o *O) access(selector interface{}, value interface{}, isSet bool) *O {
 	case string: // "address.postcode.inner"
 
 		selStr := selector.(string)
-		segs := strings.Split(selStr, ".")
+		segs := strings.Split(selStr, PathSeparator)
 		segLen := len(segs)
 
 		current := o.Obj()

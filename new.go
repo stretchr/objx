@@ -3,6 +3,8 @@ package objx
 import (
 	"encoding/base64"
 	"encoding/json"
+	"errors"
+	"github.com/stretchr/signature"
 	"io/ioutil"
 	"strings"
 )
@@ -60,12 +62,45 @@ func FromBase64(base64String string) (*O, error) {
 }
 
 // MustFromBase64 creates a new O containing the data specified
-// in the Base64 string.
+// in the Base64 string and panics if there is an error.
 //
 // The string is an encoded JSON string returned by Base64
 func MustFromBase64(base64String string) *O {
 
 	result, err := FromBase64(base64String)
+
+	if err != nil {
+		panic(err.Error())
+	}
+
+	return result
+}
+
+// FromSignedBase64 creates a new O containing the data specified
+// in the Base64 string.
+//
+// The string is an encoded JSON string returned by SignedBase64
+func FromSignedBase64(base64String, key string) (*O, error) {
+	parts := strings.Split(base64String, SignatureSeparator)
+	if len(parts) != 2 {
+		return nil, errors.New("objx: Signed base64 string is malformed.")
+	}
+
+	sig := signature.HashWithKey([]byte(parts[0]), []byte(key))
+	if parts[1] != sig {
+		return nil, errors.New("objx: Signature for base64 data does not match.")
+	}
+
+	return FromBase64(parts[0])
+}
+
+// MustFromSignedBase64 creates a new O containing the data specified
+// in the Base64 string and panics if there is an error.
+//
+// The string is an encoded JSON string returned by Base64
+func MustFromSignedBase64(base64String, key string) *O {
+
+	result, err := FromSignedBase64(base64String, key)
 
 	if err != nil {
 		panic(err.Error())
