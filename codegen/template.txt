@@ -72,6 +72,43 @@ func (o *O) Each{4}(callback func(int, {1}) bool) *O {
 
 }
 
+// Select{4} uses the specified decider function to select items
+// from the []{1}.  The object contained in the result will contain
+// only the selected items.
+func (o *O) Select{4}(decider func(int, {1}) bool) *O {
+
+	var selected []{1}
+
+	for index, val := range o.Must{4}Slice() {
+		shouldSelect := decider(index, val)
+		if shouldSelect == false {
+			selected = append(selected, val)
+		}
+	}
+
+	return New(selected)
+
+}
+
+// Group{4} uses the specified grouper function to group the items
+// keyed by the return of the grouper.  The object contained in the
+// result will contain a map[interface{}][]{1}.
+func (o *O) Group{4}(grouper func(int, {1}) interface{}) *O {
+
+	groups := make(map[interface{}][]{1})
+
+	for index, val := range o.Must{4}Slice() {
+		group := grouper(index, val)
+		if _, ok := groups[group]; !ok {
+			groups[group] = make([]{1}, 0)
+		}
+		groups[group] = append(groups[group], val)
+	}
+
+	return New(groups)
+
+}
+
 // TESTS:
 
 func Test{4}(t *testing.T) {
@@ -137,5 +174,31 @@ func TestEach{4}(t *testing.T) {
 	assert.Equal(t, collectedVals[0], o.Must{4}Slice()[0])
 	assert.Equal(t, collectedVals[1], o.Must{4}Slice()[1])
 	assert.Equal(t, collectedVals[2], o.Must{4}Slice()[2])
+
+}
+
+func TestSelect{4}(t *testing.T) {
+
+	o := New([]{1}{ {1}({2}), {1}({2}), {1}({2}), {1}({2}), {1}({2}), {1}({2}) })
+
+	selected := o.Select{4}(func(i int, val {1}) bool {
+		return i%2==0
+	}).Must{4}Slice()
+
+	assert.Equal(t, 3, len(selected))
+
+}
+
+func TestGroup{4}(t *testing.T) {
+
+	o := New([]{1}{ {1}({2}), {1}({2}), {1}({2}), {1}({2}), {1}({2}), {1}({2}) })
+
+	grouped := o.Group{4}(func(i int, val {1}) interface{} {
+		return i%2==0
+	}).Obj().(map[interface{}][]{1})
+
+	assert.Equal(t, 2, len(grouped))
+	assert.Equal(t, 3, len(grouped[true]))
+	assert.Equal(t, 3, len(grouped[false]))
 
 }

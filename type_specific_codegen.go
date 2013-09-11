@@ -47,11 +47,6 @@ func (o *O) MustInterSlice() []interface{} {
 	return o.obj.([]interface{})
 }
 
-// IsInter gets whether the object contained is a interface{} or not.
-func (o *O) IsInter() bool {
-	return o.IsKind(reflect.Interface)
-}
-
 // IsInterSlice gets whether the object contained is a []interface{} or not.
 func (o *O) IsInterSlice() bool {
 	if !o.IsSlice() {
@@ -75,6 +70,43 @@ func (o *O) EachInter(callback func(int, interface{}) bool) *O {
 	}
 
 	return o
+
+}
+
+// SelectInter uses the specified decider function to select items
+// from the []interface{}.  The object contained in the result will contain
+// only the selected items.
+func (o *O) SelectInter(decider func(int, interface{}) bool) *O {
+
+	var selected []interface{}
+
+	for index, val := range o.MustInterSlice() {
+		shouldSelect := decider(index, val)
+		if shouldSelect == false {
+			selected = append(selected, val)
+		}
+	}
+
+	return New(selected)
+
+}
+
+// GroupInter uses the specified grouper function to group the items
+// keyed by the return of the grouper.  The object contained in the
+// result will contain a map[interface{}][]interface{}.
+func (o *O) GroupInter(grouper func(int, interface{}) interface{}) *O {
+
+	groups := make(map[interface{}][]interface{})
+
+	for index, val := range o.MustInterSlice() {
+		group := grouper(index, val)
+		if _, ok := groups[group]; !ok {
+			groups[group] = make([]interface{}, 0)
+		}
+		groups[group] = append(groups[group], val)
+	}
+
+	return New(groups)
 
 }
 
@@ -152,6 +184,43 @@ func (o *O) EachBool(callback func(int, bool) bool) *O {
 
 }
 
+// SelectBool uses the specified decider function to select items
+// from the []bool.  The object contained in the result will contain
+// only the selected items.
+func (o *O) SelectBool(decider func(int, bool) bool) *O {
+
+	var selected []bool
+
+	for index, val := range o.MustBoolSlice() {
+		shouldSelect := decider(index, val)
+		if shouldSelect == false {
+			selected = append(selected, val)
+		}
+	}
+
+	return New(selected)
+
+}
+
+// GroupBool uses the specified grouper function to group the items
+// keyed by the return of the grouper.  The object contained in the
+// result will contain a map[interface{}][]bool.
+func (o *O) GroupBool(grouper func(int, bool) interface{}) *O {
+
+	groups := make(map[interface{}][]bool)
+
+	for index, val := range o.MustBoolSlice() {
+		group := grouper(index, val)
+		if _, ok := groups[group]; !ok {
+			groups[group] = make([]bool, 0)
+		}
+		groups[group] = append(groups[group], val)
+	}
+
+	return New(groups)
+
+}
+
 /*
 	Str (string and []string)
 	--------------------------------------------------
@@ -223,6 +292,43 @@ func (o *O) EachStr(callback func(int, string) bool) *O {
 	}
 
 	return o
+
+}
+
+// SelectStr uses the specified decider function to select items
+// from the []string.  The object contained in the result will contain
+// only the selected items.
+func (o *O) SelectStr(decider func(int, string) bool) *O {
+
+	var selected []string
+
+	for index, val := range o.MustStrSlice() {
+		shouldSelect := decider(index, val)
+		if shouldSelect == false {
+			selected = append(selected, val)
+		}
+	}
+
+	return New(selected)
+
+}
+
+// GroupStr uses the specified grouper function to group the items
+// keyed by the return of the grouper.  The object contained in the
+// result will contain a map[interface{}][]string.
+func (o *O) GroupStr(grouper func(int, string) interface{}) *O {
+
+	groups := make(map[interface{}][]string)
+
+	for index, val := range o.MustStrSlice() {
+		group := grouper(index, val)
+		if _, ok := groups[group]; !ok {
+			groups[group] = make([]string, 0)
+		}
+		groups[group] = append(groups[group], val)
+	}
+
+	return New(groups)
 
 }
 
@@ -300,6 +406,43 @@ func (o *O) EachInt(callback func(int, int) bool) *O {
 
 }
 
+// SelectInt uses the specified decider function to select items
+// from the []int.  The object contained in the result will contain
+// only the selected items.
+func (o *O) SelectInt(decider func(int, int) bool) *O {
+
+	var selected []int
+
+	for index, val := range o.MustIntSlice() {
+		shouldSelect := decider(index, val)
+		if shouldSelect == false {
+			selected = append(selected, val)
+		}
+	}
+
+	return New(selected)
+
+}
+
+// GroupInt uses the specified grouper function to group the items
+// keyed by the return of the grouper.  The object contained in the
+// result will contain a map[interface{}][]int.
+func (o *O) GroupInt(grouper func(int, int) interface{}) *O {
+
+	groups := make(map[interface{}][]int)
+
+	for index, val := range o.MustIntSlice() {
+		group := grouper(index, val)
+		if _, ok := groups[group]; !ok {
+			groups[group] = make([]int, 0)
+		}
+		groups[group] = append(groups[group], val)
+	}
+
+	return New(groups)
+
+}
+
 /*
 	Int8 (int8 and []int8)
 	--------------------------------------------------
@@ -371,6 +514,43 @@ func (o *O) EachInt8(callback func(int, int8) bool) *O {
 	}
 
 	return o
+
+}
+
+// SelectInt8 uses the specified decider function to select items
+// from the []int8.  The object contained in the result will contain
+// only the selected items.
+func (o *O) SelectInt8(decider func(int, int8) bool) *O {
+
+	var selected []int8
+
+	for index, val := range o.MustInt8Slice() {
+		shouldSelect := decider(index, val)
+		if shouldSelect == false {
+			selected = append(selected, val)
+		}
+	}
+
+	return New(selected)
+
+}
+
+// GroupInt8 uses the specified grouper function to group the items
+// keyed by the return of the grouper.  The object contained in the
+// result will contain a map[interface{}][]int8.
+func (o *O) GroupInt8(grouper func(int, int8) interface{}) *O {
+
+	groups := make(map[interface{}][]int8)
+
+	for index, val := range o.MustInt8Slice() {
+		group := grouper(index, val)
+		if _, ok := groups[group]; !ok {
+			groups[group] = make([]int8, 0)
+		}
+		groups[group] = append(groups[group], val)
+	}
+
+	return New(groups)
 
 }
 
@@ -448,6 +628,43 @@ func (o *O) EachInt16(callback func(int, int16) bool) *O {
 
 }
 
+// SelectInt16 uses the specified decider function to select items
+// from the []int16.  The object contained in the result will contain
+// only the selected items.
+func (o *O) SelectInt16(decider func(int, int16) bool) *O {
+
+	var selected []int16
+
+	for index, val := range o.MustInt16Slice() {
+		shouldSelect := decider(index, val)
+		if shouldSelect == false {
+			selected = append(selected, val)
+		}
+	}
+
+	return New(selected)
+
+}
+
+// GroupInt16 uses the specified grouper function to group the items
+// keyed by the return of the grouper.  The object contained in the
+// result will contain a map[interface{}][]int16.
+func (o *O) GroupInt16(grouper func(int, int16) interface{}) *O {
+
+	groups := make(map[interface{}][]int16)
+
+	for index, val := range o.MustInt16Slice() {
+		group := grouper(index, val)
+		if _, ok := groups[group]; !ok {
+			groups[group] = make([]int16, 0)
+		}
+		groups[group] = append(groups[group], val)
+	}
+
+	return New(groups)
+
+}
+
 /*
 	Int32 (int32 and []int32)
 	--------------------------------------------------
@@ -519,6 +736,43 @@ func (o *O) EachInt32(callback func(int, int32) bool) *O {
 	}
 
 	return o
+
+}
+
+// SelectInt32 uses the specified decider function to select items
+// from the []int32.  The object contained in the result will contain
+// only the selected items.
+func (o *O) SelectInt32(decider func(int, int32) bool) *O {
+
+	var selected []int32
+
+	for index, val := range o.MustInt32Slice() {
+		shouldSelect := decider(index, val)
+		if shouldSelect == false {
+			selected = append(selected, val)
+		}
+	}
+
+	return New(selected)
+
+}
+
+// GroupInt32 uses the specified grouper function to group the items
+// keyed by the return of the grouper.  The object contained in the
+// result will contain a map[interface{}][]int32.
+func (o *O) GroupInt32(grouper func(int, int32) interface{}) *O {
+
+	groups := make(map[interface{}][]int32)
+
+	for index, val := range o.MustInt32Slice() {
+		group := grouper(index, val)
+		if _, ok := groups[group]; !ok {
+			groups[group] = make([]int32, 0)
+		}
+		groups[group] = append(groups[group], val)
+	}
+
+	return New(groups)
 
 }
 
@@ -596,6 +850,43 @@ func (o *O) EachInt64(callback func(int, int64) bool) *O {
 
 }
 
+// SelectInt64 uses the specified decider function to select items
+// from the []int64.  The object contained in the result will contain
+// only the selected items.
+func (o *O) SelectInt64(decider func(int, int64) bool) *O {
+
+	var selected []int64
+
+	for index, val := range o.MustInt64Slice() {
+		shouldSelect := decider(index, val)
+		if shouldSelect == false {
+			selected = append(selected, val)
+		}
+	}
+
+	return New(selected)
+
+}
+
+// GroupInt64 uses the specified grouper function to group the items
+// keyed by the return of the grouper.  The object contained in the
+// result will contain a map[interface{}][]int64.
+func (o *O) GroupInt64(grouper func(int, int64) interface{}) *O {
+
+	groups := make(map[interface{}][]int64)
+
+	for index, val := range o.MustInt64Slice() {
+		group := grouper(index, val)
+		if _, ok := groups[group]; !ok {
+			groups[group] = make([]int64, 0)
+		}
+		groups[group] = append(groups[group], val)
+	}
+
+	return New(groups)
+
+}
+
 /*
 	Uint (uint and []uint)
 	--------------------------------------------------
@@ -667,6 +958,43 @@ func (o *O) EachUint(callback func(int, uint) bool) *O {
 	}
 
 	return o
+
+}
+
+// SelectUint uses the specified decider function to select items
+// from the []uint.  The object contained in the result will contain
+// only the selected items.
+func (o *O) SelectUint(decider func(int, uint) bool) *O {
+
+	var selected []uint
+
+	for index, val := range o.MustUintSlice() {
+		shouldSelect := decider(index, val)
+		if shouldSelect == false {
+			selected = append(selected, val)
+		}
+	}
+
+	return New(selected)
+
+}
+
+// GroupUint uses the specified grouper function to group the items
+// keyed by the return of the grouper.  The object contained in the
+// result will contain a map[interface{}][]uint.
+func (o *O) GroupUint(grouper func(int, uint) interface{}) *O {
+
+	groups := make(map[interface{}][]uint)
+
+	for index, val := range o.MustUintSlice() {
+		group := grouper(index, val)
+		if _, ok := groups[group]; !ok {
+			groups[group] = make([]uint, 0)
+		}
+		groups[group] = append(groups[group], val)
+	}
+
+	return New(groups)
 
 }
 
@@ -744,6 +1072,43 @@ func (o *O) EachUint8(callback func(int, uint8) bool) *O {
 
 }
 
+// SelectUint8 uses the specified decider function to select items
+// from the []uint8.  The object contained in the result will contain
+// only the selected items.
+func (o *O) SelectUint8(decider func(int, uint8) bool) *O {
+
+	var selected []uint8
+
+	for index, val := range o.MustUint8Slice() {
+		shouldSelect := decider(index, val)
+		if shouldSelect == false {
+			selected = append(selected, val)
+		}
+	}
+
+	return New(selected)
+
+}
+
+// GroupUint8 uses the specified grouper function to group the items
+// keyed by the return of the grouper.  The object contained in the
+// result will contain a map[interface{}][]uint8.
+func (o *O) GroupUint8(grouper func(int, uint8) interface{}) *O {
+
+	groups := make(map[interface{}][]uint8)
+
+	for index, val := range o.MustUint8Slice() {
+		group := grouper(index, val)
+		if _, ok := groups[group]; !ok {
+			groups[group] = make([]uint8, 0)
+		}
+		groups[group] = append(groups[group], val)
+	}
+
+	return New(groups)
+
+}
+
 /*
 	Uint16 (uint16 and []uint16)
 	--------------------------------------------------
@@ -815,6 +1180,43 @@ func (o *O) EachUint16(callback func(int, uint16) bool) *O {
 	}
 
 	return o
+
+}
+
+// SelectUint16 uses the specified decider function to select items
+// from the []uint16.  The object contained in the result will contain
+// only the selected items.
+func (o *O) SelectUint16(decider func(int, uint16) bool) *O {
+
+	var selected []uint16
+
+	for index, val := range o.MustUint16Slice() {
+		shouldSelect := decider(index, val)
+		if shouldSelect == false {
+			selected = append(selected, val)
+		}
+	}
+
+	return New(selected)
+
+}
+
+// GroupUint16 uses the specified grouper function to group the items
+// keyed by the return of the grouper.  The object contained in the
+// result will contain a map[interface{}][]uint16.
+func (o *O) GroupUint16(grouper func(int, uint16) interface{}) *O {
+
+	groups := make(map[interface{}][]uint16)
+
+	for index, val := range o.MustUint16Slice() {
+		group := grouper(index, val)
+		if _, ok := groups[group]; !ok {
+			groups[group] = make([]uint16, 0)
+		}
+		groups[group] = append(groups[group], val)
+	}
+
+	return New(groups)
 
 }
 
@@ -892,6 +1294,43 @@ func (o *O) EachUint32(callback func(int, uint32) bool) *O {
 
 }
 
+// SelectUint32 uses the specified decider function to select items
+// from the []uint32.  The object contained in the result will contain
+// only the selected items.
+func (o *O) SelectUint32(decider func(int, uint32) bool) *O {
+
+	var selected []uint32
+
+	for index, val := range o.MustUint32Slice() {
+		shouldSelect := decider(index, val)
+		if shouldSelect == false {
+			selected = append(selected, val)
+		}
+	}
+
+	return New(selected)
+
+}
+
+// GroupUint32 uses the specified grouper function to group the items
+// keyed by the return of the grouper.  The object contained in the
+// result will contain a map[interface{}][]uint32.
+func (o *O) GroupUint32(grouper func(int, uint32) interface{}) *O {
+
+	groups := make(map[interface{}][]uint32)
+
+	for index, val := range o.MustUint32Slice() {
+		group := grouper(index, val)
+		if _, ok := groups[group]; !ok {
+			groups[group] = make([]uint32, 0)
+		}
+		groups[group] = append(groups[group], val)
+	}
+
+	return New(groups)
+
+}
+
 /*
 	Uint64 (uint64 and []uint64)
 	--------------------------------------------------
@@ -963,6 +1402,43 @@ func (o *O) EachUint64(callback func(int, uint64) bool) *O {
 	}
 
 	return o
+
+}
+
+// SelectUint64 uses the specified decider function to select items
+// from the []uint64.  The object contained in the result will contain
+// only the selected items.
+func (o *O) SelectUint64(decider func(int, uint64) bool) *O {
+
+	var selected []uint64
+
+	for index, val := range o.MustUint64Slice() {
+		shouldSelect := decider(index, val)
+		if shouldSelect == false {
+			selected = append(selected, val)
+		}
+	}
+
+	return New(selected)
+
+}
+
+// GroupUint64 uses the specified grouper function to group the items
+// keyed by the return of the grouper.  The object contained in the
+// result will contain a map[interface{}][]uint64.
+func (o *O) GroupUint64(grouper func(int, uint64) interface{}) *O {
+
+	groups := make(map[interface{}][]uint64)
+
+	for index, val := range o.MustUint64Slice() {
+		group := grouper(index, val)
+		if _, ok := groups[group]; !ok {
+			groups[group] = make([]uint64, 0)
+		}
+		groups[group] = append(groups[group], val)
+	}
+
+	return New(groups)
 
 }
 
@@ -1040,6 +1516,43 @@ func (o *O) EachUintptr(callback func(int, uintptr) bool) *O {
 
 }
 
+// SelectUintptr uses the specified decider function to select items
+// from the []uintptr.  The object contained in the result will contain
+// only the selected items.
+func (o *O) SelectUintptr(decider func(int, uintptr) bool) *O {
+
+	var selected []uintptr
+
+	for index, val := range o.MustUintptrSlice() {
+		shouldSelect := decider(index, val)
+		if shouldSelect == false {
+			selected = append(selected, val)
+		}
+	}
+
+	return New(selected)
+
+}
+
+// GroupUintptr uses the specified grouper function to group the items
+// keyed by the return of the grouper.  The object contained in the
+// result will contain a map[interface{}][]uintptr.
+func (o *O) GroupUintptr(grouper func(int, uintptr) interface{}) *O {
+
+	groups := make(map[interface{}][]uintptr)
+
+	for index, val := range o.MustUintptrSlice() {
+		group := grouper(index, val)
+		if _, ok := groups[group]; !ok {
+			groups[group] = make([]uintptr, 0)
+		}
+		groups[group] = append(groups[group], val)
+	}
+
+	return New(groups)
+
+}
+
 /*
 	Float32 (float32 and []float32)
 	--------------------------------------------------
@@ -1111,6 +1624,43 @@ func (o *O) EachFloat32(callback func(int, float32) bool) *O {
 	}
 
 	return o
+
+}
+
+// SelectFloat32 uses the specified decider function to select items
+// from the []float32.  The object contained in the result will contain
+// only the selected items.
+func (o *O) SelectFloat32(decider func(int, float32) bool) *O {
+
+	var selected []float32
+
+	for index, val := range o.MustFloat32Slice() {
+		shouldSelect := decider(index, val)
+		if shouldSelect == false {
+			selected = append(selected, val)
+		}
+	}
+
+	return New(selected)
+
+}
+
+// GroupFloat32 uses the specified grouper function to group the items
+// keyed by the return of the grouper.  The object contained in the
+// result will contain a map[interface{}][]float32.
+func (o *O) GroupFloat32(grouper func(int, float32) interface{}) *O {
+
+	groups := make(map[interface{}][]float32)
+
+	for index, val := range o.MustFloat32Slice() {
+		group := grouper(index, val)
+		if _, ok := groups[group]; !ok {
+			groups[group] = make([]float32, 0)
+		}
+		groups[group] = append(groups[group], val)
+	}
+
+	return New(groups)
 
 }
 
@@ -1188,6 +1738,43 @@ func (o *O) EachFloat64(callback func(int, float64) bool) *O {
 
 }
 
+// SelectFloat64 uses the specified decider function to select items
+// from the []float64.  The object contained in the result will contain
+// only the selected items.
+func (o *O) SelectFloat64(decider func(int, float64) bool) *O {
+
+	var selected []float64
+
+	for index, val := range o.MustFloat64Slice() {
+		shouldSelect := decider(index, val)
+		if shouldSelect == false {
+			selected = append(selected, val)
+		}
+	}
+
+	return New(selected)
+
+}
+
+// GroupFloat64 uses the specified grouper function to group the items
+// keyed by the return of the grouper.  The object contained in the
+// result will contain a map[interface{}][]float64.
+func (o *O) GroupFloat64(grouper func(int, float64) interface{}) *O {
+
+	groups := make(map[interface{}][]float64)
+
+	for index, val := range o.MustFloat64Slice() {
+		group := grouper(index, val)
+		if _, ok := groups[group]; !ok {
+			groups[group] = make([]float64, 0)
+		}
+		groups[group] = append(groups[group], val)
+	}
+
+	return New(groups)
+
+}
+
 /*
 	Complex64 (complex64 and []complex64)
 	--------------------------------------------------
@@ -1262,6 +1849,43 @@ func (o *O) EachComplex64(callback func(int, complex64) bool) *O {
 
 }
 
+// SelectComplex64 uses the specified decider function to select items
+// from the []complex64.  The object contained in the result will contain
+// only the selected items.
+func (o *O) SelectComplex64(decider func(int, complex64) bool) *O {
+
+	var selected []complex64
+
+	for index, val := range o.MustComplex64Slice() {
+		shouldSelect := decider(index, val)
+		if shouldSelect == false {
+			selected = append(selected, val)
+		}
+	}
+
+	return New(selected)
+
+}
+
+// GroupComplex64 uses the specified grouper function to group the items
+// keyed by the return of the grouper.  The object contained in the
+// result will contain a map[interface{}][]complex64.
+func (o *O) GroupComplex64(grouper func(int, complex64) interface{}) *O {
+
+	groups := make(map[interface{}][]complex64)
+
+	for index, val := range o.MustComplex64Slice() {
+		group := grouper(index, val)
+		if _, ok := groups[group]; !ok {
+			groups[group] = make([]complex64, 0)
+		}
+		groups[group] = append(groups[group], val)
+	}
+
+	return New(groups)
+
+}
+
 /*
 	Complex128 (complex128 and []complex128)
 	--------------------------------------------------
@@ -1333,5 +1957,42 @@ func (o *O) EachComplex128(callback func(int, complex128) bool) *O {
 	}
 
 	return o
+
+}
+
+// SelectComplex128 uses the specified decider function to select items
+// from the []complex128.  The object contained in the result will contain
+// only the selected items.
+func (o *O) SelectComplex128(decider func(int, complex128) bool) *O {
+
+	var selected []complex128
+
+	for index, val := range o.MustComplex128Slice() {
+		shouldSelect := decider(index, val)
+		if shouldSelect == false {
+			selected = append(selected, val)
+		}
+	}
+
+	return New(selected)
+
+}
+
+// GroupComplex128 uses the specified grouper function to group the items
+// keyed by the return of the grouper.  The object contained in the
+// result will contain a map[interface{}][]complex128.
+func (o *O) GroupComplex128(grouper func(int, complex128) interface{}) *O {
+
+	groups := make(map[interface{}][]complex128)
+
+	for index, val := range o.MustComplex128Slice() {
+		group := grouper(index, val)
+		if _, ok := groups[group]; !ok {
+			groups[group] = make([]complex128, 0)
+		}
+		groups[group] = append(groups[group], val)
+	}
+
+	return New(groups)
 
 }

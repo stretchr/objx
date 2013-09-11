@@ -59,6 +59,32 @@ func TestEachInter(t *testing.T) {
 
 }
 
+func TestSelectInter(t *testing.T) {
+
+	o := New([]interface{}{interface{}("something"), interface{}("something"), interface{}("something"), interface{}("something"), interface{}("something"), interface{}("something")})
+
+	selected := o.SelectInter(func(i int, val interface{}) bool {
+		return i%2 == 0
+	}).MustInterSlice()
+
+	assert.Equal(t, 3, len(selected))
+
+}
+
+func TestGroupInter(t *testing.T) {
+
+	o := New([]interface{}{interface{}("something"), interface{}("something"), interface{}("something"), interface{}("something"), interface{}("something"), interface{}("something")})
+
+	grouped := o.GroupInter(func(i int, val interface{}) interface{} {
+		return i%2 == 0
+	}).Obj().(map[interface{}][]interface{})
+
+	assert.Equal(t, 2, len(grouped))
+	assert.Equal(t, 3, len(grouped[true]))
+	assert.Equal(t, 3, len(grouped[false]))
+
+}
+
 func TestBool(t *testing.T) {
 
 	m := map[string]interface{}{"value": bool(true), "nothing": nil}
@@ -122,6 +148,32 @@ func TestEachBool(t *testing.T) {
 	assert.Equal(t, collectedVals[0], o.MustBoolSlice()[0])
 	assert.Equal(t, collectedVals[1], o.MustBoolSlice()[1])
 	assert.Equal(t, collectedVals[2], o.MustBoolSlice()[2])
+
+}
+
+func TestSelectBool(t *testing.T) {
+
+	o := New([]bool{bool(true), bool(true), bool(true), bool(true), bool(true), bool(true)})
+
+	selected := o.SelectBool(func(i int, val bool) bool {
+		return i%2 == 0
+	}).MustBoolSlice()
+
+	assert.Equal(t, 3, len(selected))
+
+}
+
+func TestGroupBool(t *testing.T) {
+
+	o := New([]bool{bool(true), bool(true), bool(true), bool(true), bool(true), bool(true)})
+
+	grouped := o.GroupBool(func(i int, val bool) interface{} {
+		return i%2 == 0
+	}).Obj().(map[interface{}][]bool)
+
+	assert.Equal(t, 2, len(grouped))
+	assert.Equal(t, 3, len(grouped[true]))
+	assert.Equal(t, 3, len(grouped[false]))
 
 }
 
@@ -191,6 +243,32 @@ func TestEachStr(t *testing.T) {
 
 }
 
+func TestSelectStr(t *testing.T) {
+
+	o := New([]string{string("hello"), string("hello"), string("hello"), string("hello"), string("hello"), string("hello")})
+
+	selected := o.SelectStr(func(i int, val string) bool {
+		return i%2 == 0
+	}).MustStrSlice()
+
+	assert.Equal(t, 3, len(selected))
+
+}
+
+func TestGroupStr(t *testing.T) {
+
+	o := New([]string{string("hello"), string("hello"), string("hello"), string("hello"), string("hello"), string("hello")})
+
+	grouped := o.GroupStr(func(i int, val string) interface{} {
+		return i%2 == 0
+	}).Obj().(map[interface{}][]string)
+
+	assert.Equal(t, 2, len(grouped))
+	assert.Equal(t, 3, len(grouped[true]))
+	assert.Equal(t, 3, len(grouped[false]))
+
+}
+
 func TestInt(t *testing.T) {
 
 	m := map[string]interface{}{"value": int(1), "nothing": nil}
@@ -254,6 +332,32 @@ func TestEachInt(t *testing.T) {
 	assert.Equal(t, collectedVals[0], o.MustIntSlice()[0])
 	assert.Equal(t, collectedVals[1], o.MustIntSlice()[1])
 	assert.Equal(t, collectedVals[2], o.MustIntSlice()[2])
+
+}
+
+func TestSelectInt(t *testing.T) {
+
+	o := New([]int{int(1), int(1), int(1), int(1), int(1), int(1)})
+
+	selected := o.SelectInt(func(i int, val int) bool {
+		return i%2 == 0
+	}).MustIntSlice()
+
+	assert.Equal(t, 3, len(selected))
+
+}
+
+func TestGroupInt(t *testing.T) {
+
+	o := New([]int{int(1), int(1), int(1), int(1), int(1), int(1)})
+
+	grouped := o.GroupInt(func(i int, val int) interface{} {
+		return i%2 == 0
+	}).Obj().(map[interface{}][]int)
+
+	assert.Equal(t, 2, len(grouped))
+	assert.Equal(t, 3, len(grouped[true]))
+	assert.Equal(t, 3, len(grouped[false]))
 
 }
 
@@ -323,6 +427,32 @@ func TestEachInt8(t *testing.T) {
 
 }
 
+func TestSelectInt8(t *testing.T) {
+
+	o := New([]int8{int8(1), int8(1), int8(1), int8(1), int8(1), int8(1)})
+
+	selected := o.SelectInt8(func(i int, val int8) bool {
+		return i%2 == 0
+	}).MustInt8Slice()
+
+	assert.Equal(t, 3, len(selected))
+
+}
+
+func TestGroupInt8(t *testing.T) {
+
+	o := New([]int8{int8(1), int8(1), int8(1), int8(1), int8(1), int8(1)})
+
+	grouped := o.GroupInt8(func(i int, val int8) interface{} {
+		return i%2 == 0
+	}).Obj().(map[interface{}][]int8)
+
+	assert.Equal(t, 2, len(grouped))
+	assert.Equal(t, 3, len(grouped[true]))
+	assert.Equal(t, 3, len(grouped[false]))
+
+}
+
 func TestInt16(t *testing.T) {
 
 	m := map[string]interface{}{"value": int16(1), "nothing": nil}
@@ -386,6 +516,32 @@ func TestEachInt16(t *testing.T) {
 	assert.Equal(t, collectedVals[0], o.MustInt16Slice()[0])
 	assert.Equal(t, collectedVals[1], o.MustInt16Slice()[1])
 	assert.Equal(t, collectedVals[2], o.MustInt16Slice()[2])
+
+}
+
+func TestSelectInt16(t *testing.T) {
+
+	o := New([]int16{int16(1), int16(1), int16(1), int16(1), int16(1), int16(1)})
+
+	selected := o.SelectInt16(func(i int, val int16) bool {
+		return i%2 == 0
+	}).MustInt16Slice()
+
+	assert.Equal(t, 3, len(selected))
+
+}
+
+func TestGroupInt16(t *testing.T) {
+
+	o := New([]int16{int16(1), int16(1), int16(1), int16(1), int16(1), int16(1)})
+
+	grouped := o.GroupInt16(func(i int, val int16) interface{} {
+		return i%2 == 0
+	}).Obj().(map[interface{}][]int16)
+
+	assert.Equal(t, 2, len(grouped))
+	assert.Equal(t, 3, len(grouped[true]))
+	assert.Equal(t, 3, len(grouped[false]))
 
 }
 
@@ -455,6 +611,32 @@ func TestEachInt32(t *testing.T) {
 
 }
 
+func TestSelectInt32(t *testing.T) {
+
+	o := New([]int32{int32(1), int32(1), int32(1), int32(1), int32(1), int32(1)})
+
+	selected := o.SelectInt32(func(i int, val int32) bool {
+		return i%2 == 0
+	}).MustInt32Slice()
+
+	assert.Equal(t, 3, len(selected))
+
+}
+
+func TestGroupInt32(t *testing.T) {
+
+	o := New([]int32{int32(1), int32(1), int32(1), int32(1), int32(1), int32(1)})
+
+	grouped := o.GroupInt32(func(i int, val int32) interface{} {
+		return i%2 == 0
+	}).Obj().(map[interface{}][]int32)
+
+	assert.Equal(t, 2, len(grouped))
+	assert.Equal(t, 3, len(grouped[true]))
+	assert.Equal(t, 3, len(grouped[false]))
+
+}
+
 func TestInt64(t *testing.T) {
 
 	m := map[string]interface{}{"value": int64(1), "nothing": nil}
@@ -518,6 +700,32 @@ func TestEachInt64(t *testing.T) {
 	assert.Equal(t, collectedVals[0], o.MustInt64Slice()[0])
 	assert.Equal(t, collectedVals[1], o.MustInt64Slice()[1])
 	assert.Equal(t, collectedVals[2], o.MustInt64Slice()[2])
+
+}
+
+func TestSelectInt64(t *testing.T) {
+
+	o := New([]int64{int64(1), int64(1), int64(1), int64(1), int64(1), int64(1)})
+
+	selected := o.SelectInt64(func(i int, val int64) bool {
+		return i%2 == 0
+	}).MustInt64Slice()
+
+	assert.Equal(t, 3, len(selected))
+
+}
+
+func TestGroupInt64(t *testing.T) {
+
+	o := New([]int64{int64(1), int64(1), int64(1), int64(1), int64(1), int64(1)})
+
+	grouped := o.GroupInt64(func(i int, val int64) interface{} {
+		return i%2 == 0
+	}).Obj().(map[interface{}][]int64)
+
+	assert.Equal(t, 2, len(grouped))
+	assert.Equal(t, 3, len(grouped[true]))
+	assert.Equal(t, 3, len(grouped[false]))
 
 }
 
@@ -587,6 +795,32 @@ func TestEachUint(t *testing.T) {
 
 }
 
+func TestSelectUint(t *testing.T) {
+
+	o := New([]uint{uint(1), uint(1), uint(1), uint(1), uint(1), uint(1)})
+
+	selected := o.SelectUint(func(i int, val uint) bool {
+		return i%2 == 0
+	}).MustUintSlice()
+
+	assert.Equal(t, 3, len(selected))
+
+}
+
+func TestGroupUint(t *testing.T) {
+
+	o := New([]uint{uint(1), uint(1), uint(1), uint(1), uint(1), uint(1)})
+
+	grouped := o.GroupUint(func(i int, val uint) interface{} {
+		return i%2 == 0
+	}).Obj().(map[interface{}][]uint)
+
+	assert.Equal(t, 2, len(grouped))
+	assert.Equal(t, 3, len(grouped[true]))
+	assert.Equal(t, 3, len(grouped[false]))
+
+}
+
 func TestUint8(t *testing.T) {
 
 	m := map[string]interface{}{"value": uint8(1), "nothing": nil}
@@ -650,6 +884,32 @@ func TestEachUint8(t *testing.T) {
 	assert.Equal(t, collectedVals[0], o.MustUint8Slice()[0])
 	assert.Equal(t, collectedVals[1], o.MustUint8Slice()[1])
 	assert.Equal(t, collectedVals[2], o.MustUint8Slice()[2])
+
+}
+
+func TestSelectUint8(t *testing.T) {
+
+	o := New([]uint8{uint8(1), uint8(1), uint8(1), uint8(1), uint8(1), uint8(1)})
+
+	selected := o.SelectUint8(func(i int, val uint8) bool {
+		return i%2 == 0
+	}).MustUint8Slice()
+
+	assert.Equal(t, 3, len(selected))
+
+}
+
+func TestGroupUint8(t *testing.T) {
+
+	o := New([]uint8{uint8(1), uint8(1), uint8(1), uint8(1), uint8(1), uint8(1)})
+
+	grouped := o.GroupUint8(func(i int, val uint8) interface{} {
+		return i%2 == 0
+	}).Obj().(map[interface{}][]uint8)
+
+	assert.Equal(t, 2, len(grouped))
+	assert.Equal(t, 3, len(grouped[true]))
+	assert.Equal(t, 3, len(grouped[false]))
 
 }
 
@@ -719,6 +979,32 @@ func TestEachUint16(t *testing.T) {
 
 }
 
+func TestSelectUint16(t *testing.T) {
+
+	o := New([]uint16{uint16(1), uint16(1), uint16(1), uint16(1), uint16(1), uint16(1)})
+
+	selected := o.SelectUint16(func(i int, val uint16) bool {
+		return i%2 == 0
+	}).MustUint16Slice()
+
+	assert.Equal(t, 3, len(selected))
+
+}
+
+func TestGroupUint16(t *testing.T) {
+
+	o := New([]uint16{uint16(1), uint16(1), uint16(1), uint16(1), uint16(1), uint16(1)})
+
+	grouped := o.GroupUint16(func(i int, val uint16) interface{} {
+		return i%2 == 0
+	}).Obj().(map[interface{}][]uint16)
+
+	assert.Equal(t, 2, len(grouped))
+	assert.Equal(t, 3, len(grouped[true]))
+	assert.Equal(t, 3, len(grouped[false]))
+
+}
+
 func TestUint32(t *testing.T) {
 
 	m := map[string]interface{}{"value": uint32(1), "nothing": nil}
@@ -782,6 +1068,32 @@ func TestEachUint32(t *testing.T) {
 	assert.Equal(t, collectedVals[0], o.MustUint32Slice()[0])
 	assert.Equal(t, collectedVals[1], o.MustUint32Slice()[1])
 	assert.Equal(t, collectedVals[2], o.MustUint32Slice()[2])
+
+}
+
+func TestSelectUint32(t *testing.T) {
+
+	o := New([]uint32{uint32(1), uint32(1), uint32(1), uint32(1), uint32(1), uint32(1)})
+
+	selected := o.SelectUint32(func(i int, val uint32) bool {
+		return i%2 == 0
+	}).MustUint32Slice()
+
+	assert.Equal(t, 3, len(selected))
+
+}
+
+func TestGroupUint32(t *testing.T) {
+
+	o := New([]uint32{uint32(1), uint32(1), uint32(1), uint32(1), uint32(1), uint32(1)})
+
+	grouped := o.GroupUint32(func(i int, val uint32) interface{} {
+		return i%2 == 0
+	}).Obj().(map[interface{}][]uint32)
+
+	assert.Equal(t, 2, len(grouped))
+	assert.Equal(t, 3, len(grouped[true]))
+	assert.Equal(t, 3, len(grouped[false]))
 
 }
 
@@ -851,6 +1163,32 @@ func TestEachUint64(t *testing.T) {
 
 }
 
+func TestSelectUint64(t *testing.T) {
+
+	o := New([]uint64{uint64(1), uint64(1), uint64(1), uint64(1), uint64(1), uint64(1)})
+
+	selected := o.SelectUint64(func(i int, val uint64) bool {
+		return i%2 == 0
+	}).MustUint64Slice()
+
+	assert.Equal(t, 3, len(selected))
+
+}
+
+func TestGroupUint64(t *testing.T) {
+
+	o := New([]uint64{uint64(1), uint64(1), uint64(1), uint64(1), uint64(1), uint64(1)})
+
+	grouped := o.GroupUint64(func(i int, val uint64) interface{} {
+		return i%2 == 0
+	}).Obj().(map[interface{}][]uint64)
+
+	assert.Equal(t, 2, len(grouped))
+	assert.Equal(t, 3, len(grouped[true]))
+	assert.Equal(t, 3, len(grouped[false]))
+
+}
+
 func TestUintptr(t *testing.T) {
 
 	m := map[string]interface{}{"value": uintptr(1), "nothing": nil}
@@ -914,6 +1252,32 @@ func TestEachUintptr(t *testing.T) {
 	assert.Equal(t, collectedVals[0], o.MustUintptrSlice()[0])
 	assert.Equal(t, collectedVals[1], o.MustUintptrSlice()[1])
 	assert.Equal(t, collectedVals[2], o.MustUintptrSlice()[2])
+
+}
+
+func TestSelectUintptr(t *testing.T) {
+
+	o := New([]uintptr{uintptr(1), uintptr(1), uintptr(1), uintptr(1), uintptr(1), uintptr(1)})
+
+	selected := o.SelectUintptr(func(i int, val uintptr) bool {
+		return i%2 == 0
+	}).MustUintptrSlice()
+
+	assert.Equal(t, 3, len(selected))
+
+}
+
+func TestGroupUintptr(t *testing.T) {
+
+	o := New([]uintptr{uintptr(1), uintptr(1), uintptr(1), uintptr(1), uintptr(1), uintptr(1)})
+
+	grouped := o.GroupUintptr(func(i int, val uintptr) interface{} {
+		return i%2 == 0
+	}).Obj().(map[interface{}][]uintptr)
+
+	assert.Equal(t, 2, len(grouped))
+	assert.Equal(t, 3, len(grouped[true]))
+	assert.Equal(t, 3, len(grouped[false]))
 
 }
 
@@ -983,6 +1347,32 @@ func TestEachFloat32(t *testing.T) {
 
 }
 
+func TestSelectFloat32(t *testing.T) {
+
+	o := New([]float32{float32(1), float32(1), float32(1), float32(1), float32(1), float32(1)})
+
+	selected := o.SelectFloat32(func(i int, val float32) bool {
+		return i%2 == 0
+	}).MustFloat32Slice()
+
+	assert.Equal(t, 3, len(selected))
+
+}
+
+func TestGroupFloat32(t *testing.T) {
+
+	o := New([]float32{float32(1), float32(1), float32(1), float32(1), float32(1), float32(1)})
+
+	grouped := o.GroupFloat32(func(i int, val float32) interface{} {
+		return i%2 == 0
+	}).Obj().(map[interface{}][]float32)
+
+	assert.Equal(t, 2, len(grouped))
+	assert.Equal(t, 3, len(grouped[true]))
+	assert.Equal(t, 3, len(grouped[false]))
+
+}
+
 func TestFloat64(t *testing.T) {
 
 	m := map[string]interface{}{"value": float64(1), "nothing": nil}
@@ -1046,6 +1436,32 @@ func TestEachFloat64(t *testing.T) {
 	assert.Equal(t, collectedVals[0], o.MustFloat64Slice()[0])
 	assert.Equal(t, collectedVals[1], o.MustFloat64Slice()[1])
 	assert.Equal(t, collectedVals[2], o.MustFloat64Slice()[2])
+
+}
+
+func TestSelectFloat64(t *testing.T) {
+
+	o := New([]float64{float64(1), float64(1), float64(1), float64(1), float64(1), float64(1)})
+
+	selected := o.SelectFloat64(func(i int, val float64) bool {
+		return i%2 == 0
+	}).MustFloat64Slice()
+
+	assert.Equal(t, 3, len(selected))
+
+}
+
+func TestGroupFloat64(t *testing.T) {
+
+	o := New([]float64{float64(1), float64(1), float64(1), float64(1), float64(1), float64(1)})
+
+	grouped := o.GroupFloat64(func(i int, val float64) interface{} {
+		return i%2 == 0
+	}).Obj().(map[interface{}][]float64)
+
+	assert.Equal(t, 2, len(grouped))
+	assert.Equal(t, 3, len(grouped[true]))
+	assert.Equal(t, 3, len(grouped[false]))
 
 }
 
@@ -1115,6 +1531,32 @@ func TestEachComplex64(t *testing.T) {
 
 }
 
+func TestSelectComplex64(t *testing.T) {
+
+	o := New([]complex64{complex64(1), complex64(1), complex64(1), complex64(1), complex64(1), complex64(1)})
+
+	selected := o.SelectComplex64(func(i int, val complex64) bool {
+		return i%2 == 0
+	}).MustComplex64Slice()
+
+	assert.Equal(t, 3, len(selected))
+
+}
+
+func TestGroupComplex64(t *testing.T) {
+
+	o := New([]complex64{complex64(1), complex64(1), complex64(1), complex64(1), complex64(1), complex64(1)})
+
+	grouped := o.GroupComplex64(func(i int, val complex64) interface{} {
+		return i%2 == 0
+	}).Obj().(map[interface{}][]complex64)
+
+	assert.Equal(t, 2, len(grouped))
+	assert.Equal(t, 3, len(grouped[true]))
+	assert.Equal(t, 3, len(grouped[false]))
+
+}
+
 func TestComplex128(t *testing.T) {
 
 	m := map[string]interface{}{"value": complex128(1), "nothing": nil}
@@ -1178,5 +1620,31 @@ func TestEachComplex128(t *testing.T) {
 	assert.Equal(t, collectedVals[0], o.MustComplex128Slice()[0])
 	assert.Equal(t, collectedVals[1], o.MustComplex128Slice()[1])
 	assert.Equal(t, collectedVals[2], o.MustComplex128Slice()[2])
+
+}
+
+func TestSelectComplex128(t *testing.T) {
+
+	o := New([]complex128{complex128(1), complex128(1), complex128(1), complex128(1), complex128(1), complex128(1)})
+
+	selected := o.SelectComplex128(func(i int, val complex128) bool {
+		return i%2 == 0
+	}).MustComplex128Slice()
+
+	assert.Equal(t, 3, len(selected))
+
+}
+
+func TestGroupComplex128(t *testing.T) {
+
+	o := New([]complex128{complex128(1), complex128(1), complex128(1), complex128(1), complex128(1), complex128(1)})
+
+	grouped := o.GroupComplex128(func(i int, val complex128) interface{} {
+		return i%2 == 0
+	}).Obj().(map[interface{}][]complex128)
+
+	assert.Equal(t, 2, len(grouped))
+	assert.Equal(t, 3, len(grouped[true]))
+	assert.Equal(t, 3, len(grouped[false]))
 
 }
