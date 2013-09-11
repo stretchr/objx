@@ -72,10 +72,10 @@ func (o *O) Each{4}(callback func(int, {1}) bool) *O {
 
 }
 
-// Select{4} uses the specified decider function to select items
+// Where{4} uses the specified decider function to select items
 // from the []{1}.  The object contained in the result will contain
 // only the selected items.
-func (o *O) Select{4}(decider func(int, {1}) bool) *O {
+func (o *O) Where{4}(decider func(int, {1}) bool) *O {
 
 	var selected []{1}
 
@@ -177,11 +177,11 @@ func TestEach{4}(t *testing.T) {
 
 }
 
-func TestSelect{4}(t *testing.T) {
+func TestWhere{4}(t *testing.T) {
 
 	o := New([]{1}{ {1}({2}), {1}({2}), {1}({2}), {1}({2}), {1}({2}), {1}({2}) })
 
-	selected := o.Select{4}(func(i int, val {1}) bool {
+	selected := o.Where{4}(func(i int, val {1}) bool {
 		return i%2==0
 	}).Must{4}Slice()
 

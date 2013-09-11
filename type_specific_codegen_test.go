@@ -59,11 +59,11 @@ func TestEachInter(t *testing.T) {
 
 }
 
-func TestSelectInter(t *testing.T) {
+func TestWhereInter(t *testing.T) {
 
 	o := New([]interface{}{interface{}("something"), interface{}("something"), interface{}("something"), interface{}("something"), interface{}("something"), interface{}("something")})
 
-	selected := o.SelectInter(func(i int, val interface{}) bool {
+	selected := o.WhereInter(func(i int, val interface{}) bool {
 		return i%2 == 0
 	}).MustInterSlice()
 
@@ -151,11 +151,11 @@ func TestEachBool(t *testing.T) {
 
 }
 
-func TestSelectBool(t *testing.T) {
+func TestWhereBool(t *testing.T) {
 
 	o := New([]bool{bool(true), bool(true), bool(true), bool(true), bool(true), bool(true)})
 
-	selected := o.SelectBool(func(i int, val bool) bool {
+	selected := o.WhereBool(func(i int, val bool) bool {
 		return i%2 == 0
 	}).MustBoolSlice()
 
@@ -243,11 +243,11 @@ func TestEachStr(t *testing.T) {
 
 }
 
-func TestSelectStr(t *testing.T) {
+func TestWhereStr(t *testing.T) {
 
 	o := New([]string{string("hello"), string("hello"), string("hello"), string("hello"), string("hello"), string("hello")})
 
-	selected := o.SelectStr(func(i int, val string) bool {
+	selected := o.WhereStr(func(i int, val string) bool {
 		return i%2 == 0
 	}).MustStrSlice()
 
@@ -335,11 +335,11 @@ func TestEachInt(t *testing.T) {
 
 }
 
-func TestSelectInt(t *testing.T) {
+func TestWhereInt(t *testing.T) {
 
 	o := New([]int{int(1), int(1), int(1), int(1), int(1), int(1)})
 
-	selected := o.SelectInt(func(i int, val int) bool {
+	selected := o.WhereInt(func(i int, val int) bool {
 		return i%2 == 0
 	}).MustIntSlice()
 
@@ -427,11 +427,11 @@ func TestEachInt8(t *testing.T) {
 
 }
 
-func TestSelectInt8(t *testing.T) {
+func TestWhereInt8(t *testing.T) {
 
 	o := New([]int8{int8(1), int8(1), int8(1), int8(1), int8(1), int8(1)})
 
-	selected := o.SelectInt8(func(i int, val int8) bool {
+	selected := o.WhereInt8(func(i int, val int8) bool {
 		return i%2 == 0
 	}).MustInt8Slice()
 
@@ -519,11 +519,11 @@ func TestEachInt16(t *testing.T) {
 
 }
 
-func TestSelectInt16(t *testing.T) {
+func TestWhereInt16(t *testing.T) {
 
 	o := New([]int16{int16(1), int16(1), int16(1), int16(1), int16(1), int16(1)})
 
-	selected := o.SelectInt16(func(i int, val int16) bool {
+	selected := o.WhereInt16(func(i int, val int16) bool {
 		return i%2 == 0
 	}).MustInt16Slice()
 
@@ -611,11 +611,11 @@ func TestEachInt32(t *testing.T) {
 
 }
 
-func TestSelectInt32(t *testing.T) {
+func TestWhereInt32(t *testing.T) {
 
 	o := New([]int32{int32(1), int32(1), int32(1), int32(1), int32(1), int32(1)})
 
-	selected := o.SelectInt32(func(i int, val int32) bool {
+	selected := o.WhereInt32(func(i int, val int32) bool {
 		return i%2 == 0
 	}).MustInt32Slice()
 
@@ -703,11 +703,11 @@ func TestEachInt64(t *testing.T) {
 
 }
 
-func TestSelectInt64(t *testing.T) {
+func TestWhereInt64(t *testing.T) {
 
 	o := New([]int64{int64(1), int64(1), int64(1), int64(1), int64(1), int64(1)})
 
-	selected := o.SelectInt64(func(i int, val int64) bool {
+	selected := o.WhereInt64(func(i int, val int64) bool {
 		return i%2 == 0
 	}).MustInt64Slice()
 
@@ -795,11 +795,11 @@ func TestEachUint(t *testing.T) {
 
 }
 
-func TestSelectUint(t *testing.T) {
+func TestWhereUint(t *testing.T) {
 
 	o := New([]uint{uint(1), uint(1), uint(1), uint(1), uint(1), uint(1)})
 
-	selected := o.SelectUint(func(i int, val uint) bool {
+	selected := o.WhereUint(func(i int, val uint) bool {
 		return i%2 == 0
 	}).MustUintSlice()
 
@@ -887,11 +887,11 @@ func TestEachUint8(t *testing.T) {
 
 }
 
-func TestSelectUint8(t *testing.T) {
+func TestWhereUint8(t *testing.T) {
 
 	o := New([]uint8{uint8(1), uint8(1), uint8(1), uint8(1), uint8(1), uint8(1)})
 
-	selected := o.SelectUint8(func(i int, val uint8) bool {
+	selected := o.WhereUint8(func(i int, val uint8) bool {
 		return i%2 == 0
 	}).MustUint8Slice()
 
@@ -979,11 +979,11 @@ func TestEachUint16(t *testing.T) {
 
 }
 
-func TestSelectUint16(t *testing.T) {
+func TestWhereUint16(t *testing.T) {
 
 	o := New([]uint16{uint16(1), uint16(1), uint16(1), uint16(1), uint16(1), uint16(1)})
 
-	selected := o.SelectUint16(func(i int, val uint16) bool {
+	selected := o.WhereUint16(func(i int, val uint16) bool {
 		return i%2 == 0
 	}).MustUint16Slice()
 
@@ -1071,11 +1071,11 @@ func TestEachUint32(t *testing.T) {
 
 }
 
-func TestSelectUint32(t *testing.T) {
+func TestWhereUint32(t *testing.T) {
 
 	o := New([]uint32{uint32(1), uint32(1), uint32(1), uint32(1), uint32(1), uint32(1)})
 
-	selected := o.SelectUint32(func(i int, val uint32) bool {
+	selected := o.WhereUint32(func(i int, val uint32) bool {
 		return i%2 == 0
 	}).MustUint32Slice()
 
@@ -1163,11 +1163,11 @@ func TestEachUint64(t *testing.T) {
 
 }
 
-func TestSelectUint64(t *testing.T) {
+func TestWhereUint64(t *testing.T) {
 
 	o := New([]uint64{uint64(1), uint64(1), uint64(1), uint64(1), uint64(1), uint64(1)})
 
-	selected := o.SelectUint64(func(i int, val uint64) bool {
+	selected := o.WhereUint64(func(i int, val uint64) bool {
 		return i%2 == 0
 	}).MustUint64Slice()
 
@@ -1255,11 +1255,11 @@ func TestEachUintptr(t *testing.T) {
 
 }
 
-func TestSelectUintptr(t *testing.T) {
+func TestWhereUintptr(t *testing.T) {
 
 	o := New([]uintptr{uintptr(1), uintptr(1), uintptr(1), uintptr(1), uintptr(1), uintptr(1)})
 
-	selected := o.SelectUintptr(func(i int, val uintptr) bool {
+	selected := o.WhereUintptr(func(i int, val uintptr) bool {
 		return i%2 == 0
 	}).MustUintptrSlice()
 
@@ -1347,11 +1347,11 @@ func TestEachFloat32(t *testing.T) {
 
 }
 
-func TestSelectFloat32(t *testing.T) {
+func TestWhereFloat32(t *testing.T) {
 
 	o := New([]float32{float32(1), float32(1), float32(1), float32(1), float32(1), float32(1)})
 
-	selected := o.SelectFloat32(func(i int, val float32) bool {
+	selected := o.WhereFloat32(func(i int, val float32) bool {
 		return i%2 == 0
 	}).MustFloat32Slice()
 
@@ -1439,11 +1439,11 @@ func TestEachFloat64(t *testing.T) {
 
 }
 
-func TestSelectFloat64(t *testing.T) {
+func TestWhereFloat64(t *testing.T) {
 
 	o := New([]float64{float64(1), float64(1), float64(1), float64(1), float64(1), float64(1)})
 
-	selected := o.SelectFloat64(func(i int, val float64) bool {
+	selected := o.WhereFloat64(func(i int, val float64) bool {
 		return i%2 == 0
 	}).MustFloat64Slice()
 
@@ -1531,11 +1531,11 @@ func TestEachComplex64(t *testing.T) {
 
 }
 
-func TestSelectComplex64(t *testing.T) {
+func TestWhereComplex64(t *testing.T) {
 
 	o := New([]complex64{complex64(1), complex64(1), complex64(1), complex64(1), complex64(1), complex64(1)})
 
-	selected := o.SelectComplex64(func(i int, val complex64) bool {
+	selected := o.WhereComplex64(func(i int, val complex64) bool {
 		return i%2 == 0
 	}).MustComplex64Slice()
 
@@ -1623,11 +1623,11 @@ func TestEachComplex128(t *testing.T) {
 
 }
 
-func TestSelectComplex128(t *testing.T) {
+func TestWhereComplex128(t *testing.T) {
 
 	o := New([]complex128{complex128(1), complex128(1), complex128(1), complex128(1), complex128(1), complex128(1)})
 
-	selected := o.SelectComplex128(func(i int, val complex128) bool {
+	selected := o.WhereComplex128(func(i int, val complex128) bool {
 		return i%2 == 0
 	}).MustComplex128Slice()
 

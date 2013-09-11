@@ -47,6 +47,11 @@ func (o *O) MustInterSlice() []interface{} {
 	return o.obj.([]interface{})
 }
 
+// IsInter gets whether the object contained is a interface{} or not.
+func (o *O) IsInter() bool {
+	return o.IsKind(reflect.Interface)
+}
+
 // IsInterSlice gets whether the object contained is a []interface{} or not.
 func (o *O) IsInterSlice() bool {
 	if !o.IsSlice() {
@@ -73,10 +78,10 @@ func (o *O) EachInter(callback func(int, interface{}) bool) *O {
 
 }
 
-// SelectInter uses the specified decider function to select items
+// WhereInter uses the specified decider function to select items
 // from the []interface{}.  The object contained in the result will contain
 // only the selected items.
-func (o *O) SelectInter(decider func(int, interface{}) bool) *O {
+func (o *O) WhereInter(decider func(int, interface{}) bool) *O {
 
 	var selected []interface{}
 
@@ -184,10 +189,10 @@ func (o *O) EachBool(callback func(int, bool) bool) *O {
 
 }
 
-// SelectBool uses the specified decider function to select items
+// WhereBool uses the specified decider function to select items
 // from the []bool.  The object contained in the result will contain
 // only the selected items.
-func (o *O) SelectBool(decider func(int, bool) bool) *O {
+func (o *O) WhereBool(decider func(int, bool) bool) *O {
 
 	var selected []bool
 
@@ -295,10 +300,10 @@ func (o *O) EachStr(callback func(int, string) bool) *O {
 
 }
 
-// SelectStr uses the specified decider function to select items
+// WhereStr uses the specified decider function to select items
 // from the []string.  The object contained in the result will contain
 // only the selected items.
-func (o *O) SelectStr(decider func(int, string) bool) *O {
+func (o *O) WhereStr(decider func(int, string) bool) *O {
 
 	var selected []string
 
@@ -406,10 +411,10 @@ func (o *O) EachInt(callback func(int, int) bool) *O {
 
 }
 
-// SelectInt uses the specified decider function to select items
+// WhereInt uses the specified decider function to select items
 // from the []int.  The object contained in the result will contain
 // only the selected items.
-func (o *O) SelectInt(decider func(int, int) bool) *O {
+func (o *O) WhereInt(decider func(int, int) bool) *O {
 
 	var selected []int
 
@@ -517,10 +522,10 @@ func (o *O) EachInt8(callback func(int, int8) bool) *O {
 
 }
 
-// SelectInt8 uses the specified decider function to select items
+// WhereInt8 uses the specified decider function to select items
 // from the []int8.  The object contained in the result will contain
 // only the selected items.
-func (o *O) SelectInt8(decider func(int, int8) bool) *O {
+func (o *O) WhereInt8(decider func(int, int8) bool) *O {
 
 	var selected []int8
 
@@ -628,10 +633,10 @@ func (o *O) EachInt16(callback func(int, int16) bool) *O {
 
 }
 
-// SelectInt16 uses the specified decider function to select items
+// WhereInt16 uses the specified decider function to select items
 // from the []int16.  The object contained in the result will contain
 // only the selected items.
-func (o *O) SelectInt16(decider func(int, int16) bool) *O {
+func (o *O) WhereInt16(decider func(int, int16) bool) *O {
 
 	var selected []int16
 
@@ -739,10 +744,10 @@ func (o *O) EachInt32(callback func(int, int32) bool) *O {
 
 }
 
-// SelectInt32 uses the specified decider function to select items
+// WhereInt32 uses the specified decider function to select items
 // from the []int32.  The object contained in the result will contain
 // only the selected items.
-func (o *O) SelectInt32(decider func(int, int32) bool) *O {
+func (o *O) WhereInt32(decider func(int, int32) bool) *O {
 
 	var selected []int32
 
@@ -850,10 +855,10 @@ func (o *O) EachInt64(callback func(int, int64) bool) *O {
 
 }
 
-// SelectInt64 uses the specified decider function to select items
+// WhereInt64 uses the specified decider function to select items
 // from the []int64.  The object contained in the result will contain
 // only the selected items.
-func (o *O) SelectInt64(decider func(int, int64) bool) *O {
+func (o *O) WhereInt64(decider func(int, int64) bool) *O {
 
 	var selected []int64
 
@@ -961,10 +966,10 @@ func (o *O) EachUint(callback func(int, uint) bool) *O {
 
 }
 
-// SelectUint uses the specified decider function to select items
+// WhereUint uses the specified decider function to select items
 // from the []uint.  The object contained in the result will contain
 // only the selected items.
-func (o *O) SelectUint(decider func(int, uint) bool) *O {
+func (o *O) WhereUint(decider func(int, uint) bool) *O {
 
 	var selected []uint
 
@@ -1072,10 +1077,10 @@ func (o *O) EachUint8(callback func(int, uint8) bool) *O {
 
 }
 
-// SelectUint8 uses the specified decider function to select items
+// WhereUint8 uses the specified decider function to select items
 // from the []uint8.  The object contained in the result will contain
 // only the selected items.
-func (o *O) SelectUint8(decider func(int, uint8) bool) *O {
+func (o *O) WhereUint8(decider func(int, uint8) bool) *O {
 
 	var selected []uint8
 
@@ -1183,10 +1188,10 @@ func (o *O) EachUint16(callback func(int, uint16) bool) *O {
 
 }
 
-// SelectUint16 uses the specified decider function to select items
+// WhereUint16 uses the specified decider function to select items
 // from the []uint16.  The object contained in the result will contain
 // only the selected items.
-func (o *O) SelectUint16(decider func(int, uint16) bool) *O {
+func (o *O) WhereUint16(decider func(int, uint16) bool) *O {
 
 	var selected []uint16
 
@@ -1294,10 +1299,10 @@ func (o *O) EachUint32(callback func(int, uint32) bool) *O {
 
 }
 
-// SelectUint32 uses the specified decider function to select items
+// WhereUint32 uses the specified decider function to select items
 // from the []uint32.  The object contained in the result will contain
 // only the selected items.
-func (o *O) SelectUint32(decider func(int, uint32) bool) *O {
+func (o *O) WhereUint32(decider func(int, uint32) bool) *O {
 
 	var selected []uint32
 
@@ -1405,10 +1410,10 @@ func (o *O) EachUint64(callback func(int, uint64) bool) *O {
 
 }
 
-// SelectUint64 uses the specified decider function to select items
+// WhereUint64 uses the specified decider function to select items
 // from the []uint64.  The object contained in the result will contain
 // only the selected items.
-func (o *O) SelectUint64(decider func(int, uint64) bool) *O {
+func (o *O) WhereUint64(decider func(int, uint64) bool) *O {
 
 	var selected []uint64
 
@@ -1516,10 +1521,10 @@ func (o *O) EachUintptr(callback func(int, uintptr) bool) *O {
 
 }
 
-// SelectUintptr uses the specified decider function to select items
+// WhereUintptr uses the specified decider function to select items
 // from the []uintptr.  The object contained in the result will contain
 // only the selected items.
-func (o *O) SelectUintptr(decider func(int, uintptr) bool) *O {
+func (o *O) WhereUintptr(decider func(int, uintptr) bool) *O {
 
 	var selected []uintptr
 
@@ -1627,10 +1632,10 @@ func (o *O) EachFloat32(callback func(int, float32) bool) *O {
 
 }
 
-// SelectFloat32 uses the specified decider function to select items
+// WhereFloat32 uses the specified decider function to select items
 // from the []float32.  The object contained in the result will contain
 // only the selected items.
-func (o *O) SelectFloat32(decider func(int, float32) bool) *O {
+func (o *O) WhereFloat32(decider func(int, float32) bool) *O {
 
 	var selected []float32
 
@@ -1738,10 +1743,10 @@ func (o *O) EachFloat64(callback func(int, float64) bool) *O {
 
 }
 
-// SelectFloat64 uses the specified decider function to select items
+// WhereFloat64 uses the specified decider function to select items
 // from the []float64.  The object contained in the result will contain
 // only the selected items.
-func (o *O) SelectFloat64(decider func(int, float64) bool) *O {
+func (o *O) WhereFloat64(decider func(int, float64) bool) *O {
 
 	var selected []float64
 
@@ -1849,10 +1854,10 @@ func (o *O) EachComplex64(callback func(int, complex64) bool) *O {
 
 }
 
-// SelectComplex64 uses the specified decider function to select items
+// WhereComplex64 uses the specified decider function to select items
 // from the []complex64.  The object contained in the result will contain
 // only the selected items.
-func (o *O) SelectComplex64(decider func(int, complex64) bool) *O {
+func (o *O) WhereComplex64(decider func(int, complex64) bool) *O {
 
 	var selected []complex64
 
@@ -1960,10 +1965,10 @@ func (o *O) EachComplex128(callback func(int, complex128) bool) *O {
 
 }
 
-// SelectComplex128 uses the specified decider function to select items
+// WhereComplex128 uses the specified decider function to select items
 // from the []complex128.  The object contained in the result will contain
 // only the selected items.
-func (o *O) SelectComplex128(decider func(int, complex128) bool) *O {
+func (o *O) WhereComplex128(decider func(int, complex128) bool) *O {
 
 	var selected []complex128
 
