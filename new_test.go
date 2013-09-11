@@ -45,3 +45,31 @@ func TestFromJSONWithError(t *testing.T) {
 	assert.Nil(t, o)
 
 }
+
+func TestFromBase64String(t *testing.T) {
+
+	base64String := "eyJuYW1lIjoiTWF0In0="
+
+	o, err := FromBase64(base64String)
+
+	if assert.NoError(t, err) {
+		assert.Equal(t, o.Get("name").Str(), "Mat")
+	}
+
+	assert.Equal(t, MustFromBase64(base64String).Get("name").Str(), "Mat")
+
+}
+
+func TestFromBase64StringWithError(t *testing.T) {
+
+	base64String := "eyJuYW1lIjoiTWFasd0In0="
+
+	_, err := FromBase64(base64String)
+
+	assert.Error(t, err)
+
+	assert.Panics(t, func() {
+		MustFromBase64(base64String)
+	})
+
+}
