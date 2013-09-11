@@ -21,3 +21,9 @@ func TestString(t *testing.T) {
 	assert.Equal(t, objxStringPrefix+"hello objx"+objxStringSuffix, o.String())
 
 }
+
+func TestStr(t *testing.T) {
+
+	//m := map[string]interface{}{"name": "Mat"}
+
+}
