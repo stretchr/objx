@@ -15,14 +15,14 @@ func TestNew(t *testing.T) {
 
 }
 
-func TestMustJsonWithError(t *testing.T) {
+func TestMustFromJSONWithError(t *testing.T) {
 
 	_, err := FromJSON(`"name":"Mat"}`)
 	assert.Error(t, err)
 
 }
 
-func TestJson(t *testing.T) {
+func TestFromJSON(t *testing.T) {
 
 	o := MustFromJSON(`{"name":"Mat"}`)
 
@@ -34,7 +34,7 @@ func TestJson(t *testing.T) {
 
 }
 
-func TestJsonWithError(t *testing.T) {
+func TestFromJSONWithError(t *testing.T) {
 
 	var o *O
 
