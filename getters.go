@@ -36,10 +36,17 @@ func (o *O) Get(selector interface{}) *O {
 
 			if len(arrayMatches) > 0 {
 				// An array notation has been detected.
+
+				// Get the key into the map
 				mName := arrayMatches[1]
 
-				// Ignore the error here since the regex would only match on 0-9
-				index, _ := strconv.Atoi(arrayMatches[2])
+				// Get the index into the array at the key
+				index, err := strconv.Atoi(arrayMatches[2])
+				if err != nil {
+					// This should never happen. If it does, something has gone
+					// seriously wrong. Panic.
+					panic("objx: GEt - array index is not an integer. This should never happen.")
+				}
 
 				if m, ok := current.(map[string]interface{}); ok {
 					if a, ok := m[mName].([]interface{}); ok {
@@ -70,7 +77,8 @@ func (o *O) Get(selector interface{}) *O {
 }
 
 // uint64FromInterface converts an interface object to the largest
-// representation of an unsigned integer
+// representation of an unsigned integer using a type switch and
+// assertions
 func uint64FromInterface(selector interface{}) uint64 {
 	var value uint64
 	switch selector.(type) {
