@@ -3,7 +3,7 @@
 	--------------------------------------------------
 */
 
-// {4} gets the value as a {1}, returns the optinoalDefault
+// {4} gets the value as a {1}, returns the optionalDefault
 // value or a system default object if the value is the wrong type.
 func (o *O) {4}(optionalDefault ...{1}) {1} {
 	if s, ok := o.obj.({1}); ok {
@@ -22,7 +22,7 @@ func (o *O) Must{4}() {1} {
 	return o.obj.({1})
 }
 
-// {4}Slice gets the value as a []{1}, returns the optinoalDefault
+// {4}Slice gets the value as a []{1}, returns the optionalDefault
 // value or nil if the value is not a []{1}.
 func (o *O) {4}Slice(optionalDefault ...[]{1}) []{1} {
 	if s, ok := o.obj.([]{1}); ok {

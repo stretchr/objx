@@ -5,11 +5,63 @@ import (
 )
 
 /*
+	Inter (interface{} and []interface{})
+	--------------------------------------------------
+*/
+
+// Inter gets the value as a interface{}, returns the optionalDefault
+// value or a system default object if the value is the wrong type.
+func (o *O) Inter(optionalDefault ...interface{}) interface{} {
+	if s, ok := o.obj.(interface{}); ok {
+		return s
+	}
+	if len(optionalDefault) == 1 {
+		return optionalDefault[0]
+	}
+	return nil
+}
+
+// MustInter gets the value as a interface{}.
+//
+// Panics if the object is not a interface{}.
+func (o *O) MustInter() interface{} {
+	return o.obj.(interface{})
+}
+
+// InterSlice gets the value as a []interface{}, returns the optionalDefault
+// value or nil if the value is not a []interface{}.
+func (o *O) InterSlice(optionalDefault ...[]interface{}) []interface{} {
+	if s, ok := o.obj.([]interface{}); ok {
+		return s
+	}
+	if len(optionalDefault) == 1 {
+		return optionalDefault[0]
+	}
+	return nil
+}
+
+// MustInterSlice gets the value as a []interface{}.
+//
+// Panics if the object is not a []interface{}.
+func (o *O) MustInterSlice() []interface{} {
+	return o.obj.([]interface{})
+}
+
+// IsInterSlice gets whether the object contained is a []interface{} or not.
+func (o *O) IsInterSlice() bool {
+	if !o.IsSlice() {
+		return false
+	}
+	_, ok := o.obj.([]interface{})
+	return ok
+}
+
+/*
 	Bool (bool and []bool)
 	--------------------------------------------------
 */
 
-// Bool gets the value as a bool, returns the optinoalDefault
+// Bool gets the value as a bool, returns the optionalDefault
 // value or a system default object if the value is the wrong type.
 func (o *O) Bool(optionalDefault ...bool) bool {
 	if s, ok := o.obj.(bool); ok {
@@ -28,7 +80,7 @@ func (o *O) MustBool() bool {
 	return o.obj.(bool)
 }
 
-// BoolSlice gets the value as a []bool, returns the optinoalDefault
+// BoolSlice gets the value as a []bool, returns the optionalDefault
 // value or nil if the value is not a []bool.
 func (o *O) BoolSlice(optionalDefault ...[]bool) []bool {
 	if s, ok := o.obj.([]bool); ok {
@@ -66,7 +118,7 @@ func (o *O) IsBoolSlice() bool {
 	--------------------------------------------------
 */
 
-// Str gets the value as a string, returns the optinoalDefault
+// Str gets the value as a string, returns the optionalDefault
 // value or a system default object if the value is the wrong type.
 func (o *O) Str(optionalDefault ...string) string {
 	if s, ok := o.obj.(string); ok {
@@ -85,7 +137,7 @@ func (o *O) MustStr() string {
 	return o.obj.(string)
 }
 
-// StrSlice gets the value as a []string, returns the optinoalDefault
+// StrSlice gets the value as a []string, returns the optionalDefault
 // value or nil if the value is not a []string.
 func (o *O) StrSlice(optionalDefault ...[]string) []string {
 	if s, ok := o.obj.([]string); ok {
@@ -123,7 +175,7 @@ func (o *O) IsStrSlice() bool {
 	--------------------------------------------------
 */
 
-// Int gets the value as a int, returns the optinoalDefault
+// Int gets the value as a int, returns the optionalDefault
 // value or a system default object if the value is the wrong type.
 func (o *O) Int(optionalDefault ...int) int {
 	if s, ok := o.obj.(int); ok {
@@ -142,7 +194,7 @@ func (o *O) MustInt() int {
 	return o.obj.(int)
 }
 
-// IntSlice gets the value as a []int, returns the optinoalDefault
+// IntSlice gets the value as a []int, returns the optionalDefault
 // value or nil if the value is not a []int.
 func (o *O) IntSlice(optionalDefault ...[]int) []int {
 	if s, ok := o.obj.([]int); ok {
@@ -180,7 +232,7 @@ func (o *O) IsIntSlice() bool {
 	--------------------------------------------------
 */
 
-// Int8 gets the value as a int8, returns the optinoalDefault
+// Int8 gets the value as a int8, returns the optionalDefault
 // value or a system default object if the value is the wrong type.
 func (o *O) Int8(optionalDefault ...int8) int8 {
 	if s, ok := o.obj.(int8); ok {
@@ -199,7 +251,7 @@ func (o *O) MustInt8() int8 {
 	return o.obj.(int8)
 }
 
-// Int8Slice gets the value as a []int8, returns the optinoalDefault
+// Int8Slice gets the value as a []int8, returns the optionalDefault
 // value or nil if the value is not a []int8.
 func (o *O) Int8Slice(optionalDefault ...[]int8) []int8 {
 	if s, ok := o.obj.([]int8); ok {
@@ -237,7 +289,7 @@ func (o *O) IsInt8Slice() bool {
 	--------------------------------------------------
 */
 
-// Int16 gets the value as a int16, returns the optinoalDefault
+// Int16 gets the value as a int16, returns the optionalDefault
 // value or a system default object if the value is the wrong type.
 func (o *O) Int16(optionalDefault ...int16) int16 {
 	if s, ok := o.obj.(int16); ok {
@@ -256,7 +308,7 @@ func (o *O) MustInt16() int16 {
 	return o.obj.(int16)
 }
 
-// Int16Slice gets the value as a []int16, returns the optinoalDefault
+// Int16Slice gets the value as a []int16, returns the optionalDefault
 // value or nil if the value is not a []int16.
 func (o *O) Int16Slice(optionalDefault ...[]int16) []int16 {
 	if s, ok := o.obj.([]int16); ok {
@@ -294,7 +346,7 @@ func (o *O) IsInt16Slice() bool {
 	--------------------------------------------------
 */
 
-// Int32 gets the value as a int32, returns the optinoalDefault
+// Int32 gets the value as a int32, returns the optionalDefault
 // value or a system default object if the value is the wrong type.
 func (o *O) Int32(optionalDefault ...int32) int32 {
 	if s, ok := o.obj.(int32); ok {
@@ -313,7 +365,7 @@ func (o *O) MustInt32() int32 {
 	return o.obj.(int32)
 }
 
-// Int32Slice gets the value as a []int32, returns the optinoalDefault
+// Int32Slice gets the value as a []int32, returns the optionalDefault
 // value or nil if the value is not a []int32.
 func (o *O) Int32Slice(optionalDefault ...[]int32) []int32 {
 	if s, ok := o.obj.([]int32); ok {
@@ -351,7 +403,7 @@ func (o *O) IsInt32Slice() bool {
 	--------------------------------------------------
 */
 
-// Int64 gets the value as a int64, returns the optinoalDefault
+// Int64 gets the value as a int64, returns the optionalDefault
 // value or a system default object if the value is the wrong type.
 func (o *O) Int64(optionalDefault ...int64) int64 {
 	if s, ok := o.obj.(int64); ok {
@@ -370,7 +422,7 @@ func (o *O) MustInt64() int64 {
 	return o.obj.(int64)
 }
 
-// Int64Slice gets the value as a []int64, returns the optinoalDefault
+// Int64Slice gets the value as a []int64, returns the optionalDefault
 // value or nil if the value is not a []int64.
 func (o *O) Int64Slice(optionalDefault ...[]int64) []int64 {
 	if s, ok := o.obj.([]int64); ok {
@@ -408,7 +460,7 @@ func (o *O) IsInt64Slice() bool {
 	--------------------------------------------------
 */
 
-// Uint gets the value as a uint, returns the optinoalDefault
+// Uint gets the value as a uint, returns the optionalDefault
 // value or a system default object if the value is the wrong type.
 func (o *O) Uint(optionalDefault ...uint) uint {
 	if s, ok := o.obj.(uint); ok {
@@ -427,7 +479,7 @@ func (o *O) MustUint() uint {
 	return o.obj.(uint)
 }
 
-// UintSlice gets the value as a []uint, returns the optinoalDefault
+// UintSlice gets the value as a []uint, returns the optionalDefault
 // value or nil if the value is not a []uint.
 func (o *O) UintSlice(optionalDefault ...[]uint) []uint {
 	if s, ok := o.obj.([]uint); ok {
@@ -465,7 +517,7 @@ func (o *O) IsUintSlice() bool {
 	--------------------------------------------------
 */
 
-// Uint8 gets the value as a uint8, returns the optinoalDefault
+// Uint8 gets the value as a uint8, returns the optionalDefault
 // value or a system default object if the value is the wrong type.
 func (o *O) Uint8(optionalDefault ...uint8) uint8 {
 	if s, ok := o.obj.(uint8); ok {
@@ -484,7 +536,7 @@ func (o *O) MustUint8() uint8 {
 	return o.obj.(uint8)
 }
 
-// Uint8Slice gets the value as a []uint8, returns the optinoalDefault
+// Uint8Slice gets the value as a []uint8, returns the optionalDefault
 // value or nil if the value is not a []uint8.
 func (o *O) Uint8Slice(optionalDefault ...[]uint8) []uint8 {
 	if s, ok := o.obj.([]uint8); ok {
@@ -522,7 +574,7 @@ func (o *O) IsUint8Slice() bool {
 	--------------------------------------------------
 */
 
-// Uint16 gets the value as a uint16, returns the optinoalDefault
+// Uint16 gets the value as a uint16, returns the optionalDefault
 // value or a system default object if the value is the wrong type.
 func (o *O) Uint16(optionalDefault ...uint16) uint16 {
 	if s, ok := o.obj.(uint16); ok {
@@ -541,7 +593,7 @@ func (o *O) MustUint16() uint16 {
 	return o.obj.(uint16)
 }
 
-// Uint16Slice gets the value as a []uint16, returns the optinoalDefault
+// Uint16Slice gets the value as a []uint16, returns the optionalDefault
 // value or nil if the value is not a []uint16.
 func (o *O) Uint16Slice(optionalDefault ...[]uint16) []uint16 {
 	if s, ok := o.obj.([]uint16); ok {
@@ -579,7 +631,7 @@ func (o *O) IsUint16Slice() bool {
 	--------------------------------------------------
 */
 
-// Uint32 gets the value as a uint32, returns the optinoalDefault
+// Uint32 gets the value as a uint32, returns the optionalDefault
 // value or a system default object if the value is the wrong type.
 func (o *O) Uint32(optionalDefault ...uint32) uint32 {
 	if s, ok := o.obj.(uint32); ok {
@@ -598,7 +650,7 @@ func (o *O) MustUint32() uint32 {
 	return o.obj.(uint32)
 }
 
-// Uint32Slice gets the value as a []uint32, returns the optinoalDefault
+// Uint32Slice gets the value as a []uint32, returns the optionalDefault
 // value or nil if the value is not a []uint32.
 func (o *O) Uint32Slice(optionalDefault ...[]uint32) []uint32 {
 	if s, ok := o.obj.([]uint32); ok {
@@ -636,7 +688,7 @@ func (o *O) IsUint32Slice() bool {
 	--------------------------------------------------
 */
 
-// Uint64 gets the value as a uint64, returns the optinoalDefault
+// Uint64 gets the value as a uint64, returns the optionalDefault
 // value or a system default object if the value is the wrong type.
 func (o *O) Uint64(optionalDefault ...uint64) uint64 {
 	if s, ok := o.obj.(uint64); ok {
@@ -655,7 +707,7 @@ func (o *O) MustUint64() uint64 {
 	return o.obj.(uint64)
 }
 
-// Uint64Slice gets the value as a []uint64, returns the optinoalDefault
+// Uint64Slice gets the value as a []uint64, returns the optionalDefault
 // value or nil if the value is not a []uint64.
 func (o *O) Uint64Slice(optionalDefault ...[]uint64) []uint64 {
 	if s, ok := o.obj.([]uint64); ok {
@@ -693,7 +745,7 @@ func (o *O) IsUint64Slice() bool {
 	--------------------------------------------------
 */
 
-// Uintptr gets the value as a uintptr, returns the optinoalDefault
+// Uintptr gets the value as a uintptr, returns the optionalDefault
 // value or a system default object if the value is the wrong type.
 func (o *O) Uintptr(optionalDefault ...uintptr) uintptr {
 	if s, ok := o.obj.(uintptr); ok {
@@ -712,7 +764,7 @@ func (o *O) MustUintptr() uintptr {
 	return o.obj.(uintptr)
 }
 
-// UintptrSlice gets the value as a []uintptr, returns the optinoalDefault
+// UintptrSlice gets the value as a []uintptr, returns the optionalDefault
 // value or nil if the value is not a []uintptr.
 func (o *O) UintptrSlice(optionalDefault ...[]uintptr) []uintptr {
 	if s, ok := o.obj.([]uintptr); ok {
@@ -750,7 +802,7 @@ func (o *O) IsUintptrSlice() bool {
 	--------------------------------------------------
 */
 
-// Float32 gets the value as a float32, returns the optinoalDefault
+// Float32 gets the value as a float32, returns the optionalDefault
 // value or a system default object if the value is the wrong type.
 func (o *O) Float32(optionalDefault ...float32) float32 {
 	if s, ok := o.obj.(float32); ok {
@@ -769,7 +821,7 @@ func (o *O) MustFloat32() float32 {
 	return o.obj.(float32)
 }
 
-// Float32Slice gets the value as a []float32, returns the optinoalDefault
+// Float32Slice gets the value as a []float32, returns the optionalDefault
 // value or nil if the value is not a []float32.
 func (o *O) Float32Slice(optionalDefault ...[]float32) []float32 {
 	if s, ok := o.obj.([]float32); ok {
@@ -807,7 +859,7 @@ func (o *O) IsFloat32Slice() bool {
 	--------------------------------------------------
 */
 
-// Float64 gets the value as a float64, returns the optinoalDefault
+// Float64 gets the value as a float64, returns the optionalDefault
 // value or a system default object if the value is the wrong type.
 func (o *O) Float64(optionalDefault ...float64) float64 {
 	if s, ok := o.obj.(float64); ok {
@@ -826,7 +878,7 @@ func (o *O) MustFloat64() float64 {
 	return o.obj.(float64)
 }
 
-// Float64Slice gets the value as a []float64, returns the optinoalDefault
+// Float64Slice gets the value as a []float64, returns the optionalDefault
 // value or nil if the value is not a []float64.
 func (o *O) Float64Slice(optionalDefault ...[]float64) []float64 {
 	if s, ok := o.obj.([]float64); ok {
@@ -864,7 +916,7 @@ func (o *O) IsFloat64Slice() bool {
 	--------------------------------------------------
 */
 
-// Complex64 gets the value as a complex64, returns the optinoalDefault
+// Complex64 gets the value as a complex64, returns the optionalDefault
 // value or a system default object if the value is the wrong type.
 func (o *O) Complex64(optionalDefault ...complex64) complex64 {
 	if s, ok := o.obj.(complex64); ok {
@@ -883,7 +935,7 @@ func (o *O) MustComplex64() complex64 {
 	return o.obj.(complex64)
 }
 
-// Complex64Slice gets the value as a []complex64, returns the optinoalDefault
+// Complex64Slice gets the value as a []complex64, returns the optionalDefault
 // value or nil if the value is not a []complex64.
 func (o *O) Complex64Slice(optionalDefault ...[]complex64) []complex64 {
 	if s, ok := o.obj.([]complex64); ok {
@@ -921,7 +973,7 @@ func (o *O) IsComplex64Slice() bool {
 	--------------------------------------------------
 */
 
-// Complex128 gets the value as a complex128, returns the optinoalDefault
+// Complex128 gets the value as a complex128, returns the optionalDefault
 // value or a system default object if the value is the wrong type.
 func (o *O) Complex128(optionalDefault ...complex128) complex128 {
 	if s, ok := o.obj.(complex128); ok {
@@ -940,7 +992,7 @@ func (o *O) MustComplex128() complex128 {
 	return o.obj.(complex128)
 }
 
-// Complex128Slice gets the value as a []complex128, returns the optinoalDefault
+// Complex128Slice gets the value as a []complex128, returns the optionalDefault
 // value or nil if the value is not a []complex128.
 func (o *O) Complex128Slice(optionalDefault ...[]complex128) []complex128 {
 	if s, ok := o.obj.([]complex128); ok {

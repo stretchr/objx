@@ -5,6 +5,34 @@ import (
 	"testing"
 )
 
+func TestInter(t *testing.T) {
+
+	m := map[string]interface{}{"value": interface{}("something"), "nothing": nil}
+	assert.Equal(t, interface{}("something"), New(m).Get("value").Inter())
+	assert.Equal(t, interface{}("something"), New(m).Get("value").MustInter())
+	assert.Equal(t, interface{}(nil), New(m).Get("nothing").Inter())
+	assert.Equal(t, interface{}("something"), New(m).Get("nothing").Inter("something"))
+
+	assert.Panics(t, func() {
+		New(m).Get("age").MustInter()
+	})
+
+}
+
+func TestInterSlice(t *testing.T) {
+
+	m := map[string]interface{}{"value": []interface{}{interface{}("something")}, "nothing": nil}
+	assert.Equal(t, interface{}("something"), New(m).Get("value").InterSlice()[0])
+	assert.Equal(t, interface{}("something"), New(m).Get("value").MustInterSlice()[0])
+	assert.Equal(t, []interface{}(nil), New(m).Get("nothing").InterSlice())
+	assert.Equal(t, interface{}("something"), New(m).Get("nothing").InterSlice([]interface{}{interface{}("something")})[0])
+
+	assert.Panics(t, func() {
+		New(m).Get("nothing").MustInterSlice()
+	})
+
+}
+
 func TestBool(t *testing.T) {
 
 	m := map[string]interface{}{"value": bool(true), "nothing": nil}

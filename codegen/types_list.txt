@@ -1,3 +1,4 @@
+Interface,interface{},"something",nil,Inter
 Bool,bool,true,false,Bool
 String,string,"hello","",Str
 Int,int,1,0,Int
