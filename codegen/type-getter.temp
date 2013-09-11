@@ -1,0 +1,35 @@
+// {0} gets the value as a {1}, returns the optinoalDefault
+// value or a system default object if the value is the wrong type.
+func (o *O) {0}(optionalDefault ...{1}) {1} {
+	if s, ok := o.obj.({1}); ok {
+		return s
+	}
+	if len(optionalDefault) == 1 {
+		return optionalDefault[0]
+	}
+	return {2}
+}
+
+// {0} gets the value as a {1}.
+//
+// Panics if the object is not a {1}.
+func (o *O) Must{0}() {1} {
+	return o.obj.({1})
+}
+
+
+
+// TEST:
+
+func Test{0}(t *testing.T) {
+
+	m := map[string]interface{}{"value": {1}{ 1 }, "nothing": nil}
+	assert.Equal(t, {1}(1), New(m).Get("value").{0}())
+	assert.Equal(t, {1}(0), New(m).Get("nothing").{0}())
+	assert.Equal(t, {1}(123), New(m).Get("nothing").{0}(123))
+
+	assert.Panics(t, func() {
+		New(m).Get("age").Must{0}()
+	})
+
+}
