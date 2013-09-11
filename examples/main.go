@@ -13,7 +13,7 @@ func main() {
 
 	fmt.Println()
 
-	o := objx.MustJson(`{"name":"Mat"}`)
+	o := objx.MustFromJSON(`{"name":"Mat"}`)
 
 	p("o: %s", o)
 	p("")
@@ -33,7 +33,7 @@ func main() {
 	o.Set("age", 29)
 	p("")
 	p("  o: %s", o)
-	p(`  o.Get("name").IsString() = %v`, o.Get("name").IsString())
+	p(`  o.Get("name").IsString() = %v`, o.Get("name").IsStr())
 	p(`  o.Get("name").IsInt() = %v`, o.Get("name").IsInt())
 
 	fmt.Println()
