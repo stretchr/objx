@@ -56,6 +56,25 @@ func (o *O) IsInterSlice() bool {
 	return ok
 }
 
+// EachInter calls the specified callback for each object
+// in the []interface{}.
+//
+// Panics if the object is the wrong type.
+func (o *O) EachInter(callback func(int, interface{}) bool) *O {
+
+	list := o.MustInterSlice()
+
+	for index, val := range list {
+		carryon := callback(index, val)
+		if carryon == false {
+			break
+		}
+	}
+
+	return o
+
+}
+
 /*
 	Bool (bool and []bool)
 	--------------------------------------------------
@@ -111,6 +130,25 @@ func (o *O) IsBoolSlice() bool {
 	}
 	_, ok := o.obj.([]bool)
 	return ok
+}
+
+// EachBool calls the specified callback for each object
+// in the []bool.
+//
+// Panics if the object is the wrong type.
+func (o *O) EachBool(callback func(int, bool) bool) *O {
+
+	list := o.MustBoolSlice()
+
+	for index, val := range list {
+		carryon := callback(index, val)
+		if carryon == false {
+			break
+		}
+	}
+
+	return o
+
 }
 
 /*
@@ -170,6 +208,25 @@ func (o *O) IsStrSlice() bool {
 	return ok
 }
 
+// EachStr calls the specified callback for each object
+// in the []string.
+//
+// Panics if the object is the wrong type.
+func (o *O) EachStr(callback func(int, string) bool) *O {
+
+	list := o.MustStrSlice()
+
+	for index, val := range list {
+		carryon := callback(index, val)
+		if carryon == false {
+			break
+		}
+	}
+
+	return o
+
+}
+
 /*
 	Int (int and []int)
 	--------------------------------------------------
@@ -225,6 +282,25 @@ func (o *O) IsIntSlice() bool {
 	}
 	_, ok := o.obj.([]int)
 	return ok
+}
+
+// EachInt calls the specified callback for each object
+// in the []int.
+//
+// Panics if the object is the wrong type.
+func (o *O) EachInt(callback func(int, int) bool) *O {
+
+	list := o.MustIntSlice()
+
+	for index, val := range list {
+		carryon := callback(index, val)
+		if carryon == false {
+			break
+		}
+	}
+
+	return o
+
 }
 
 /*
@@ -284,6 +360,25 @@ func (o *O) IsInt8Slice() bool {
 	return ok
 }
 
+// EachInt8 calls the specified callback for each object
+// in the []int8.
+//
+// Panics if the object is the wrong type.
+func (o *O) EachInt8(callback func(int, int8) bool) *O {
+
+	list := o.MustInt8Slice()
+
+	for index, val := range list {
+		carryon := callback(index, val)
+		if carryon == false {
+			break
+		}
+	}
+
+	return o
+
+}
+
 /*
 	Int16 (int16 and []int16)
 	--------------------------------------------------
@@ -339,6 +434,25 @@ func (o *O) IsInt16Slice() bool {
 	}
 	_, ok := o.obj.([]int16)
 	return ok
+}
+
+// EachInt16 calls the specified callback for each object
+// in the []int16.
+//
+// Panics if the object is the wrong type.
+func (o *O) EachInt16(callback func(int, int16) bool) *O {
+
+	list := o.MustInt16Slice()
+
+	for index, val := range list {
+		carryon := callback(index, val)
+		if carryon == false {
+			break
+		}
+	}
+
+	return o
+
 }
 
 /*
@@ -398,6 +512,25 @@ func (o *O) IsInt32Slice() bool {
 	return ok
 }
 
+// EachInt32 calls the specified callback for each object
+// in the []int32.
+//
+// Panics if the object is the wrong type.
+func (o *O) EachInt32(callback func(int, int32) bool) *O {
+
+	list := o.MustInt32Slice()
+
+	for index, val := range list {
+		carryon := callback(index, val)
+		if carryon == false {
+			break
+		}
+	}
+
+	return o
+
+}
+
 /*
 	Int64 (int64 and []int64)
 	--------------------------------------------------
@@ -453,6 +586,25 @@ func (o *O) IsInt64Slice() bool {
 	}
 	_, ok := o.obj.([]int64)
 	return ok
+}
+
+// EachInt64 calls the specified callback for each object
+// in the []int64.
+//
+// Panics if the object is the wrong type.
+func (o *O) EachInt64(callback func(int, int64) bool) *O {
+
+	list := o.MustInt64Slice()
+
+	for index, val := range list {
+		carryon := callback(index, val)
+		if carryon == false {
+			break
+		}
+	}
+
+	return o
+
 }
 
 /*
@@ -512,6 +664,25 @@ func (o *O) IsUintSlice() bool {
 	return ok
 }
 
+// EachUint calls the specified callback for each object
+// in the []uint.
+//
+// Panics if the object is the wrong type.
+func (o *O) EachUint(callback func(int, uint) bool) *O {
+
+	list := o.MustUintSlice()
+
+	for index, val := range list {
+		carryon := callback(index, val)
+		if carryon == false {
+			break
+		}
+	}
+
+	return o
+
+}
+
 /*
 	Uint8 (uint8 and []uint8)
 	--------------------------------------------------
@@ -567,6 +738,25 @@ func (o *O) IsUint8Slice() bool {
 	}
 	_, ok := o.obj.([]uint8)
 	return ok
+}
+
+// EachUint8 calls the specified callback for each object
+// in the []uint8.
+//
+// Panics if the object is the wrong type.
+func (o *O) EachUint8(callback func(int, uint8) bool) *O {
+
+	list := o.MustUint8Slice()
+
+	for index, val := range list {
+		carryon := callback(index, val)
+		if carryon == false {
+			break
+		}
+	}
+
+	return o
+
 }
 
 /*
@@ -626,6 +816,25 @@ func (o *O) IsUint16Slice() bool {
 	return ok
 }
 
+// EachUint16 calls the specified callback for each object
+// in the []uint16.
+//
+// Panics if the object is the wrong type.
+func (o *O) EachUint16(callback func(int, uint16) bool) *O {
+
+	list := o.MustUint16Slice()
+
+	for index, val := range list {
+		carryon := callback(index, val)
+		if carryon == false {
+			break
+		}
+	}
+
+	return o
+
+}
+
 /*
 	Uint32 (uint32 and []uint32)
 	--------------------------------------------------
@@ -681,6 +890,25 @@ func (o *O) IsUint32Slice() bool {
 	}
 	_, ok := o.obj.([]uint32)
 	return ok
+}
+
+// EachUint32 calls the specified callback for each object
+// in the []uint32.
+//
+// Panics if the object is the wrong type.
+func (o *O) EachUint32(callback func(int, uint32) bool) *O {
+
+	list := o.MustUint32Slice()
+
+	for index, val := range list {
+		carryon := callback(index, val)
+		if carryon == false {
+			break
+		}
+	}
+
+	return o
+
 }
 
 /*
@@ -740,6 +968,25 @@ func (o *O) IsUint64Slice() bool {
 	return ok
 }
 
+// EachUint64 calls the specified callback for each object
+// in the []uint64.
+//
+// Panics if the object is the wrong type.
+func (o *O) EachUint64(callback func(int, uint64) bool) *O {
+
+	list := o.MustUint64Slice()
+
+	for index, val := range list {
+		carryon := callback(index, val)
+		if carryon == false {
+			break
+		}
+	}
+
+	return o
+
+}
+
 /*
 	Uintptr (uintptr and []uintptr)
 	--------------------------------------------------
@@ -795,6 +1042,25 @@ func (o *O) IsUintptrSlice() bool {
 	}
 	_, ok := o.obj.([]uintptr)
 	return ok
+}
+
+// EachUintptr calls the specified callback for each object
+// in the []uintptr.
+//
+// Panics if the object is the wrong type.
+func (o *O) EachUintptr(callback func(int, uintptr) bool) *O {
+
+	list := o.MustUintptrSlice()
+
+	for index, val := range list {
+		carryon := callback(index, val)
+		if carryon == false {
+			break
+		}
+	}
+
+	return o
+
 }
 
 /*
@@ -854,6 +1120,25 @@ func (o *O) IsFloat32Slice() bool {
 	return ok
 }
 
+// EachFloat32 calls the specified callback for each object
+// in the []float32.
+//
+// Panics if the object is the wrong type.
+func (o *O) EachFloat32(callback func(int, float32) bool) *O {
+
+	list := o.MustFloat32Slice()
+
+	for index, val := range list {
+		carryon := callback(index, val)
+		if carryon == false {
+			break
+		}
+	}
+
+	return o
+
+}
+
 /*
 	Float64 (float64 and []float64)
 	--------------------------------------------------
@@ -909,6 +1194,25 @@ func (o *O) IsFloat64Slice() bool {
 	}
 	_, ok := o.obj.([]float64)
 	return ok
+}
+
+// EachFloat64 calls the specified callback for each object
+// in the []float64.
+//
+// Panics if the object is the wrong type.
+func (o *O) EachFloat64(callback func(int, float64) bool) *O {
+
+	list := o.MustFloat64Slice()
+
+	for index, val := range list {
+		carryon := callback(index, val)
+		if carryon == false {
+			break
+		}
+	}
+
+	return o
+
 }
 
 /*
@@ -968,6 +1272,25 @@ func (o *O) IsComplex64Slice() bool {
 	return ok
 }
 
+// EachComplex64 calls the specified callback for each object
+// in the []complex64.
+//
+// Panics if the object is the wrong type.
+func (o *O) EachComplex64(callback func(int, complex64) bool) *O {
+
+	list := o.MustComplex64Slice()
+
+	for index, val := range list {
+		carryon := callback(index, val)
+		if carryon == false {
+			break
+		}
+	}
+
+	return o
+
+}
+
 /*
 	Complex128 (complex128 and []complex128)
 	--------------------------------------------------
@@ -1023,4 +1346,23 @@ func (o *O) IsComplex128Slice() bool {
 	}
 	_, ok := o.obj.([]complex128)
 	return ok
+}
+
+// EachComplex128 calls the specified callback for each object
+// in the []complex128.
+//
+// Panics if the object is the wrong type.
+func (o *O) EachComplex128(callback func(int, complex128) bool) *O {
+
+	list := o.MustComplex128Slice()
+
+	for index, val := range list {
+		carryon := callback(index, val)
+		if carryon == false {
+			break
+		}
+	}
+
+	return o
+
 }

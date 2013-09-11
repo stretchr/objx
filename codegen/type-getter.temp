@@ -55,6 +55,24 @@ func (o *O) Is{4}Slice() bool {
 	return ok
 }
 
+// Each{4} calls the specified callback for each object
+// in the []{1}.
+//
+// Panics if the object is the wrong type.
+func (o *O) Each{4}(callback func(int, {1}) bool) *O {
+
+	list := o.Must{4}Slice()
+
+	for index, val := range list {
+		carryon := callback(index, val)
+		if carryon == false {
+			break
+		}
+	}
+
+	return o
+
+}
 
 // TESTS:
 
@@ -95,5 +113,31 @@ func TestIs{4}(t *testing.T) {
 
 	o = New([]{1}{ {1}({2}) })
 	assert.True(t, o.Is{4}Slice())
+
+}
+
+func TestEach{4}(t *testing.T) {
+
+	o := New([]{1}{ {1}({2}), {1}({2}), {1}({2}), {1}({2}), {1}({2}) })
+	count := 0
+	collectedVals := make([]{1}, 0)
+	assert.Equal(t, o, o.Each{4}(func(i int, val {1}) bool {
+
+		count++
+		collectedVals = append(collectedVals, val)
+
+		// abort early
+		if i == 2 {
+			return false
+		}
+
+		return true
+
+	}))
+
+	assert.Equal(t, count, 3)
+	assert.Equal(t, collectedVals[0], o.Must{4}Slice()[0])
+	assert.Equal(t, collectedVals[1], o.Must{4}Slice()[1])
+	assert.Equal(t, collectedVals[2], o.Must{4}Slice()[2])
 
 }

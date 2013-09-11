@@ -33,6 +33,32 @@ func TestInterSlice(t *testing.T) {
 
 }
 
+func TestEachInter(t *testing.T) {
+
+	o := New([]interface{}{interface{}("something"), interface{}("something"), interface{}("something"), interface{}("something"), interface{}("something")})
+	count := 0
+	collectedVals := make([]interface{}, 0)
+	assert.Equal(t, o, o.EachInter(func(i int, val interface{}) bool {
+
+		count++
+		collectedVals = append(collectedVals, val)
+
+		// abort early
+		if i == 2 {
+			return false
+		}
+
+		return true
+
+	}))
+
+	assert.Equal(t, count, 3)
+	assert.Equal(t, collectedVals[0], o.MustInterSlice()[0])
+	assert.Equal(t, collectedVals[1], o.MustInterSlice()[1])
+	assert.Equal(t, collectedVals[2], o.MustInterSlice()[2])
+
+}
+
 func TestBool(t *testing.T) {
 
 	m := map[string]interface{}{"value": bool(true), "nothing": nil}
@@ -70,6 +96,32 @@ func TestIsBool(t *testing.T) {
 
 	o = New([]bool{bool(true)})
 	assert.True(t, o.IsBoolSlice())
+
+}
+
+func TestEachBool(t *testing.T) {
+
+	o := New([]bool{bool(true), bool(true), bool(true), bool(true), bool(true)})
+	count := 0
+	collectedVals := make([]bool, 0)
+	assert.Equal(t, o, o.EachBool(func(i int, val bool) bool {
+
+		count++
+		collectedVals = append(collectedVals, val)
+
+		// abort early
+		if i == 2 {
+			return false
+		}
+
+		return true
+
+	}))
+
+	assert.Equal(t, count, 3)
+	assert.Equal(t, collectedVals[0], o.MustBoolSlice()[0])
+	assert.Equal(t, collectedVals[1], o.MustBoolSlice()[1])
+	assert.Equal(t, collectedVals[2], o.MustBoolSlice()[2])
 
 }
 
@@ -113,6 +165,32 @@ func TestIsStr(t *testing.T) {
 
 }
 
+func TestEachStr(t *testing.T) {
+
+	o := New([]string{string("hello"), string("hello"), string("hello"), string("hello"), string("hello")})
+	count := 0
+	collectedVals := make([]string, 0)
+	assert.Equal(t, o, o.EachStr(func(i int, val string) bool {
+
+		count++
+		collectedVals = append(collectedVals, val)
+
+		// abort early
+		if i == 2 {
+			return false
+		}
+
+		return true
+
+	}))
+
+	assert.Equal(t, count, 3)
+	assert.Equal(t, collectedVals[0], o.MustStrSlice()[0])
+	assert.Equal(t, collectedVals[1], o.MustStrSlice()[1])
+	assert.Equal(t, collectedVals[2], o.MustStrSlice()[2])
+
+}
+
 func TestInt(t *testing.T) {
 
 	m := map[string]interface{}{"value": int(1), "nothing": nil}
@@ -150,6 +228,32 @@ func TestIsInt(t *testing.T) {
 
 	o = New([]int{int(1)})
 	assert.True(t, o.IsIntSlice())
+
+}
+
+func TestEachInt(t *testing.T) {
+
+	o := New([]int{int(1), int(1), int(1), int(1), int(1)})
+	count := 0
+	collectedVals := make([]int, 0)
+	assert.Equal(t, o, o.EachInt(func(i int, val int) bool {
+
+		count++
+		collectedVals = append(collectedVals, val)
+
+		// abort early
+		if i == 2 {
+			return false
+		}
+
+		return true
+
+	}))
+
+	assert.Equal(t, count, 3)
+	assert.Equal(t, collectedVals[0], o.MustIntSlice()[0])
+	assert.Equal(t, collectedVals[1], o.MustIntSlice()[1])
+	assert.Equal(t, collectedVals[2], o.MustIntSlice()[2])
 
 }
 
@@ -193,6 +297,32 @@ func TestIsInt8(t *testing.T) {
 
 }
 
+func TestEachInt8(t *testing.T) {
+
+	o := New([]int8{int8(1), int8(1), int8(1), int8(1), int8(1)})
+	count := 0
+	collectedVals := make([]int8, 0)
+	assert.Equal(t, o, o.EachInt8(func(i int, val int8) bool {
+
+		count++
+		collectedVals = append(collectedVals, val)
+
+		// abort early
+		if i == 2 {
+			return false
+		}
+
+		return true
+
+	}))
+
+	assert.Equal(t, count, 3)
+	assert.Equal(t, collectedVals[0], o.MustInt8Slice()[0])
+	assert.Equal(t, collectedVals[1], o.MustInt8Slice()[1])
+	assert.Equal(t, collectedVals[2], o.MustInt8Slice()[2])
+
+}
+
 func TestInt16(t *testing.T) {
 
 	m := map[string]interface{}{"value": int16(1), "nothing": nil}
@@ -230,6 +360,32 @@ func TestIsInt16(t *testing.T) {
 
 	o = New([]int16{int16(1)})
 	assert.True(t, o.IsInt16Slice())
+
+}
+
+func TestEachInt16(t *testing.T) {
+
+	o := New([]int16{int16(1), int16(1), int16(1), int16(1), int16(1)})
+	count := 0
+	collectedVals := make([]int16, 0)
+	assert.Equal(t, o, o.EachInt16(func(i int, val int16) bool {
+
+		count++
+		collectedVals = append(collectedVals, val)
+
+		// abort early
+		if i == 2 {
+			return false
+		}
+
+		return true
+
+	}))
+
+	assert.Equal(t, count, 3)
+	assert.Equal(t, collectedVals[0], o.MustInt16Slice()[0])
+	assert.Equal(t, collectedVals[1], o.MustInt16Slice()[1])
+	assert.Equal(t, collectedVals[2], o.MustInt16Slice()[2])
 
 }
 
@@ -273,6 +429,32 @@ func TestIsInt32(t *testing.T) {
 
 }
 
+func TestEachInt32(t *testing.T) {
+
+	o := New([]int32{int32(1), int32(1), int32(1), int32(1), int32(1)})
+	count := 0
+	collectedVals := make([]int32, 0)
+	assert.Equal(t, o, o.EachInt32(func(i int, val int32) bool {
+
+		count++
+		collectedVals = append(collectedVals, val)
+
+		// abort early
+		if i == 2 {
+			return false
+		}
+
+		return true
+
+	}))
+
+	assert.Equal(t, count, 3)
+	assert.Equal(t, collectedVals[0], o.MustInt32Slice()[0])
+	assert.Equal(t, collectedVals[1], o.MustInt32Slice()[1])
+	assert.Equal(t, collectedVals[2], o.MustInt32Slice()[2])
+
+}
+
 func TestInt64(t *testing.T) {
 
 	m := map[string]interface{}{"value": int64(1), "nothing": nil}
@@ -310,6 +492,32 @@ func TestIsInt64(t *testing.T) {
 
 	o = New([]int64{int64(1)})
 	assert.True(t, o.IsInt64Slice())
+
+}
+
+func TestEachInt64(t *testing.T) {
+
+	o := New([]int64{int64(1), int64(1), int64(1), int64(1), int64(1)})
+	count := 0
+	collectedVals := make([]int64, 0)
+	assert.Equal(t, o, o.EachInt64(func(i int, val int64) bool {
+
+		count++
+		collectedVals = append(collectedVals, val)
+
+		// abort early
+		if i == 2 {
+			return false
+		}
+
+		return true
+
+	}))
+
+	assert.Equal(t, count, 3)
+	assert.Equal(t, collectedVals[0], o.MustInt64Slice()[0])
+	assert.Equal(t, collectedVals[1], o.MustInt64Slice()[1])
+	assert.Equal(t, collectedVals[2], o.MustInt64Slice()[2])
 
 }
 
@@ -353,6 +561,32 @@ func TestIsUint(t *testing.T) {
 
 }
 
+func TestEachUint(t *testing.T) {
+
+	o := New([]uint{uint(1), uint(1), uint(1), uint(1), uint(1)})
+	count := 0
+	collectedVals := make([]uint, 0)
+	assert.Equal(t, o, o.EachUint(func(i int, val uint) bool {
+
+		count++
+		collectedVals = append(collectedVals, val)
+
+		// abort early
+		if i == 2 {
+			return false
+		}
+
+		return true
+
+	}))
+
+	assert.Equal(t, count, 3)
+	assert.Equal(t, collectedVals[0], o.MustUintSlice()[0])
+	assert.Equal(t, collectedVals[1], o.MustUintSlice()[1])
+	assert.Equal(t, collectedVals[2], o.MustUintSlice()[2])
+
+}
+
 func TestUint8(t *testing.T) {
 
 	m := map[string]interface{}{"value": uint8(1), "nothing": nil}
@@ -390,6 +624,32 @@ func TestIsUint8(t *testing.T) {
 
 	o = New([]uint8{uint8(1)})
 	assert.True(t, o.IsUint8Slice())
+
+}
+
+func TestEachUint8(t *testing.T) {
+
+	o := New([]uint8{uint8(1), uint8(1), uint8(1), uint8(1), uint8(1)})
+	count := 0
+	collectedVals := make([]uint8, 0)
+	assert.Equal(t, o, o.EachUint8(func(i int, val uint8) bool {
+
+		count++
+		collectedVals = append(collectedVals, val)
+
+		// abort early
+		if i == 2 {
+			return false
+		}
+
+		return true
+
+	}))
+
+	assert.Equal(t, count, 3)
+	assert.Equal(t, collectedVals[0], o.MustUint8Slice()[0])
+	assert.Equal(t, collectedVals[1], o.MustUint8Slice()[1])
+	assert.Equal(t, collectedVals[2], o.MustUint8Slice()[2])
 
 }
 
@@ -433,6 +693,32 @@ func TestIsUint16(t *testing.T) {
 
 }
 
+func TestEachUint16(t *testing.T) {
+
+	o := New([]uint16{uint16(1), uint16(1), uint16(1), uint16(1), uint16(1)})
+	count := 0
+	collectedVals := make([]uint16, 0)
+	assert.Equal(t, o, o.EachUint16(func(i int, val uint16) bool {
+
+		count++
+		collectedVals = append(collectedVals, val)
+
+		// abort early
+		if i == 2 {
+			return false
+		}
+
+		return true
+
+	}))
+
+	assert.Equal(t, count, 3)
+	assert.Equal(t, collectedVals[0], o.MustUint16Slice()[0])
+	assert.Equal(t, collectedVals[1], o.MustUint16Slice()[1])
+	assert.Equal(t, collectedVals[2], o.MustUint16Slice()[2])
+
+}
+
 func TestUint32(t *testing.T) {
 
 	m := map[string]interface{}{"value": uint32(1), "nothing": nil}
@@ -470,6 +756,32 @@ func TestIsUint32(t *testing.T) {
 
 	o = New([]uint32{uint32(1)})
 	assert.True(t, o.IsUint32Slice())
+
+}
+
+func TestEachUint32(t *testing.T) {
+
+	o := New([]uint32{uint32(1), uint32(1), uint32(1), uint32(1), uint32(1)})
+	count := 0
+	collectedVals := make([]uint32, 0)
+	assert.Equal(t, o, o.EachUint32(func(i int, val uint32) bool {
+
+		count++
+		collectedVals = append(collectedVals, val)
+
+		// abort early
+		if i == 2 {
+			return false
+		}
+
+		return true
+
+	}))
+
+	assert.Equal(t, count, 3)
+	assert.Equal(t, collectedVals[0], o.MustUint32Slice()[0])
+	assert.Equal(t, collectedVals[1], o.MustUint32Slice()[1])
+	assert.Equal(t, collectedVals[2], o.MustUint32Slice()[2])
 
 }
 
@@ -513,6 +825,32 @@ func TestIsUint64(t *testing.T) {
 
 }
 
+func TestEachUint64(t *testing.T) {
+
+	o := New([]uint64{uint64(1), uint64(1), uint64(1), uint64(1), uint64(1)})
+	count := 0
+	collectedVals := make([]uint64, 0)
+	assert.Equal(t, o, o.EachUint64(func(i int, val uint64) bool {
+
+		count++
+		collectedVals = append(collectedVals, val)
+
+		// abort early
+		if i == 2 {
+			return false
+		}
+
+		return true
+
+	}))
+
+	assert.Equal(t, count, 3)
+	assert.Equal(t, collectedVals[0], o.MustUint64Slice()[0])
+	assert.Equal(t, collectedVals[1], o.MustUint64Slice()[1])
+	assert.Equal(t, collectedVals[2], o.MustUint64Slice()[2])
+
+}
+
 func TestUintptr(t *testing.T) {
 
 	m := map[string]interface{}{"value": uintptr(1), "nothing": nil}
@@ -550,6 +888,32 @@ func TestIsUintptr(t *testing.T) {
 
 	o = New([]uintptr{uintptr(1)})
 	assert.True(t, o.IsUintptrSlice())
+
+}
+
+func TestEachUintptr(t *testing.T) {
+
+	o := New([]uintptr{uintptr(1), uintptr(1), uintptr(1), uintptr(1), uintptr(1)})
+	count := 0
+	collectedVals := make([]uintptr, 0)
+	assert.Equal(t, o, o.EachUintptr(func(i int, val uintptr) bool {
+
+		count++
+		collectedVals = append(collectedVals, val)
+
+		// abort early
+		if i == 2 {
+			return false
+		}
+
+		return true
+
+	}))
+
+	assert.Equal(t, count, 3)
+	assert.Equal(t, collectedVals[0], o.MustUintptrSlice()[0])
+	assert.Equal(t, collectedVals[1], o.MustUintptrSlice()[1])
+	assert.Equal(t, collectedVals[2], o.MustUintptrSlice()[2])
 
 }
 
@@ -593,6 +957,32 @@ func TestIsFloat32(t *testing.T) {
 
 }
 
+func TestEachFloat32(t *testing.T) {
+
+	o := New([]float32{float32(1), float32(1), float32(1), float32(1), float32(1)})
+	count := 0
+	collectedVals := make([]float32, 0)
+	assert.Equal(t, o, o.EachFloat32(func(i int, val float32) bool {
+
+		count++
+		collectedVals = append(collectedVals, val)
+
+		// abort early
+		if i == 2 {
+			return false
+		}
+
+		return true
+
+	}))
+
+	assert.Equal(t, count, 3)
+	assert.Equal(t, collectedVals[0], o.MustFloat32Slice()[0])
+	assert.Equal(t, collectedVals[1], o.MustFloat32Slice()[1])
+	assert.Equal(t, collectedVals[2], o.MustFloat32Slice()[2])
+
+}
+
 func TestFloat64(t *testing.T) {
 
 	m := map[string]interface{}{"value": float64(1), "nothing": nil}
@@ -630,6 +1020,32 @@ func TestIsFloat64(t *testing.T) {
 
 	o = New([]float64{float64(1)})
 	assert.True(t, o.IsFloat64Slice())
+
+}
+
+func TestEachFloat64(t *testing.T) {
+
+	o := New([]float64{float64(1), float64(1), float64(1), float64(1), float64(1)})
+	count := 0
+	collectedVals := make([]float64, 0)
+	assert.Equal(t, o, o.EachFloat64(func(i int, val float64) bool {
+
+		count++
+		collectedVals = append(collectedVals, val)
+
+		// abort early
+		if i == 2 {
+			return false
+		}
+
+		return true
+
+	}))
+
+	assert.Equal(t, count, 3)
+	assert.Equal(t, collectedVals[0], o.MustFloat64Slice()[0])
+	assert.Equal(t, collectedVals[1], o.MustFloat64Slice()[1])
+	assert.Equal(t, collectedVals[2], o.MustFloat64Slice()[2])
 
 }
 
@@ -673,6 +1089,32 @@ func TestIsComplex64(t *testing.T) {
 
 }
 
+func TestEachComplex64(t *testing.T) {
+
+	o := New([]complex64{complex64(1), complex64(1), complex64(1), complex64(1), complex64(1)})
+	count := 0
+	collectedVals := make([]complex64, 0)
+	assert.Equal(t, o, o.EachComplex64(func(i int, val complex64) bool {
+
+		count++
+		collectedVals = append(collectedVals, val)
+
+		// abort early
+		if i == 2 {
+			return false
+		}
+
+		return true
+
+	}))
+
+	assert.Equal(t, count, 3)
+	assert.Equal(t, collectedVals[0], o.MustComplex64Slice()[0])
+	assert.Equal(t, collectedVals[1], o.MustComplex64Slice()[1])
+	assert.Equal(t, collectedVals[2], o.MustComplex64Slice()[2])
+
+}
+
 func TestComplex128(t *testing.T) {
 
 	m := map[string]interface{}{"value": complex128(1), "nothing": nil}
@@ -710,5 +1152,31 @@ func TestIsComplex128(t *testing.T) {
 
 	o = New([]complex128{complex128(1)})
 	assert.True(t, o.IsComplex128Slice())
+
+}
+
+func TestEachComplex128(t *testing.T) {
+
+	o := New([]complex128{complex128(1), complex128(1), complex128(1), complex128(1), complex128(1)})
+	count := 0
+	collectedVals := make([]complex128, 0)
+	assert.Equal(t, o, o.EachComplex128(func(i int, val complex128) bool {
+
+		count++
+		collectedVals = append(collectedVals, val)
+
+		// abort early
+		if i == 2 {
+			return false
+		}
+
+		return true
+
+	}))
+
+	assert.Equal(t, count, 3)
+	assert.Equal(t, collectedVals[0], o.MustComplex128Slice()[0])
+	assert.Equal(t, collectedVals[1], o.MustComplex128Slice()[1])
+	assert.Equal(t, collectedVals[2], o.MustComplex128Slice()[2])
 
 }
