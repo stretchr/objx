@@ -12,7 +12,7 @@
 //       "tags": ["musician","coder","singer"],
 //       "deep": {
 //	       "nested": {
-//	         item: "easy"
+//	         "item": "easy"
 //         }
 //       }
 //     }`)
