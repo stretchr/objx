@@ -6,6 +6,12 @@ import (
 	"strings"
 )
 
+// Obj gets the underlying object contained within this
+// O.
+func (o *O) Obj() interface{} {
+	return o.obj
+}
+
 // arrayAccesRegexString is the regex used to extract the array number
 // from the access path
 const arrayAccesRegexString = `^(.+)\[([0-9]+)\]$`
@@ -22,7 +28,7 @@ func (o *O) Get(selector interface{}) *O {
 		selStr := selector.(string)
 		segs := strings.Split(selStr, ".")
 
-		current := o.Obj
+		current := o.Obj()
 
 		for _, field := range segs {
 
@@ -53,7 +59,7 @@ func (o *O) Get(selector interface{}) *O {
 	case int, int8, int16, int32, int64, uint, uint8, uint16, uint32, uint64:
 
 		selInt := uint64FromInterface(selector)
-		if a, ok := o.Obj.([]interface{}); ok {
+		if a, ok := o.Obj().([]interface{}); ok {
 			return New(a[selInt])
 		}
 

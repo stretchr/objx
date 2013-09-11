@@ -6,9 +6,17 @@ import (
 )
 
 var getFixtures = []struct {
-	name   string
-	data   string
-	get    interface{}
+	// name is the name of the fixture (used for reporting
+	// failures)
+	name string
+	// data is the JSON data to be worked on
+	data string
+	// set provides a map of arguments that are
+	// passed to the Set method before the get test is performed.
+	set map[string]interface{}
+	// get is the argument(s) to pass to Get
+	get interface{}
+	// output is the expected output
 	output interface{}
 }{
 	// get
@@ -71,14 +79,33 @@ var getFixtures = []struct {
 		get:    1,
 		output: "two",
 	},
+	// Setting inside map
+	{
+		name:   "Set inside map",
+		data:   `{"address": {"city": "Boulder"}}`,
+		set:    map[string]interface{}{"address.city": "Denver"},
+		get:    "address.city",
+		output: "Denver",
+	},
 }
 
-func TestGetFixtures(t *testing.T) {
+func TestFixtures(t *testing.T) {
 
-	for index, fixture := range getFixtures {
+	for _, fixture := range getFixtures {
+
 		o := MustJson(fixture.data)
+
+		// do we need to do a set?
+		if fixture.set != nil {
+			for k, v := range fixture.set {
+				o.Set(k, v)
+			}
+		}
+
 		newO := o.Get(fixture.get)
-		assert.Equal(t, fixture.output, newO.Obj, "Get fixture %d (%s) failed: %v", index+1, fixture.name, fixture)
+
+		assert.Equal(t, fixture.output, newO.Obj(), "Get fixture \"%s\" failed: %v", fixture.name, fixture)
+
 	}
 
 }
