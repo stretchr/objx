@@ -16,7 +16,7 @@ func (o *O) Obj() interface{} {
 }
 
 func (o *O) Get(selector interface{}) *O {
-	return o.access(selector, nil)
+	return o.access(selector, nil, false)
 }
 
 // String gets a string representation of the object

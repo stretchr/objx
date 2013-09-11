@@ -17,9 +17,7 @@ var arrayAccesRegex = regexp.MustCompile(arrayAccesRegexString)
 // following actions:
 // 1. if value is nil, retrieve the object at selector
 // 2. if value is not nil, set the selector to value
-func (o *O) access(selector interface{}, value interface{}) *O {
-
-	isSet := value != nil
+func (o *O) access(selector interface{}, value interface{}, isSet bool) *O {
 
 	switch selector.(type) {
 	case string: // "address.postcode.inner"
@@ -49,7 +47,7 @@ func (o *O) access(selector interface{}, value interface{}) *O {
 				}
 
 				if m, ok := current.(map[string]interface{}); ok {
-					arrayObj := o.arrayAccess(m[mName], uint64(index), value)
+					arrayObj := o.arrayAccess(m[mName], uint64(index), value, isSet)
 					if segLen-1 == index && isSet {
 						return arrayObj
 					} else {
@@ -73,7 +71,7 @@ func (o *O) access(selector interface{}, value interface{}) *O {
 
 	case int, int8, int16, int32, int64, uint, uint8, uint16, uint32, uint64:
 		selInt := uint64FromInterface(selector)
-		return o.arrayAccess(o.obj, selInt, value)
+		return o.arrayAccess(o.obj, selInt, value, isSet)
 
 	}
 
@@ -81,9 +79,7 @@ func (o *O) access(selector interface{}, value interface{}) *O {
 
 }
 
-func (o *O) arrayAccess(object interface{}, index uint64, value interface{}) *O {
-
-	isSet := value != nil
+func (o *O) arrayAccess(object interface{}, index uint64, value interface{}, isSet bool) *O {
 
 	switch object.(type) {
 	case []bool:
