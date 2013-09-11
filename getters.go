@@ -15,6 +15,8 @@ func (o *O) Obj() interface{} {
 	return o.obj
 }
 
+// Get gets the value using the specified selector and
+// returns it inside a new O object.
 func (o *O) Get(selector interface{}) *O {
 	return o.access(selector, nil, false)
 }
