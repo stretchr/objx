@@ -98,10 +98,10 @@ func (o *O) WhereInter(decider func(int, interface{}) bool) *O {
 
 // GroupInter uses the specified grouper function to group the items
 // keyed by the return of the grouper.  The object contained in the
-// result will contain a map[interface{}][]interface{}.
-func (o *O) GroupInter(grouper func(int, interface{}) interface{}) *O {
+// result will contain a map[string][]interface{}.
+func (o *O) GroupInter(grouper func(int, interface{}) string) *O {
 
-	groups := make(map[interface{}][]interface{})
+	groups := make(map[string][]interface{})
 
 	for index, val := range o.MustInterSlice() {
 		group := grouper(index, val)
@@ -209,10 +209,10 @@ func (o *O) WhereBool(decider func(int, bool) bool) *O {
 
 // GroupBool uses the specified grouper function to group the items
 // keyed by the return of the grouper.  The object contained in the
-// result will contain a map[interface{}][]bool.
-func (o *O) GroupBool(grouper func(int, bool) interface{}) *O {
+// result will contain a map[string][]bool.
+func (o *O) GroupBool(grouper func(int, bool) string) *O {
 
-	groups := make(map[interface{}][]bool)
+	groups := make(map[string][]bool)
 
 	for index, val := range o.MustBoolSlice() {
 		group := grouper(index, val)
@@ -320,10 +320,10 @@ func (o *O) WhereStr(decider func(int, string) bool) *O {
 
 // GroupStr uses the specified grouper function to group the items
 // keyed by the return of the grouper.  The object contained in the
-// result will contain a map[interface{}][]string.
-func (o *O) GroupStr(grouper func(int, string) interface{}) *O {
+// result will contain a map[string][]string.
+func (o *O) GroupStr(grouper func(int, string) string) *O {
 
-	groups := make(map[interface{}][]string)
+	groups := make(map[string][]string)
 
 	for index, val := range o.MustStrSlice() {
 		group := grouper(index, val)
@@ -431,10 +431,10 @@ func (o *O) WhereInt(decider func(int, int) bool) *O {
 
 // GroupInt uses the specified grouper function to group the items
 // keyed by the return of the grouper.  The object contained in the
-// result will contain a map[interface{}][]int.
-func (o *O) GroupInt(grouper func(int, int) interface{}) *O {
+// result will contain a map[string][]int.
+func (o *O) GroupInt(grouper func(int, int) string) *O {
 
-	groups := make(map[interface{}][]int)
+	groups := make(map[string][]int)
 
 	for index, val := range o.MustIntSlice() {
 		group := grouper(index, val)
@@ -542,10 +542,10 @@ func (o *O) WhereInt8(decider func(int, int8) bool) *O {
 
 // GroupInt8 uses the specified grouper function to group the items
 // keyed by the return of the grouper.  The object contained in the
-// result will contain a map[interface{}][]int8.
-func (o *O) GroupInt8(grouper func(int, int8) interface{}) *O {
+// result will contain a map[string][]int8.
+func (o *O) GroupInt8(grouper func(int, int8) string) *O {
 
-	groups := make(map[interface{}][]int8)
+	groups := make(map[string][]int8)
 
 	for index, val := range o.MustInt8Slice() {
 		group := grouper(index, val)
@@ -653,10 +653,10 @@ func (o *O) WhereInt16(decider func(int, int16) bool) *O {
 
 // GroupInt16 uses the specified grouper function to group the items
 // keyed by the return of the grouper.  The object contained in the
-// result will contain a map[interface{}][]int16.
-func (o *O) GroupInt16(grouper func(int, int16) interface{}) *O {
+// result will contain a map[string][]int16.
+func (o *O) GroupInt16(grouper func(int, int16) string) *O {
 
-	groups := make(map[interface{}][]int16)
+	groups := make(map[string][]int16)
 
 	for index, val := range o.MustInt16Slice() {
 		group := grouper(index, val)
@@ -764,10 +764,10 @@ func (o *O) WhereInt32(decider func(int, int32) bool) *O {
 
 // GroupInt32 uses the specified grouper function to group the items
 // keyed by the return of the grouper.  The object contained in the
-// result will contain a map[interface{}][]int32.
-func (o *O) GroupInt32(grouper func(int, int32) interface{}) *O {
+// result will contain a map[string][]int32.
+func (o *O) GroupInt32(grouper func(int, int32) string) *O {
 
-	groups := make(map[interface{}][]int32)
+	groups := make(map[string][]int32)
 
 	for index, val := range o.MustInt32Slice() {
 		group := grouper(index, val)
@@ -875,10 +875,10 @@ func (o *O) WhereInt64(decider func(int, int64) bool) *O {
 
 // GroupInt64 uses the specified grouper function to group the items
 // keyed by the return of the grouper.  The object contained in the
-// result will contain a map[interface{}][]int64.
-func (o *O) GroupInt64(grouper func(int, int64) interface{}) *O {
+// result will contain a map[string][]int64.
+func (o *O) GroupInt64(grouper func(int, int64) string) *O {
 
-	groups := make(map[interface{}][]int64)
+	groups := make(map[string][]int64)
 
 	for index, val := range o.MustInt64Slice() {
 		group := grouper(index, val)
@@ -986,10 +986,10 @@ func (o *O) WhereUint(decider func(int, uint) bool) *O {
 
 // GroupUint uses the specified grouper function to group the items
 // keyed by the return of the grouper.  The object contained in the
-// result will contain a map[interface{}][]uint.
-func (o *O) GroupUint(grouper func(int, uint) interface{}) *O {
+// result will contain a map[string][]uint.
+func (o *O) GroupUint(grouper func(int, uint) string) *O {
 
-	groups := make(map[interface{}][]uint)
+	groups := make(map[string][]uint)
 
 	for index, val := range o.MustUintSlice() {
 		group := grouper(index, val)
@@ -1097,10 +1097,10 @@ func (o *O) WhereUint8(decider func(int, uint8) bool) *O {
 
 // GroupUint8 uses the specified grouper function to group the items
 // keyed by the return of the grouper.  The object contained in the
-// result will contain a map[interface{}][]uint8.
-func (o *O) GroupUint8(grouper func(int, uint8) interface{}) *O {
+// result will contain a map[string][]uint8.
+func (o *O) GroupUint8(grouper func(int, uint8) string) *O {
 
-	groups := make(map[interface{}][]uint8)
+	groups := make(map[string][]uint8)
 
 	for index, val := range o.MustUint8Slice() {
 		group := grouper(index, val)
@@ -1208,10 +1208,10 @@ func (o *O) WhereUint16(decider func(int, uint16) bool) *O {
 
 // GroupUint16 uses the specified grouper function to group the items
 // keyed by the return of the grouper.  The object contained in the
-// result will contain a map[interface{}][]uint16.
-func (o *O) GroupUint16(grouper func(int, uint16) interface{}) *O {
+// result will contain a map[string][]uint16.
+func (o *O) GroupUint16(grouper func(int, uint16) string) *O {
 
-	groups := make(map[interface{}][]uint16)
+	groups := make(map[string][]uint16)
 
 	for index, val := range o.MustUint16Slice() {
 		group := grouper(index, val)
@@ -1319,10 +1319,10 @@ func (o *O) WhereUint32(decider func(int, uint32) bool) *O {
 
 // GroupUint32 uses the specified grouper function to group the items
 // keyed by the return of the grouper.  The object contained in the
-// result will contain a map[interface{}][]uint32.
-func (o *O) GroupUint32(grouper func(int, uint32) interface{}) *O {
+// result will contain a map[string][]uint32.
+func (o *O) GroupUint32(grouper func(int, uint32) string) *O {
 
-	groups := make(map[interface{}][]uint32)
+	groups := make(map[string][]uint32)
 
 	for index, val := range o.MustUint32Slice() {
 		group := grouper(index, val)
@@ -1430,10 +1430,10 @@ func (o *O) WhereUint64(decider func(int, uint64) bool) *O {
 
 // GroupUint64 uses the specified grouper function to group the items
 // keyed by the return of the grouper.  The object contained in the
-// result will contain a map[interface{}][]uint64.
-func (o *O) GroupUint64(grouper func(int, uint64) interface{}) *O {
+// result will contain a map[string][]uint64.
+func (o *O) GroupUint64(grouper func(int, uint64) string) *O {
 
-	groups := make(map[interface{}][]uint64)
+	groups := make(map[string][]uint64)
 
 	for index, val := range o.MustUint64Slice() {
 		group := grouper(index, val)
@@ -1541,10 +1541,10 @@ func (o *O) WhereUintptr(decider func(int, uintptr) bool) *O {
 
 // GroupUintptr uses the specified grouper function to group the items
 // keyed by the return of the grouper.  The object contained in the
-// result will contain a map[interface{}][]uintptr.
-func (o *O) GroupUintptr(grouper func(int, uintptr) interface{}) *O {
+// result will contain a map[string][]uintptr.
+func (o *O) GroupUintptr(grouper func(int, uintptr) string) *O {
 
-	groups := make(map[interface{}][]uintptr)
+	groups := make(map[string][]uintptr)
 
 	for index, val := range o.MustUintptrSlice() {
 		group := grouper(index, val)
@@ -1652,10 +1652,10 @@ func (o *O) WhereFloat32(decider func(int, float32) bool) *O {
 
 // GroupFloat32 uses the specified grouper function to group the items
 // keyed by the return of the grouper.  The object contained in the
-// result will contain a map[interface{}][]float32.
-func (o *O) GroupFloat32(grouper func(int, float32) interface{}) *O {
+// result will contain a map[string][]float32.
+func (o *O) GroupFloat32(grouper func(int, float32) string) *O {
 
-	groups := make(map[interface{}][]float32)
+	groups := make(map[string][]float32)
 
 	for index, val := range o.MustFloat32Slice() {
 		group := grouper(index, val)
@@ -1763,10 +1763,10 @@ func (o *O) WhereFloat64(decider func(int, float64) bool) *O {
 
 // GroupFloat64 uses the specified grouper function to group the items
 // keyed by the return of the grouper.  The object contained in the
-// result will contain a map[interface{}][]float64.
-func (o *O) GroupFloat64(grouper func(int, float64) interface{}) *O {
+// result will contain a map[string][]float64.
+func (o *O) GroupFloat64(grouper func(int, float64) string) *O {
 
-	groups := make(map[interface{}][]float64)
+	groups := make(map[string][]float64)
 
 	for index, val := range o.MustFloat64Slice() {
 		group := grouper(index, val)
@@ -1874,10 +1874,10 @@ func (o *O) WhereComplex64(decider func(int, complex64) bool) *O {
 
 // GroupComplex64 uses the specified grouper function to group the items
 // keyed by the return of the grouper.  The object contained in the
-// result will contain a map[interface{}][]complex64.
-func (o *O) GroupComplex64(grouper func(int, complex64) interface{}) *O {
+// result will contain a map[string][]complex64.
+func (o *O) GroupComplex64(grouper func(int, complex64) string) *O {
 
-	groups := make(map[interface{}][]complex64)
+	groups := make(map[string][]complex64)
 
 	for index, val := range o.MustComplex64Slice() {
 		group := grouper(index, val)
@@ -1985,10 +1985,10 @@ func (o *O) WhereComplex128(decider func(int, complex128) bool) *O {
 
 // GroupComplex128 uses the specified grouper function to group the items
 // keyed by the return of the grouper.  The object contained in the
-// result will contain a map[interface{}][]complex128.
-func (o *O) GroupComplex128(grouper func(int, complex128) interface{}) *O {
+// result will contain a map[string][]complex128.
+func (o *O) GroupComplex128(grouper func(int, complex128) string) *O {
 
-	groups := make(map[interface{}][]complex128)
+	groups := make(map[string][]complex128)
 
 	for index, val := range o.MustComplex128Slice() {
 		group := grouper(index, val)

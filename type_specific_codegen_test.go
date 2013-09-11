@@ -1,6 +1,7 @@
 package objx
 
 import (
+	"fmt"
 	"github.com/stretchr/testify/assert"
 	"testing"
 )
@@ -75,13 +76,13 @@ func TestGroupInter(t *testing.T) {
 
 	o := New([]interface{}{interface{}("something"), interface{}("something"), interface{}("something"), interface{}("something"), interface{}("something"), interface{}("something")})
 
-	grouped := o.GroupInter(func(i int, val interface{}) interface{} {
-		return i%2 == 0
-	}).Obj().(map[interface{}][]interface{})
+	grouped := o.GroupInter(func(i int, val interface{}) string {
+		return fmt.Sprintf("%v", i%2 == 0)
+	}).Obj().(map[string][]interface{})
 
 	assert.Equal(t, 2, len(grouped))
-	assert.Equal(t, 3, len(grouped[true]))
-	assert.Equal(t, 3, len(grouped[false]))
+	assert.Equal(t, 3, len(grouped["true"]))
+	assert.Equal(t, 3, len(grouped["false"]))
 
 }
 
@@ -167,13 +168,13 @@ func TestGroupBool(t *testing.T) {
 
 	o := New([]bool{bool(true), bool(true), bool(true), bool(true), bool(true), bool(true)})
 
-	grouped := o.GroupBool(func(i int, val bool) interface{} {
-		return i%2 == 0
-	}).Obj().(map[interface{}][]bool)
+	grouped := o.GroupBool(func(i int, val bool) string {
+		return fmt.Sprintf("%v", i%2 == 0)
+	}).Obj().(map[string][]bool)
 
 	assert.Equal(t, 2, len(grouped))
-	assert.Equal(t, 3, len(grouped[true]))
-	assert.Equal(t, 3, len(grouped[false]))
+	assert.Equal(t, 3, len(grouped["true"]))
+	assert.Equal(t, 3, len(grouped["false"]))
 
 }
 
@@ -259,13 +260,13 @@ func TestGroupStr(t *testing.T) {
 
 	o := New([]string{string("hello"), string("hello"), string("hello"), string("hello"), string("hello"), string("hello")})
 
-	grouped := o.GroupStr(func(i int, val string) interface{} {
-		return i%2 == 0
-	}).Obj().(map[interface{}][]string)
+	grouped := o.GroupStr(func(i int, val string) string {
+		return fmt.Sprintf("%v", i%2 == 0)
+	}).Obj().(map[string][]string)
 
 	assert.Equal(t, 2, len(grouped))
-	assert.Equal(t, 3, len(grouped[true]))
-	assert.Equal(t, 3, len(grouped[false]))
+	assert.Equal(t, 3, len(grouped["true"]))
+	assert.Equal(t, 3, len(grouped["false"]))
 
 }
 
@@ -351,13 +352,13 @@ func TestGroupInt(t *testing.T) {
 
 	o := New([]int{int(1), int(1), int(1), int(1), int(1), int(1)})
 
-	grouped := o.GroupInt(func(i int, val int) interface{} {
-		return i%2 == 0
-	}).Obj().(map[interface{}][]int)
+	grouped := o.GroupInt(func(i int, val int) string {
+		return fmt.Sprintf("%v", i%2 == 0)
+	}).Obj().(map[string][]int)
 
 	assert.Equal(t, 2, len(grouped))
-	assert.Equal(t, 3, len(grouped[true]))
-	assert.Equal(t, 3, len(grouped[false]))
+	assert.Equal(t, 3, len(grouped["true"]))
+	assert.Equal(t, 3, len(grouped["false"]))
 
 }
 
@@ -443,13 +444,13 @@ func TestGroupInt8(t *testing.T) {
 
 	o := New([]int8{int8(1), int8(1), int8(1), int8(1), int8(1), int8(1)})
 
-	grouped := o.GroupInt8(func(i int, val int8) interface{} {
-		return i%2 == 0
-	}).Obj().(map[interface{}][]int8)
+	grouped := o.GroupInt8(func(i int, val int8) string {
+		return fmt.Sprintf("%v", i%2 == 0)
+	}).Obj().(map[string][]int8)
 
 	assert.Equal(t, 2, len(grouped))
-	assert.Equal(t, 3, len(grouped[true]))
-	assert.Equal(t, 3, len(grouped[false]))
+	assert.Equal(t, 3, len(grouped["true"]))
+	assert.Equal(t, 3, len(grouped["false"]))
 
 }
 
@@ -535,13 +536,13 @@ func TestGroupInt16(t *testing.T) {
 
 	o := New([]int16{int16(1), int16(1), int16(1), int16(1), int16(1), int16(1)})
 
-	grouped := o.GroupInt16(func(i int, val int16) interface{} {
-		return i%2 == 0
-	}).Obj().(map[interface{}][]int16)
+	grouped := o.GroupInt16(func(i int, val int16) string {
+		return fmt.Sprintf("%v", i%2 == 0)
+	}).Obj().(map[string][]int16)
 
 	assert.Equal(t, 2, len(grouped))
-	assert.Equal(t, 3, len(grouped[true]))
-	assert.Equal(t, 3, len(grouped[false]))
+	assert.Equal(t, 3, len(grouped["true"]))
+	assert.Equal(t, 3, len(grouped["false"]))
 
 }
 
@@ -627,13 +628,13 @@ func TestGroupInt32(t *testing.T) {
 
 	o := New([]int32{int32(1), int32(1), int32(1), int32(1), int32(1), int32(1)})
 
-	grouped := o.GroupInt32(func(i int, val int32) interface{} {
-		return i%2 == 0
-	}).Obj().(map[interface{}][]int32)
+	grouped := o.GroupInt32(func(i int, val int32) string {
+		return fmt.Sprintf("%v", i%2 == 0)
+	}).Obj().(map[string][]int32)
 
 	assert.Equal(t, 2, len(grouped))
-	assert.Equal(t, 3, len(grouped[true]))
-	assert.Equal(t, 3, len(grouped[false]))
+	assert.Equal(t, 3, len(grouped["true"]))
+	assert.Equal(t, 3, len(grouped["false"]))
 
 }
 
@@ -719,13 +720,13 @@ func TestGroupInt64(t *testing.T) {
 
 	o := New([]int64{int64(1), int64(1), int64(1), int64(1), int64(1), int64(1)})
 
-	grouped := o.GroupInt64(func(i int, val int64) interface{} {
-		return i%2 == 0
-	}).Obj().(map[interface{}][]int64)
+	grouped := o.GroupInt64(func(i int, val int64) string {
+		return fmt.Sprintf("%v", i%2 == 0)
+	}).Obj().(map[string][]int64)
 
 	assert.Equal(t, 2, len(grouped))
-	assert.Equal(t, 3, len(grouped[true]))
-	assert.Equal(t, 3, len(grouped[false]))
+	assert.Equal(t, 3, len(grouped["true"]))
+	assert.Equal(t, 3, len(grouped["false"]))
 
 }
 
@@ -811,13 +812,13 @@ func TestGroupUint(t *testing.T) {
 
 	o := New([]uint{uint(1), uint(1), uint(1), uint(1), uint(1), uint(1)})
 
-	grouped := o.GroupUint(func(i int, val uint) interface{} {
-		return i%2 == 0
-	}).Obj().(map[interface{}][]uint)
+	grouped := o.GroupUint(func(i int, val uint) string {
+		return fmt.Sprintf("%v", i%2 == 0)
+	}).Obj().(map[string][]uint)
 
 	assert.Equal(t, 2, len(grouped))
-	assert.Equal(t, 3, len(grouped[true]))
-	assert.Equal(t, 3, len(grouped[false]))
+	assert.Equal(t, 3, len(grouped["true"]))
+	assert.Equal(t, 3, len(grouped["false"]))
 
 }
 
@@ -903,13 +904,13 @@ func TestGroupUint8(t *testing.T) {
 
 	o := New([]uint8{uint8(1), uint8(1), uint8(1), uint8(1), uint8(1), uint8(1)})
 
-	grouped := o.GroupUint8(func(i int, val uint8) interface{} {
-		return i%2 == 0
-	}).Obj().(map[interface{}][]uint8)
+	grouped := o.GroupUint8(func(i int, val uint8) string {
+		return fmt.Sprintf("%v", i%2 == 0)
+	}).Obj().(map[string][]uint8)
 
 	assert.Equal(t, 2, len(grouped))
-	assert.Equal(t, 3, len(grouped[true]))
-	assert.Equal(t, 3, len(grouped[false]))
+	assert.Equal(t, 3, len(grouped["true"]))
+	assert.Equal(t, 3, len(grouped["false"]))
 
 }
 
@@ -995,13 +996,13 @@ func TestGroupUint16(t *testing.T) {
 
 	o := New([]uint16{uint16(1), uint16(1), uint16(1), uint16(1), uint16(1), uint16(1)})
 
-	grouped := o.GroupUint16(func(i int, val uint16) interface{} {
-		return i%2 == 0
-	}).Obj().(map[interface{}][]uint16)
+	grouped := o.GroupUint16(func(i int, val uint16) string {
+		return fmt.Sprintf("%v", i%2 == 0)
+	}).Obj().(map[string][]uint16)
 
 	assert.Equal(t, 2, len(grouped))
-	assert.Equal(t, 3, len(grouped[true]))
-	assert.Equal(t, 3, len(grouped[false]))
+	assert.Equal(t, 3, len(grouped["true"]))
+	assert.Equal(t, 3, len(grouped["false"]))
 
 }
 
@@ -1087,13 +1088,13 @@ func TestGroupUint32(t *testing.T) {
 
 	o := New([]uint32{uint32(1), uint32(1), uint32(1), uint32(1), uint32(1), uint32(1)})
 
-	grouped := o.GroupUint32(func(i int, val uint32) interface{} {
-		return i%2 == 0
-	}).Obj().(map[interface{}][]uint32)
+	grouped := o.GroupUint32(func(i int, val uint32) string {
+		return fmt.Sprintf("%v", i%2 == 0)
+	}).Obj().(map[string][]uint32)
 
 	assert.Equal(t, 2, len(grouped))
-	assert.Equal(t, 3, len(grouped[true]))
-	assert.Equal(t, 3, len(grouped[false]))
+	assert.Equal(t, 3, len(grouped["true"]))
+	assert.Equal(t, 3, len(grouped["false"]))
 
 }
 
@@ -1179,13 +1180,13 @@ func TestGroupUint64(t *testing.T) {
 
 	o := New([]uint64{uint64(1), uint64(1), uint64(1), uint64(1), uint64(1), uint64(1)})
 
-	grouped := o.GroupUint64(func(i int, val uint64) interface{} {
-		return i%2 == 0
-	}).Obj().(map[interface{}][]uint64)
+	grouped := o.GroupUint64(func(i int, val uint64) string {
+		return fmt.Sprintf("%v", i%2 == 0)
+	}).Obj().(map[string][]uint64)
 
 	assert.Equal(t, 2, len(grouped))
-	assert.Equal(t, 3, len(grouped[true]))
-	assert.Equal(t, 3, len(grouped[false]))
+	assert.Equal(t, 3, len(grouped["true"]))
+	assert.Equal(t, 3, len(grouped["false"]))
 
 }
 
@@ -1271,13 +1272,13 @@ func TestGroupUintptr(t *testing.T) {
 
 	o := New([]uintptr{uintptr(1), uintptr(1), uintptr(1), uintptr(1), uintptr(1), uintptr(1)})
 
-	grouped := o.GroupUintptr(func(i int, val uintptr) interface{} {
-		return i%2 == 0
-	}).Obj().(map[interface{}][]uintptr)
+	grouped := o.GroupUintptr(func(i int, val uintptr) string {
+		return fmt.Sprintf("%v", i%2 == 0)
+	}).Obj().(map[string][]uintptr)
 
 	assert.Equal(t, 2, len(grouped))
-	assert.Equal(t, 3, len(grouped[true]))
-	assert.Equal(t, 3, len(grouped[false]))
+	assert.Equal(t, 3, len(grouped["true"]))
+	assert.Equal(t, 3, len(grouped["false"]))
 
 }
 
@@ -1363,13 +1364,13 @@ func TestGroupFloat32(t *testing.T) {
 
 	o := New([]float32{float32(1), float32(1), float32(1), float32(1), float32(1), float32(1)})
 
-	grouped := o.GroupFloat32(func(i int, val float32) interface{} {
-		return i%2 == 0
-	}).Obj().(map[interface{}][]float32)
+	grouped := o.GroupFloat32(func(i int, val float32) string {
+		return fmt.Sprintf("%v", i%2 == 0)
+	}).Obj().(map[string][]float32)
 
 	assert.Equal(t, 2, len(grouped))
-	assert.Equal(t, 3, len(grouped[true]))
-	assert.Equal(t, 3, len(grouped[false]))
+	assert.Equal(t, 3, len(grouped["true"]))
+	assert.Equal(t, 3, len(grouped["false"]))
 
 }
 
@@ -1455,13 +1456,13 @@ func TestGroupFloat64(t *testing.T) {
 
 	o := New([]float64{float64(1), float64(1), float64(1), float64(1), float64(1), float64(1)})
 
-	grouped := o.GroupFloat64(func(i int, val float64) interface{} {
-		return i%2 == 0
-	}).Obj().(map[interface{}][]float64)
+	grouped := o.GroupFloat64(func(i int, val float64) string {
+		return fmt.Sprintf("%v", i%2 == 0)
+	}).Obj().(map[string][]float64)
 
 	assert.Equal(t, 2, len(grouped))
-	assert.Equal(t, 3, len(grouped[true]))
-	assert.Equal(t, 3, len(grouped[false]))
+	assert.Equal(t, 3, len(grouped["true"]))
+	assert.Equal(t, 3, len(grouped["false"]))
 
 }
 
@@ -1547,13 +1548,13 @@ func TestGroupComplex64(t *testing.T) {
 
 	o := New([]complex64{complex64(1), complex64(1), complex64(1), complex64(1), complex64(1), complex64(1)})
 
-	grouped := o.GroupComplex64(func(i int, val complex64) interface{} {
-		return i%2 == 0
-	}).Obj().(map[interface{}][]complex64)
+	grouped := o.GroupComplex64(func(i int, val complex64) string {
+		return fmt.Sprintf("%v", i%2 == 0)
+	}).Obj().(map[string][]complex64)
 
 	assert.Equal(t, 2, len(grouped))
-	assert.Equal(t, 3, len(grouped[true]))
-	assert.Equal(t, 3, len(grouped[false]))
+	assert.Equal(t, 3, len(grouped["true"]))
+	assert.Equal(t, 3, len(grouped["false"]))
 
 }
 
@@ -1639,12 +1640,12 @@ func TestGroupComplex128(t *testing.T) {
 
 	o := New([]complex128{complex128(1), complex128(1), complex128(1), complex128(1), complex128(1), complex128(1)})
 
-	grouped := o.GroupComplex128(func(i int, val complex128) interface{} {
-		return i%2 == 0
-	}).Obj().(map[interface{}][]complex128)
+	grouped := o.GroupComplex128(func(i int, val complex128) string {
+		return fmt.Sprintf("%v", i%2 == 0)
+	}).Obj().(map[string][]complex128)
 
 	assert.Equal(t, 2, len(grouped))
-	assert.Equal(t, 3, len(grouped[true]))
-	assert.Equal(t, 3, len(grouped[false]))
+	assert.Equal(t, 3, len(grouped["true"]))
+	assert.Equal(t, 3, len(grouped["false"]))
 
 }
