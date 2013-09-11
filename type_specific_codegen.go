@@ -47,6 +47,11 @@ func (o *O) MustInterSlice() []interface{} {
 	return o.obj.([]interface{})
 }
 
+// IsInter gets whether the object contained is a interface{} or not.
+func (o *O) IsInter() bool {
+	return o.IsKind(reflect.Interface)
+}
+
 // IsInterSlice gets whether the object contained is a []interface{} or not.
 func (o *O) IsInterSlice() bool {
 	if !o.IsSlice() {
@@ -62,9 +67,7 @@ func (o *O) IsInterSlice() bool {
 // Panics if the object is the wrong type.
 func (o *O) EachInter(callback func(int, interface{}) bool) *O {
 
-	list := o.MustInterSlice()
-
-	for index, val := range list {
+	for index, val := range o.MustInterSlice() {
 		carryon := callback(index, val)
 		if carryon == false {
 			break
@@ -138,9 +141,7 @@ func (o *O) IsBoolSlice() bool {
 // Panics if the object is the wrong type.
 func (o *O) EachBool(callback func(int, bool) bool) *O {
 
-	list := o.MustBoolSlice()
-
-	for index, val := range list {
+	for index, val := range o.MustBoolSlice() {
 		carryon := callback(index, val)
 		if carryon == false {
 			break
@@ -214,9 +215,7 @@ func (o *O) IsStrSlice() bool {
 // Panics if the object is the wrong type.
 func (o *O) EachStr(callback func(int, string) bool) *O {
 
-	list := o.MustStrSlice()
-
-	for index, val := range list {
+	for index, val := range o.MustStrSlice() {
 		carryon := callback(index, val)
 		if carryon == false {
 			break
@@ -290,9 +289,7 @@ func (o *O) IsIntSlice() bool {
 // Panics if the object is the wrong type.
 func (o *O) EachInt(callback func(int, int) bool) *O {
 
-	list := o.MustIntSlice()
-
-	for index, val := range list {
+	for index, val := range o.MustIntSlice() {
 		carryon := callback(index, val)
 		if carryon == false {
 			break
@@ -366,9 +363,7 @@ func (o *O) IsInt8Slice() bool {
 // Panics if the object is the wrong type.
 func (o *O) EachInt8(callback func(int, int8) bool) *O {
 
-	list := o.MustInt8Slice()
-
-	for index, val := range list {
+	for index, val := range o.MustInt8Slice() {
 		carryon := callback(index, val)
 		if carryon == false {
 			break
@@ -442,9 +437,7 @@ func (o *O) IsInt16Slice() bool {
 // Panics if the object is the wrong type.
 func (o *O) EachInt16(callback func(int, int16) bool) *O {
 
-	list := o.MustInt16Slice()
-
-	for index, val := range list {
+	for index, val := range o.MustInt16Slice() {
 		carryon := callback(index, val)
 		if carryon == false {
 			break
@@ -518,9 +511,7 @@ func (o *O) IsInt32Slice() bool {
 // Panics if the object is the wrong type.
 func (o *O) EachInt32(callback func(int, int32) bool) *O {
 
-	list := o.MustInt32Slice()
-
-	for index, val := range list {
+	for index, val := range o.MustInt32Slice() {
 		carryon := callback(index, val)
 		if carryon == false {
 			break
@@ -594,9 +585,7 @@ func (o *O) IsInt64Slice() bool {
 // Panics if the object is the wrong type.
 func (o *O) EachInt64(callback func(int, int64) bool) *O {
 
-	list := o.MustInt64Slice()
-
-	for index, val := range list {
+	for index, val := range o.MustInt64Slice() {
 		carryon := callback(index, val)
 		if carryon == false {
 			break
@@ -670,9 +659,7 @@ func (o *O) IsUintSlice() bool {
 // Panics if the object is the wrong type.
 func (o *O) EachUint(callback func(int, uint) bool) *O {
 
-	list := o.MustUintSlice()
-
-	for index, val := range list {
+	for index, val := range o.MustUintSlice() {
 		carryon := callback(index, val)
 		if carryon == false {
 			break
@@ -746,9 +733,7 @@ func (o *O) IsUint8Slice() bool {
 // Panics if the object is the wrong type.
 func (o *O) EachUint8(callback func(int, uint8) bool) *O {
 
-	list := o.MustUint8Slice()
-
-	for index, val := range list {
+	for index, val := range o.MustUint8Slice() {
 		carryon := callback(index, val)
 		if carryon == false {
 			break
@@ -822,9 +807,7 @@ func (o *O) IsUint16Slice() bool {
 // Panics if the object is the wrong type.
 func (o *O) EachUint16(callback func(int, uint16) bool) *O {
 
-	list := o.MustUint16Slice()
-
-	for index, val := range list {
+	for index, val := range o.MustUint16Slice() {
 		carryon := callback(index, val)
 		if carryon == false {
 			break
@@ -898,9 +881,7 @@ func (o *O) IsUint32Slice() bool {
 // Panics if the object is the wrong type.
 func (o *O) EachUint32(callback func(int, uint32) bool) *O {
 
-	list := o.MustUint32Slice()
-
-	for index, val := range list {
+	for index, val := range o.MustUint32Slice() {
 		carryon := callback(index, val)
 		if carryon == false {
 			break
@@ -974,9 +955,7 @@ func (o *O) IsUint64Slice() bool {
 // Panics if the object is the wrong type.
 func (o *O) EachUint64(callback func(int, uint64) bool) *O {
 
-	list := o.MustUint64Slice()
-
-	for index, val := range list {
+	for index, val := range o.MustUint64Slice() {
 		carryon := callback(index, val)
 		if carryon == false {
 			break
@@ -1050,9 +1029,7 @@ func (o *O) IsUintptrSlice() bool {
 // Panics if the object is the wrong type.
 func (o *O) EachUintptr(callback func(int, uintptr) bool) *O {
 
-	list := o.MustUintptrSlice()
-
-	for index, val := range list {
+	for index, val := range o.MustUintptrSlice() {
 		carryon := callback(index, val)
 		if carryon == false {
 			break
@@ -1126,9 +1103,7 @@ func (o *O) IsFloat32Slice() bool {
 // Panics if the object is the wrong type.
 func (o *O) EachFloat32(callback func(int, float32) bool) *O {
 
-	list := o.MustFloat32Slice()
-
-	for index, val := range list {
+	for index, val := range o.MustFloat32Slice() {
 		carryon := callback(index, val)
 		if carryon == false {
 			break
@@ -1202,9 +1177,7 @@ func (o *O) IsFloat64Slice() bool {
 // Panics if the object is the wrong type.
 func (o *O) EachFloat64(callback func(int, float64) bool) *O {
 
-	list := o.MustFloat64Slice()
-
-	for index, val := range list {
+	for index, val := range o.MustFloat64Slice() {
 		carryon := callback(index, val)
 		if carryon == false {
 			break
@@ -1278,9 +1251,7 @@ func (o *O) IsComplex64Slice() bool {
 // Panics if the object is the wrong type.
 func (o *O) EachComplex64(callback func(int, complex64) bool) *O {
 
-	list := o.MustComplex64Slice()
-
-	for index, val := range list {
+	for index, val := range o.MustComplex64Slice() {
 		carryon := callback(index, val)
 		if carryon == false {
 			break
@@ -1354,9 +1325,7 @@ func (o *O) IsComplex128Slice() bool {
 // Panics if the object is the wrong type.
 func (o *O) EachComplex128(callback func(int, complex128) bool) *O {
 
-	list := o.MustComplex128Slice()
-
-	for index, val := range list {
+	for index, val := range o.MustComplex128Slice() {
 		carryon := callback(index, val)
 		if carryon == false {
 			break

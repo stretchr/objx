@@ -61,9 +61,7 @@ func (o *O) Is{4}Slice() bool {
 // Panics if the object is the wrong type.
 func (o *O) Each{4}(callback func(int, {1}) bool) *O {
 
-	list := o.Must{4}Slice()
-
-	for index, val := range list {
+	for index, val := range o.Must{4}Slice() {
 		carryon := callback(index, val)
 		if carryon == false {
 			break
