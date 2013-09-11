@@ -7,14 +7,33 @@ func (o *O) {0}(optionalDefault ...{1}) {1} {
 	if len(optionalDefault) == 1 {
 		return optionalDefault[0]
 	}
-	return {2}
+	return {3}
 }
 
-// {0} gets the value as a {1}.
+// Must{0} gets the value as a {1}.
 //
 // Panics if the object is not a {1}.
 func (o *O) Must{0}() {1} {
 	return o.obj.({1})
+}
+
+// Must{0}Slice gets the value as a []{1}.
+//
+// Panics if the object is not a []{1}.
+func (o *O) Must{0}Slice() []{1} {
+	return o.obj.([]{1})
+}
+
+// {0}Slice gets the value as a []{1}, returns the optinoalDefault
+// value or nil if the value is not a []{1}.
+func (o *O) {0}Slice(optionalDefault ...[]{1}) []{1} {
+	if s, ok := o.obj.([]{1}); ok {
+		return s
+	}
+	if len(optionalDefault) == 1 {
+		return optionalDefault[0]
+	}
+	return nil
 }
 
 
@@ -23,13 +42,28 @@ func (o *O) Must{0}() {1} {
 
 func Test{0}(t *testing.T) {
 
-	m := map[string]interface{}{"value": {1}{ 1 }, "nothing": nil}
-	assert.Equal(t, {1}(1), New(m).Get("value").{0}())
-	assert.Equal(t, {1}(0), New(m).Get("nothing").{0}())
-	assert.Equal(t, {1}(123), New(m).Get("nothing").{0}(123))
+	m := map[string]interface{}{"value": {1}( {2} ), "nothing": nil}
+	assert.Equal(t, {1}({2}), New(m).Get("value").{0}())
+	assert.Equal(t, {1}({2}), New(m).Get("value").Must{0}())
+	assert.Equal(t, {1}({3}), New(m).Get("nothing").{0}())
+	assert.Equal(t, {1}({2}), New(m).Get("nothing").{0}({2}))
 
 	assert.Panics(t, func() {
 		New(m).Get("age").Must{0}()
+	})
+
+}
+
+func Test{0}Slice(t *testing.T) {
+
+	m := map[string]interface{}{"value": []{1}{ {1}({2}) }, "nothing": nil}
+	assert.Equal(t, {1}({2}), New(m).Get("value").{0}Slice()[0])
+	assert.Equal(t, {1}({2}), New(m).Get("value").Must{0}Slice()[0])
+	assert.Equal(t, []{1}(nil), New(m).Get("nothing").{0}Slice())
+	assert.Equal(t, {1}({2}), New(m).Get("nothing").{0}Slice( []{1}{ {1}({2}) } )[0])
+
+	assert.Panics(t, func() {
+		New(m).Get("nothing").Must{0}Slice()
 	})
 
 }
