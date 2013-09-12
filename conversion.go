@@ -5,7 +5,6 @@ import (
 	"encoding/base64"
 	"encoding/json"
 	"errors"
-	"github.com/stretchr/signature"
 )
 
 // JSON converts the contained object to a JSON string
@@ -72,7 +71,7 @@ func (o *O) SignedBase64(key string) (string, error) {
 		return "", err
 	}
 
-	sig := signature.HashWithKey([]byte(base64), []byte(key))
+	sig := HashWithKey(base64, key)
 
 	return base64 + SignatureSeparator + sig, nil
 

@@ -4,7 +4,6 @@ import (
 	"encoding/base64"
 	"encoding/json"
 	"errors"
-	"github.com/stretchr/signature"
 	"io/ioutil"
 	"strings"
 )
@@ -86,7 +85,7 @@ func FromSignedBase64(base64String, key string) (*O, error) {
 		return nil, errors.New("objx: Signed base64 string is malformed.")
 	}
 
-	sig := signature.HashWithKey([]byte(parts[0]), []byte(key))
+	sig := HashWithKey(parts[0], key)
 	if parts[1] != sig {
 		return nil, errors.New("objx: Signature for base64 data does not match.")
 	}
