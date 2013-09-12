@@ -33,7 +33,8 @@
 // work so loosely with interface{}.  In that spirit, it providers
 // strongly typed accessors that make reading data easy.
 //
-// First you use the Get method to select the
+// First you use the Get method to select the value you're interested in,
+// then use some of the strongly typed accessors:
 //
 // Example: Int(), Str(), Bool(), Float64(), UInt64() etc.
 //
