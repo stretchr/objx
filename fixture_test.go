@@ -11,9 +11,6 @@ var getFixtures = []struct {
 	name string
 	// data is the JSON data to be worked on
 	data string
-	// set provides a map of arguments that are
-	// passed to the Set method before the get test is performed.
-	set map[string]interface{}
 	// get is the argument(s) to pass to Get
 	get interface{}
 	// output is the expected output
@@ -85,13 +82,6 @@ var getFixtures = []struct {
 		get:    "numbers[0].nope",
 		output: nil,
 	},
-	{
-		name:   "Set inside map",
-		data:   `{"address": {"city": "Boulder"}}`,
-		set:    map[string]interface{}{"address.city": "Denver"},
-		get:    "address.city",
-		output: "Denver",
-	},
 }
 
 func TestFixtures(t *testing.T) {
@@ -99,13 +89,6 @@ func TestFixtures(t *testing.T) {
 	for _, fixture := range getFixtures {
 
 		o := MustFromJSON(fixture.data)
-
-		// do we need to do a set?
-		if fixture.set != nil {
-			for k, v := range fixture.set {
-				o.Set(k, v)
-			}
-		}
 
 		// get the value
 		t.Logf("Running get fixture: \"%s\" (%v)", fixture.name, fixture)
