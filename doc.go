@@ -59,6 +59,12 @@
 // where the key is the name of the group, and the values is a slice of the items in that group.
 // The group name comes from the return of the func argument.
 //
+// Replace* - Replace methods allow you to swap each value in a slice for another of the same
+// type.  The type of the data will not change.
+//
+// Collect* - Collect methods allow you to collect new values (of type interface{}) by
+// iterating over each item.  The type of the data returned will be []interface{}.
+//
 // Optimistic
 //
 // Objx is optimistic, which means it won't panic if things go wrong.  Instead, default values
