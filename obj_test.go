@@ -6,5 +6,6 @@ import (
 )
 
 func TestNil(t *testing.T) {
-	assert.Nil(t, Nil)
+	assert.NotNil(t, Nil)
+	assert.Nil(t, Nil.Obj())
 }

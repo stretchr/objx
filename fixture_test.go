@@ -19,14 +19,12 @@ var getFixtures = []struct {
 	// output is the expected output
 	output interface{}
 }{
-	// get
 	{
 		name:   "Simple get",
 		data:   `{"name": "Mat"}`,
 		get:    "name",
 		output: "Mat",
 	},
-	// dot notation
 	{
 		name:   "Get with dot notation",
 		data:   `{"address": {"city": "Boulder"}}`,
@@ -39,21 +37,18 @@ var getFixtures = []struct {
 		get:    "one.two.three.four",
 		output: "hello",
 	},
-	// no data
 	{
 		name:   "Get missing with dot notation",
 		data:   `{"one": {"two": {"three": {"four": "hello"}}}}`,
 		get:    "one.ten",
 		output: nil,
 	},
-	// array [] notation
 	{
 		name:   "Get with array notation",
 		data:   `{"tags": ["one", "two", "three"]}`,
 		get:    "tags[1]",
 		output: "two",
 	},
-	// array [] notation in map
 	{
 		name:   "Get with array and dot notation",
 		data:   `{"types": { "tags": ["one", "two", "three"]}}`,
@@ -72,14 +67,24 @@ var getFixtures = []struct {
 		get:    "tags[0].list[0].one",
 		output: "pizza",
 	},
-	// array number
 	{
 		name:   "Get with integer argument",
 		data:   `["one", "two", "three"]`,
 		get:    1,
 		output: "two",
 	},
-	// Setting inside map
+	{
+		name:   "Get field from within string should be nil",
+		data:   `{"name":"Tyler"}`,
+		get:    "name.something",
+		output: nil,
+	},
+	{
+		name:   "Get field from within string (using array accessor) should be nil",
+		data:   `{"numbers":["one", "two", "three"]}`,
+		get:    "numbers[0].nope",
+		output: nil,
+	},
 	{
 		name:   "Set inside map",
 		data:   `{"address": {"city": "Boulder"}}`,

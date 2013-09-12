@@ -16,4 +16,4 @@ type Obj struct {
 }
 
 // Nil represents a nil Obj.
-var Nil *Obj = nil
+var Nil *Obj = New(nil)
