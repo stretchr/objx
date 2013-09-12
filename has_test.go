@@ -22,3 +22,14 @@ func TestHas(t *testing.T) {
 	assert.False(t, o.Has("nothing"))
 
 }
+
+func TestHasNumber(t *testing.T) {
+
+	o := New([]string{"one", "two", "three"})
+
+	assert.True(t, o.Has(0))
+	assert.True(t, o.Has(1))
+	assert.True(t, o.Has(2))
+	assert.False(t, o.Has(3))
+
+}
