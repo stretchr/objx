@@ -52,18 +52,54 @@
 // Each* - Each methods iterate over a all items in a slice.  The callback func does the
 // work, and takes the index and object like when ranging.
 //
+//     // log each string in a []string
+//     obj.EachStr(func(index int, value string) bool {
+//
+//	     // log each value
+//       log.Println(value)
+//
+//       // return true (means carry on)
+//       return true
+//     })
+//
 // Where* - Where methods allow you to select a subset of items using a simple selector
 // func.
+//
+//     // collect questions from a []string
+//     obj.WhereStr(func(index int, value string) bool {
+//
+//	     // does the string contain a question mark?
+//       return strings.Contains(value, "?")
+//
+//     })
 //
 // Group* - Group methods (e.g. GroupStr, GroupInt etc.) allow you to generate a map[string]T
 // where the key is the name of the group, and the values is a slice of the items in that group.
 // The group name comes from the return of the func argument.
 //
+//     // group strings by the first character
+//     listings := obj.GroupStr(func(index int, value string) string {
+//
+//	     // return first character
+//       return value[0]
+//
+//     })
+//
 // Replace* - Replace methods allow you to swap each value in a slice for another of the same
 // type.  The type of the data will not change.
 //
+//     // increase all numbers in []int by one
+//     increased := obj.ReplaceInt(func(index int, value int) int {
+//	     return value + 1
+//     })
+//
 // Collect* - Collect methods allow you to collect new values (of type interface{}) by
 // iterating over each item.  The type of the data returned will be []interface{}.
+//
+//     // Collect descriptions of the numbers in []float64
+//     descriptions := obj.CollectFloat64(func(index int, value float64) interface{} {
+//	     return fmt.Sprintf("Value %d is %v", index, float64)
+//     })
 //
 // Optimistic
 //
