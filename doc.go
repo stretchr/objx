@@ -58,4 +58,10 @@
 // Group* - Group methods (e.g. GroupStr, GroupInt etc.) allow you to generate a map[string]T
 // where the key is the name of the group, and the values is a slice of the items in that group.
 // The group name comes from the return of the func argument.
+//
+// Optimistic
+//
+// Objx is optimistic, which means it won't panic if things go wrong.  Instead, default values
+// are used.  If you want panics to ensure the right data is in place, you can use the Must prefix
+// on most methods.
 package objx
