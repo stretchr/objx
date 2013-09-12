@@ -55,7 +55,7 @@
 //     // log each string in a []string
 //     obj.EachStr(func(index int, value string) bool {
 //
-//	     // log each value
+//       // log each value
 //       log.Println(value)
 //
 //       // return true (means carry on)
@@ -68,7 +68,7 @@
 //     // collect questions from a []string
 //     obj.WhereStr(func(index int, value string) bool {
 //
-//	     // does the string contain a question mark?
+//       // does the string contain a question mark?
 //       return strings.Contains(value, "?")
 //
 //     })
@@ -80,7 +80,7 @@
 //     // group strings by the first character
 //     listings := obj.GroupStr(func(index int, value string) string {
 //
-//	     // return first character
+//       // return first character
 //       return value[0]
 //
 //     })
@@ -90,7 +90,7 @@
 //
 //     // increase all numbers in []int by one
 //     increased := obj.ReplaceInt(func(index int, value int) int {
-//	     return value + 1
+//       return value + 1
 //     })
 //
 // Collect* - Collect methods allow you to collect new values (of type interface{}) by
@@ -98,7 +98,7 @@
 //
 //     // Collect descriptions of the numbers in []float64
 //     descriptions := obj.CollectFloat64(func(index int, value float64) interface{} {
-//	     return fmt.Sprintf("Value %d is %v", index, float64)
+//       return fmt.Sprintf("Value %d is %v", index, float64)
 //     })
 //
 // Optimistic
