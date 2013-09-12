@@ -51,11 +51,6 @@ func access(current interface{}, selector interface{}, panics bool) interface{} 
 
 		}
 
-		// unwrap if we have Obj
-		if currentObj, ok := current.(*Obj); ok {
-			current = currentObj.RootObj()
-		}
-
 		// get the object in question
 		switch current.(type) {
 		case map[string]interface{}:
@@ -66,11 +61,6 @@ func access(current interface{}, selector interface{}, panics bool) interface{} 
 
 		if current == nil && panics {
 			panic(fmt.Sprintf("objx: '%v' invalid on object.", selector))
-		}
-
-		// unwrap if we have Obj
-		if currentObj, ok := current.(*Obj); ok {
-			current = currentObj.RootObj()
 		}
 
 		// do we need to access the item of an array?

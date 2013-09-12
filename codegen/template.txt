@@ -43,14 +43,12 @@ func (o *Obj) Must{4}Slice() []{1} {
 
 // Is{4} gets whether the object contained is a {1} or not.
 func (o *Obj) Is{4}() bool {
-	return o.IsKind(reflect.{0})
+  _, ok := o.obj.({1})
+  return ok
 }
 
 // Is{4}Slice gets whether the object contained is a []{1} or not.
 func (o *Obj) Is{4}Slice() bool {
-	if !o.IsSlice() {
-		return false
-	}
 	_, ok := o.obj.([]{1})
 	return ok
 }
@@ -144,15 +142,18 @@ func (o *Obj) Collect{4}(collector func(int, {1}) interface{}) *Obj {
 	return New(collected)
 }
 
-// TESTS:
+// ************************************************************
+// TESTS
+// ************************************************************
 
 func Test{4}(t *testing.T) {
 
-	m := map[string]interface{}{"value": {1}( {2} ), "nothing": nil}
-	assert.Equal(t, {1}({2}), New(m).Get("value").{4}())
-	assert.Equal(t, {1}({2}), New(m).Get("value").Must{4}())
+  val := {1}( {2} )
+	m := map[string]interface{}{"value": val, "nothing": nil}
+	assert.Equal(t, val, New(m).Get("value").{4}())
+	assert.Equal(t, val, New(m).Get("value").Must{4}())
 	assert.Equal(t, {1}({3}), New(m).Get("nothing").{4}())
-	assert.Equal(t, {1}({2}), New(m).Get("nothing").{4}({2}))
+	assert.Equal(t, val, New(m).Get("nothing").{4}({2}))
 
 	assert.Panics(t, func() {
 		New(m).Get("age").Must{4}()
@@ -162,11 +163,12 @@ func Test{4}(t *testing.T) {
 
 func Test{4}Slice(t *testing.T) {
 
-	m := map[string]interface{}{"value": []{1}{ {1}({2}) }, "nothing": nil}
-	assert.Equal(t, {1}({2}), New(m).Get("value").{4}Slice()[0])
-	assert.Equal(t, {1}({2}), New(m).Get("value").Must{4}Slice()[0])
+  val := {1}( {2} )
+	m := map[string]interface{}{"value": []{1}{ val }, "nothing": nil}
+	assert.Equal(t, val, New(m).Get("value").{4}Slice()[0])
+	assert.Equal(t, val, New(m).Get("value").Must{4}Slice()[0])
 	assert.Equal(t, []{1}(nil), New(m).Get("nothing").{4}Slice())
-	assert.Equal(t, {1}({2}), New(m).Get("nothing").{4}Slice( []{1}{ {1}({2}) } )[0])
+	assert.Equal(t, val, New(m).Get("nothing").{4}Slice( []{1}{ {1}({2}) } )[0])
 
 	assert.Panics(t, func() {
 		New(m).Get("nothing").Must{4}Slice()

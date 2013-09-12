@@ -1,12 +1,8 @@
 package objx
 
-import (
-	"reflect"
-)
-
 /*
-	Inter (interface{} and []interface{})
-	--------------------------------------------------
+  Inter (interface{} and []interface{})
+  --------------------------------------------------
 */
 
 // Inter gets the value as a interface{}, returns the optionalDefault
@@ -49,14 +45,12 @@ func (o *Obj) MustInterSlice() []interface{} {
 
 // IsInter gets whether the object contained is a interface{} or not.
 func (o *Obj) IsInter() bool {
-	return o.IsKind(reflect.Interface)
+	_, ok := o.obj.(interface{})
+	return ok
 }
 
 // IsInterSlice gets whether the object contained is a []interface{} or not.
 func (o *Obj) IsInterSlice() bool {
-	if !o.IsSlice() {
-		return false
-	}
 	_, ok := o.obj.([]interface{})
 	return ok
 }
@@ -151,8 +145,296 @@ func (o *Obj) CollectInter(collector func(int, interface{}) interface{}) *Obj {
 }
 
 /*
-	Bool (bool and []bool)
-	--------------------------------------------------
+  MSI (map[string]interface{} and []map[string]interface{})
+  --------------------------------------------------
+*/
+
+// MSI gets the value as a map[string]interface{}, returns the optionalDefault
+// value or a system default object if the value is the wrong type.
+func (o *Obj) MSI(optionalDefault ...map[string]interface{}) map[string]interface{} {
+	if s, ok := o.obj.(map[string]interface{}); ok {
+		return s
+	}
+	if len(optionalDefault) == 1 {
+		return optionalDefault[0]
+	}
+	return nil
+}
+
+// MustMSI gets the value as a map[string]interface{}.
+//
+// Panics if the object is not a map[string]interface{}.
+func (o *Obj) MustMSI() map[string]interface{} {
+	return o.obj.(map[string]interface{})
+}
+
+// MSISlice gets the value as a []map[string]interface{}, returns the optionalDefault
+// value or nil if the value is not a []map[string]interface{}.
+func (o *Obj) MSISlice(optionalDefault ...[]map[string]interface{}) []map[string]interface{} {
+	if s, ok := o.obj.([]map[string]interface{}); ok {
+		return s
+	}
+	if len(optionalDefault) == 1 {
+		return optionalDefault[0]
+	}
+	return nil
+}
+
+// MustMSISlice gets the value as a []map[string]interface{}.
+//
+// Panics if the object is not a []map[string]interface{}.
+func (o *Obj) MustMSISlice() []map[string]interface{} {
+	return o.obj.([]map[string]interface{})
+}
+
+// IsMSI gets whether the object contained is a map[string]interface{} or not.
+func (o *Obj) IsMSI() bool {
+	_, ok := o.obj.(map[string]interface{})
+	return ok
+}
+
+// IsMSISlice gets whether the object contained is a []map[string]interface{} or not.
+func (o *Obj) IsMSISlice() bool {
+	_, ok := o.obj.([]map[string]interface{})
+	return ok
+}
+
+// EachMSI calls the specified callback for each object
+// in the []map[string]interface{}.
+//
+// Panics if the object is the wrong type.
+func (o *Obj) EachMSI(callback func(int, map[string]interface{}) bool) *Obj {
+
+	for index, val := range o.MustMSISlice() {
+		carryon := callback(index, val)
+		if carryon == false {
+			break
+		}
+	}
+
+	return o
+
+}
+
+// WhereMSI uses the specified decider function to select items
+// from the []map[string]interface{}.  The object contained in the result will contain
+// only the selected items.
+func (o *Obj) WhereMSI(decider func(int, map[string]interface{}) bool) *Obj {
+
+	var selected []map[string]interface{}
+
+	o.EachMSI(func(index int, val map[string]interface{}) bool {
+		shouldSelect := decider(index, val)
+		if shouldSelect == false {
+			selected = append(selected, val)
+		}
+		return true
+	})
+
+	return New(selected)
+
+}
+
+// GroupMSI uses the specified grouper function to group the items
+// keyed by the return of the grouper.  The object contained in the
+// result will contain a map[string][]map[string]interface{}.
+func (o *Obj) GroupMSI(grouper func(int, map[string]interface{}) string) *Obj {
+
+	groups := make(map[string][]map[string]interface{})
+
+	o.EachMSI(func(index int, val map[string]interface{}) bool {
+		group := grouper(index, val)
+		if _, ok := groups[group]; !ok {
+			groups[group] = make([]map[string]interface{}, 0)
+		}
+		groups[group] = append(groups[group], val)
+		return true
+	})
+
+	return New(groups)
+
+}
+
+// ReplaceMSI uses the specified function to replace each map[string]interface{}s
+// by iterating each item.  The data in the returned result will be a
+// []map[string]interface{} containing the replaced items.
+func (o *Obj) ReplaceMSI(replacer func(int, map[string]interface{}) map[string]interface{}) *Obj {
+
+	arr := o.MustMSISlice()
+	replaced := make([]map[string]interface{}, len(arr))
+
+	o.EachMSI(func(index int, val map[string]interface{}) bool {
+		replaced[index] = replacer(index, val)
+		return true
+	})
+
+	return New(replaced)
+
+}
+
+// CollectMSI uses the specified collector function to collect a value
+// for each of the map[string]interface{}s in the slice.  The data returned will be a
+// []interface{}.
+func (o *Obj) CollectMSI(collector func(int, map[string]interface{}) interface{}) *Obj {
+
+	arr := o.MustMSISlice()
+	collected := make([]interface{}, len(arr))
+
+	o.EachMSI(func(index int, val map[string]interface{}) bool {
+		collected[index] = collector(index, val)
+		return true
+	})
+
+	return New(collected)
+}
+
+/*
+  ObjxObj (*Obj and []*Obj)
+  --------------------------------------------------
+*/
+
+// ObjxObj gets the value as a *Obj, returns the optionalDefault
+// value or a system default object if the value is the wrong type.
+func (o *Obj) ObjxObj(optionalDefault ...*Obj) *Obj {
+	if s, ok := o.obj.(*Obj); ok {
+		return s
+	}
+	if len(optionalDefault) == 1 {
+		return optionalDefault[0]
+	}
+	return New(nil)
+}
+
+// MustObjxObj gets the value as a *Obj.
+//
+// Panics if the object is not a *Obj.
+func (o *Obj) MustObjxObj() *Obj {
+	return o.obj.(*Obj)
+}
+
+// ObjxObjSlice gets the value as a []*Obj, returns the optionalDefault
+// value or nil if the value is not a []*Obj.
+func (o *Obj) ObjxObjSlice(optionalDefault ...[]*Obj) []*Obj {
+	if s, ok := o.obj.([]*Obj); ok {
+		return s
+	}
+	if len(optionalDefault) == 1 {
+		return optionalDefault[0]
+	}
+	return nil
+}
+
+// MustObjxObjSlice gets the value as a []*Obj.
+//
+// Panics if the object is not a []*Obj.
+func (o *Obj) MustObjxObjSlice() []*Obj {
+	return o.obj.([]*Obj)
+}
+
+// IsObjxObj gets whether the object contained is a *Obj or not.
+func (o *Obj) IsObjxObj() bool {
+	_, ok := o.obj.(*Obj)
+	return ok
+}
+
+// IsObjxObjSlice gets whether the object contained is a []*Obj or not.
+func (o *Obj) IsObjxObjSlice() bool {
+	_, ok := o.obj.([]*Obj)
+	return ok
+}
+
+// EachObjxObj calls the specified callback for each object
+// in the []*Obj.
+//
+// Panics if the object is the wrong type.
+func (o *Obj) EachObjxObj(callback func(int, *Obj) bool) *Obj {
+
+	for index, val := range o.MustObjxObjSlice() {
+		carryon := callback(index, val)
+		if carryon == false {
+			break
+		}
+	}
+
+	return o
+
+}
+
+// WhereObjxObj uses the specified decider function to select items
+// from the []*Obj.  The object contained in the result will contain
+// only the selected items.
+func (o *Obj) WhereObjxObj(decider func(int, *Obj) bool) *Obj {
+
+	var selected []*Obj
+
+	o.EachObjxObj(func(index int, val *Obj) bool {
+		shouldSelect := decider(index, val)
+		if shouldSelect == false {
+			selected = append(selected, val)
+		}
+		return true
+	})
+
+	return New(selected)
+
+}
+
+// GroupObjxObj uses the specified grouper function to group the items
+// keyed by the return of the grouper.  The object contained in the
+// result will contain a map[string][]*Obj.
+func (o *Obj) GroupObjxObj(grouper func(int, *Obj) string) *Obj {
+
+	groups := make(map[string][]*Obj)
+
+	o.EachObjxObj(func(index int, val *Obj) bool {
+		group := grouper(index, val)
+		if _, ok := groups[group]; !ok {
+			groups[group] = make([]*Obj, 0)
+		}
+		groups[group] = append(groups[group], val)
+		return true
+	})
+
+	return New(groups)
+
+}
+
+// ReplaceObjxObj uses the specified function to replace each *Objs
+// by iterating each item.  The data in the returned result will be a
+// []*Obj containing the replaced items.
+func (o *Obj) ReplaceObjxObj(replacer func(int, *Obj) *Obj) *Obj {
+
+	arr := o.MustObjxObjSlice()
+	replaced := make([]*Obj, len(arr))
+
+	o.EachObjxObj(func(index int, val *Obj) bool {
+		replaced[index] = replacer(index, val)
+		return true
+	})
+
+	return New(replaced)
+
+}
+
+// CollectObjxObj uses the specified collector function to collect a value
+// for each of the *Objs in the slice.  The data returned will be a
+// []interface{}.
+func (o *Obj) CollectObjxObj(collector func(int, *Obj) interface{}) *Obj {
+
+	arr := o.MustObjxObjSlice()
+	collected := make([]interface{}, len(arr))
+
+	o.EachObjxObj(func(index int, val *Obj) bool {
+		collected[index] = collector(index, val)
+		return true
+	})
+
+	return New(collected)
+}
+
+/*
+  Bool (bool and []bool)
+  --------------------------------------------------
 */
 
 // Bool gets the value as a bool, returns the optionalDefault
@@ -195,14 +477,12 @@ func (o *Obj) MustBoolSlice() []bool {
 
 // IsBool gets whether the object contained is a bool or not.
 func (o *Obj) IsBool() bool {
-	return o.IsKind(reflect.Bool)
+	_, ok := o.obj.(bool)
+	return ok
 }
 
 // IsBoolSlice gets whether the object contained is a []bool or not.
 func (o *Obj) IsBoolSlice() bool {
-	if !o.IsSlice() {
-		return false
-	}
 	_, ok := o.obj.([]bool)
 	return ok
 }
@@ -297,8 +577,8 @@ func (o *Obj) CollectBool(collector func(int, bool) interface{}) *Obj {
 }
 
 /*
-	Str (string and []string)
-	--------------------------------------------------
+  Str (string and []string)
+  --------------------------------------------------
 */
 
 // Str gets the value as a string, returns the optionalDefault
@@ -341,14 +621,12 @@ func (o *Obj) MustStrSlice() []string {
 
 // IsStr gets whether the object contained is a string or not.
 func (o *Obj) IsStr() bool {
-	return o.IsKind(reflect.String)
+	_, ok := o.obj.(string)
+	return ok
 }
 
 // IsStrSlice gets whether the object contained is a []string or not.
 func (o *Obj) IsStrSlice() bool {
-	if !o.IsSlice() {
-		return false
-	}
 	_, ok := o.obj.([]string)
 	return ok
 }
@@ -443,8 +721,8 @@ func (o *Obj) CollectStr(collector func(int, string) interface{}) *Obj {
 }
 
 /*
-	Int (int and []int)
-	--------------------------------------------------
+  Int (int and []int)
+  --------------------------------------------------
 */
 
 // Int gets the value as a int, returns the optionalDefault
@@ -487,14 +765,12 @@ func (o *Obj) MustIntSlice() []int {
 
 // IsInt gets whether the object contained is a int or not.
 func (o *Obj) IsInt() bool {
-	return o.IsKind(reflect.Int)
+	_, ok := o.obj.(int)
+	return ok
 }
 
 // IsIntSlice gets whether the object contained is a []int or not.
 func (o *Obj) IsIntSlice() bool {
-	if !o.IsSlice() {
-		return false
-	}
 	_, ok := o.obj.([]int)
 	return ok
 }
@@ -589,8 +865,8 @@ func (o *Obj) CollectInt(collector func(int, int) interface{}) *Obj {
 }
 
 /*
-	Int8 (int8 and []int8)
-	--------------------------------------------------
+  Int8 (int8 and []int8)
+  --------------------------------------------------
 */
 
 // Int8 gets the value as a int8, returns the optionalDefault
@@ -633,14 +909,12 @@ func (o *Obj) MustInt8Slice() []int8 {
 
 // IsInt8 gets whether the object contained is a int8 or not.
 func (o *Obj) IsInt8() bool {
-	return o.IsKind(reflect.Int8)
+	_, ok := o.obj.(int8)
+	return ok
 }
 
 // IsInt8Slice gets whether the object contained is a []int8 or not.
 func (o *Obj) IsInt8Slice() bool {
-	if !o.IsSlice() {
-		return false
-	}
 	_, ok := o.obj.([]int8)
 	return ok
 }
@@ -735,8 +1009,8 @@ func (o *Obj) CollectInt8(collector func(int, int8) interface{}) *Obj {
 }
 
 /*
-	Int16 (int16 and []int16)
-	--------------------------------------------------
+  Int16 (int16 and []int16)
+  --------------------------------------------------
 */
 
 // Int16 gets the value as a int16, returns the optionalDefault
@@ -779,14 +1053,12 @@ func (o *Obj) MustInt16Slice() []int16 {
 
 // IsInt16 gets whether the object contained is a int16 or not.
 func (o *Obj) IsInt16() bool {
-	return o.IsKind(reflect.Int16)
+	_, ok := o.obj.(int16)
+	return ok
 }
 
 // IsInt16Slice gets whether the object contained is a []int16 or not.
 func (o *Obj) IsInt16Slice() bool {
-	if !o.IsSlice() {
-		return false
-	}
 	_, ok := o.obj.([]int16)
 	return ok
 }
@@ -881,8 +1153,8 @@ func (o *Obj) CollectInt16(collector func(int, int16) interface{}) *Obj {
 }
 
 /*
-	Int32 (int32 and []int32)
-	--------------------------------------------------
+  Int32 (int32 and []int32)
+  --------------------------------------------------
 */
 
 // Int32 gets the value as a int32, returns the optionalDefault
@@ -925,14 +1197,12 @@ func (o *Obj) MustInt32Slice() []int32 {
 
 // IsInt32 gets whether the object contained is a int32 or not.
 func (o *Obj) IsInt32() bool {
-	return o.IsKind(reflect.Int32)
+	_, ok := o.obj.(int32)
+	return ok
 }
 
 // IsInt32Slice gets whether the object contained is a []int32 or not.
 func (o *Obj) IsInt32Slice() bool {
-	if !o.IsSlice() {
-		return false
-	}
 	_, ok := o.obj.([]int32)
 	return ok
 }
@@ -1027,8 +1297,8 @@ func (o *Obj) CollectInt32(collector func(int, int32) interface{}) *Obj {
 }
 
 /*
-	Int64 (int64 and []int64)
-	--------------------------------------------------
+  Int64 (int64 and []int64)
+  --------------------------------------------------
 */
 
 // Int64 gets the value as a int64, returns the optionalDefault
@@ -1071,14 +1341,12 @@ func (o *Obj) MustInt64Slice() []int64 {
 
 // IsInt64 gets whether the object contained is a int64 or not.
 func (o *Obj) IsInt64() bool {
-	return o.IsKind(reflect.Int64)
+	_, ok := o.obj.(int64)
+	return ok
 }
 
 // IsInt64Slice gets whether the object contained is a []int64 or not.
 func (o *Obj) IsInt64Slice() bool {
-	if !o.IsSlice() {
-		return false
-	}
 	_, ok := o.obj.([]int64)
 	return ok
 }
@@ -1173,8 +1441,8 @@ func (o *Obj) CollectInt64(collector func(int, int64) interface{}) *Obj {
 }
 
 /*
-	Uint (uint and []uint)
-	--------------------------------------------------
+  Uint (uint and []uint)
+  --------------------------------------------------
 */
 
 // Uint gets the value as a uint, returns the optionalDefault
@@ -1217,14 +1485,12 @@ func (o *Obj) MustUintSlice() []uint {
 
 // IsUint gets whether the object contained is a uint or not.
 func (o *Obj) IsUint() bool {
-	return o.IsKind(reflect.Uint)
+	_, ok := o.obj.(uint)
+	return ok
 }
 
 // IsUintSlice gets whether the object contained is a []uint or not.
 func (o *Obj) IsUintSlice() bool {
-	if !o.IsSlice() {
-		return false
-	}
 	_, ok := o.obj.([]uint)
 	return ok
 }
@@ -1319,8 +1585,8 @@ func (o *Obj) CollectUint(collector func(int, uint) interface{}) *Obj {
 }
 
 /*
-	Uint8 (uint8 and []uint8)
-	--------------------------------------------------
+  Uint8 (uint8 and []uint8)
+  --------------------------------------------------
 */
 
 // Uint8 gets the value as a uint8, returns the optionalDefault
@@ -1363,14 +1629,12 @@ func (o *Obj) MustUint8Slice() []uint8 {
 
 // IsUint8 gets whether the object contained is a uint8 or not.
 func (o *Obj) IsUint8() bool {
-	return o.IsKind(reflect.Uint8)
+	_, ok := o.obj.(uint8)
+	return ok
 }
 
 // IsUint8Slice gets whether the object contained is a []uint8 or not.
 func (o *Obj) IsUint8Slice() bool {
-	if !o.IsSlice() {
-		return false
-	}
 	_, ok := o.obj.([]uint8)
 	return ok
 }
@@ -1465,8 +1729,8 @@ func (o *Obj) CollectUint8(collector func(int, uint8) interface{}) *Obj {
 }
 
 /*
-	Uint16 (uint16 and []uint16)
-	--------------------------------------------------
+  Uint16 (uint16 and []uint16)
+  --------------------------------------------------
 */
 
 // Uint16 gets the value as a uint16, returns the optionalDefault
@@ -1509,14 +1773,12 @@ func (o *Obj) MustUint16Slice() []uint16 {
 
 // IsUint16 gets whether the object contained is a uint16 or not.
 func (o *Obj) IsUint16() bool {
-	return o.IsKind(reflect.Uint16)
+	_, ok := o.obj.(uint16)
+	return ok
 }
 
 // IsUint16Slice gets whether the object contained is a []uint16 or not.
 func (o *Obj) IsUint16Slice() bool {
-	if !o.IsSlice() {
-		return false
-	}
 	_, ok := o.obj.([]uint16)
 	return ok
 }
@@ -1611,8 +1873,8 @@ func (o *Obj) CollectUint16(collector func(int, uint16) interface{}) *Obj {
 }
 
 /*
-	Uint32 (uint32 and []uint32)
-	--------------------------------------------------
+  Uint32 (uint32 and []uint32)
+  --------------------------------------------------
 */
 
 // Uint32 gets the value as a uint32, returns the optionalDefault
@@ -1655,14 +1917,12 @@ func (o *Obj) MustUint32Slice() []uint32 {
 
 // IsUint32 gets whether the object contained is a uint32 or not.
 func (o *Obj) IsUint32() bool {
-	return o.IsKind(reflect.Uint32)
+	_, ok := o.obj.(uint32)
+	return ok
 }
 
 // IsUint32Slice gets whether the object contained is a []uint32 or not.
 func (o *Obj) IsUint32Slice() bool {
-	if !o.IsSlice() {
-		return false
-	}
 	_, ok := o.obj.([]uint32)
 	return ok
 }
@@ -1757,8 +2017,8 @@ func (o *Obj) CollectUint32(collector func(int, uint32) interface{}) *Obj {
 }
 
 /*
-	Uint64 (uint64 and []uint64)
-	--------------------------------------------------
+  Uint64 (uint64 and []uint64)
+  --------------------------------------------------
 */
 
 // Uint64 gets the value as a uint64, returns the optionalDefault
@@ -1801,14 +2061,12 @@ func (o *Obj) MustUint64Slice() []uint64 {
 
 // IsUint64 gets whether the object contained is a uint64 or not.
 func (o *Obj) IsUint64() bool {
-	return o.IsKind(reflect.Uint64)
+	_, ok := o.obj.(uint64)
+	return ok
 }
 
 // IsUint64Slice gets whether the object contained is a []uint64 or not.
 func (o *Obj) IsUint64Slice() bool {
-	if !o.IsSlice() {
-		return false
-	}
 	_, ok := o.obj.([]uint64)
 	return ok
 }
@@ -1903,8 +2161,8 @@ func (o *Obj) CollectUint64(collector func(int, uint64) interface{}) *Obj {
 }
 
 /*
-	Uintptr (uintptr and []uintptr)
-	--------------------------------------------------
+  Uintptr (uintptr and []uintptr)
+  --------------------------------------------------
 */
 
 // Uintptr gets the value as a uintptr, returns the optionalDefault
@@ -1947,14 +2205,12 @@ func (o *Obj) MustUintptrSlice() []uintptr {
 
 // IsUintptr gets whether the object contained is a uintptr or not.
 func (o *Obj) IsUintptr() bool {
-	return o.IsKind(reflect.Uintptr)
+	_, ok := o.obj.(uintptr)
+	return ok
 }
 
 // IsUintptrSlice gets whether the object contained is a []uintptr or not.
 func (o *Obj) IsUintptrSlice() bool {
-	if !o.IsSlice() {
-		return false
-	}
 	_, ok := o.obj.([]uintptr)
 	return ok
 }
@@ -2049,8 +2305,8 @@ func (o *Obj) CollectUintptr(collector func(int, uintptr) interface{}) *Obj {
 }
 
 /*
-	Float32 (float32 and []float32)
-	--------------------------------------------------
+  Float32 (float32 and []float32)
+  --------------------------------------------------
 */
 
 // Float32 gets the value as a float32, returns the optionalDefault
@@ -2093,14 +2349,12 @@ func (o *Obj) MustFloat32Slice() []float32 {
 
 // IsFloat32 gets whether the object contained is a float32 or not.
 func (o *Obj) IsFloat32() bool {
-	return o.IsKind(reflect.Float32)
+	_, ok := o.obj.(float32)
+	return ok
 }
 
 // IsFloat32Slice gets whether the object contained is a []float32 or not.
 func (o *Obj) IsFloat32Slice() bool {
-	if !o.IsSlice() {
-		return false
-	}
 	_, ok := o.obj.([]float32)
 	return ok
 }
@@ -2195,8 +2449,8 @@ func (o *Obj) CollectFloat32(collector func(int, float32) interface{}) *Obj {
 }
 
 /*
-	Float64 (float64 and []float64)
-	--------------------------------------------------
+  Float64 (float64 and []float64)
+  --------------------------------------------------
 */
 
 // Float64 gets the value as a float64, returns the optionalDefault
@@ -2239,14 +2493,12 @@ func (o *Obj) MustFloat64Slice() []float64 {
 
 // IsFloat64 gets whether the object contained is a float64 or not.
 func (o *Obj) IsFloat64() bool {
-	return o.IsKind(reflect.Float64)
+	_, ok := o.obj.(float64)
+	return ok
 }
 
 // IsFloat64Slice gets whether the object contained is a []float64 or not.
 func (o *Obj) IsFloat64Slice() bool {
-	if !o.IsSlice() {
-		return false
-	}
 	_, ok := o.obj.([]float64)
 	return ok
 }
@@ -2341,8 +2593,8 @@ func (o *Obj) CollectFloat64(collector func(int, float64) interface{}) *Obj {
 }
 
 /*
-	Complex64 (complex64 and []complex64)
-	--------------------------------------------------
+  Complex64 (complex64 and []complex64)
+  --------------------------------------------------
 */
 
 // Complex64 gets the value as a complex64, returns the optionalDefault
@@ -2385,14 +2637,12 @@ func (o *Obj) MustComplex64Slice() []complex64 {
 
 // IsComplex64 gets whether the object contained is a complex64 or not.
 func (o *Obj) IsComplex64() bool {
-	return o.IsKind(reflect.Complex64)
+	_, ok := o.obj.(complex64)
+	return ok
 }
 
 // IsComplex64Slice gets whether the object contained is a []complex64 or not.
 func (o *Obj) IsComplex64Slice() bool {
-	if !o.IsSlice() {
-		return false
-	}
 	_, ok := o.obj.([]complex64)
 	return ok
 }
@@ -2487,8 +2737,8 @@ func (o *Obj) CollectComplex64(collector func(int, complex64) interface{}) *Obj 
 }
 
 /*
-	Complex128 (complex128 and []complex128)
-	--------------------------------------------------
+  Complex128 (complex128 and []complex128)
+  --------------------------------------------------
 */
 
 // Complex128 gets the value as a complex128, returns the optionalDefault
@@ -2531,14 +2781,12 @@ func (o *Obj) MustComplex128Slice() []complex128 {
 
 // IsComplex128 gets whether the object contained is a complex128 or not.
 func (o *Obj) IsComplex128() bool {
-	return o.IsKind(reflect.Complex128)
+	_, ok := o.obj.(complex128)
+	return ok
 }
 
 // IsComplex128Slice gets whether the object contained is a []complex128 or not.
 func (o *Obj) IsComplex128Slice() bool {
-	if !o.IsSlice() {
-		return false
-	}
 	_, ok := o.obj.([]complex128)
 	return ok
 }

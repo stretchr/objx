@@ -34,20 +34,6 @@ func TestString(t *testing.T) {
 
 }
 
-func TestGetWithinNestedObj(t *testing.T) {
-
-	o := MSI("one", MSI("two", MSI("three", 3)))
-	assert.Equal(t, 3, o.Get("one.two.three").Int())
-
-}
-
-func TestGetWithinNestedObj_ViaArrayAccessors(t *testing.T) {
-
-	o := MSI("one", MSI("two", MSI("three", []*Obj{MSI("name", "Mat"), MSI("name", "Tyler")})))
-	assert.Equal(t, "Tyler", o.Get("one.two.three[1].name").Str())
-
-}
-
 func TestMustGet(t *testing.T) {
 
 	o := New(TestMap)

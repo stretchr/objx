@@ -8,11 +8,12 @@ import (
 
 func TestInter(t *testing.T) {
 
-	m := map[string]interface{}{"value": interface{}("something"), "nothing": nil}
-	assert.Equal(t, interface{}("something"), New(m).Get("value").Inter())
-	assert.Equal(t, interface{}("something"), New(m).Get("value").MustInter())
+	val := interface{}("something")
+	m := map[string]interface{}{"value": val, "nothing": nil}
+	assert.Equal(t, val, New(m).Get("value").Inter())
+	assert.Equal(t, val, New(m).Get("value").MustInter())
 	assert.Equal(t, interface{}(nil), New(m).Get("nothing").Inter())
-	assert.Equal(t, interface{}("something"), New(m).Get("nothing").Inter("something"))
+	assert.Equal(t, val, New(m).Get("nothing").Inter("something"))
 
 	assert.Panics(t, func() {
 		New(m).Get("age").MustInter()
@@ -22,15 +23,28 @@ func TestInter(t *testing.T) {
 
 func TestInterSlice(t *testing.T) {
 
-	m := map[string]interface{}{"value": []interface{}{interface{}("something")}, "nothing": nil}
-	assert.Equal(t, interface{}("something"), New(m).Get("value").InterSlice()[0])
-	assert.Equal(t, interface{}("something"), New(m).Get("value").MustInterSlice()[0])
+	val := interface{}("something")
+	m := map[string]interface{}{"value": []interface{}{val}, "nothing": nil}
+	assert.Equal(t, val, New(m).Get("value").InterSlice()[0])
+	assert.Equal(t, val, New(m).Get("value").MustInterSlice()[0])
 	assert.Equal(t, []interface{}(nil), New(m).Get("nothing").InterSlice())
-	assert.Equal(t, interface{}("something"), New(m).Get("nothing").InterSlice([]interface{}{interface{}("something")})[0])
+	assert.Equal(t, val, New(m).Get("nothing").InterSlice([]interface{}{interface{}("something")})[0])
 
 	assert.Panics(t, func() {
 		New(m).Get("nothing").MustInterSlice()
 	})
+
+}
+
+func TestIsInter(t *testing.T) {
+
+	var o *Obj
+
+	o = New(interface{}("something"))
+	assert.True(t, o.IsInter())
+
+	o = New([]interface{}{interface{}("something")})
+	assert.True(t, o.IsInterSlice())
 
 }
 
@@ -131,13 +145,292 @@ func TestCollectInter(t *testing.T) {
 
 }
 
+func TestMSI(t *testing.T) {
+
+	val := map[string]interface{}(map[string]interface{}{"name": "Tyler"})
+	m := map[string]interface{}{"value": val, "nothing": nil}
+	assert.Equal(t, val, New(m).Get("value").MSI())
+	assert.Equal(t, val, New(m).Get("value").MustMSI())
+	assert.Equal(t, map[string]interface{}(nil), New(m).Get("nothing").MSI())
+	assert.Equal(t, val, New(m).Get("nothing").MSI(map[string]interface{}{"name": "Tyler"}))
+
+	assert.Panics(t, func() {
+		New(m).Get("age").MustMSI()
+	})
+
+}
+
+func TestMSISlice(t *testing.T) {
+
+	val := map[string]interface{}(map[string]interface{}{"name": "Tyler"})
+	m := map[string]interface{}{"value": []map[string]interface{}{val}, "nothing": nil}
+	assert.Equal(t, val, New(m).Get("value").MSISlice()[0])
+	assert.Equal(t, val, New(m).Get("value").MustMSISlice()[0])
+	assert.Equal(t, []map[string]interface{}(nil), New(m).Get("nothing").MSISlice())
+	assert.Equal(t, val, New(m).Get("nothing").MSISlice([]map[string]interface{}{map[string]interface{}(map[string]interface{}{"name": "Tyler"})})[0])
+
+	assert.Panics(t, func() {
+		New(m).Get("nothing").MustMSISlice()
+	})
+
+}
+
+func TestIsMSI(t *testing.T) {
+
+	var o *Obj
+
+	o = New(map[string]interface{}(map[string]interface{}{"name": "Tyler"}))
+	assert.True(t, o.IsMSI())
+
+	o = New([]map[string]interface{}{map[string]interface{}(map[string]interface{}{"name": "Tyler"})})
+	assert.True(t, o.IsMSISlice())
+
+}
+
+func TestEachMSI(t *testing.T) {
+
+	o := New([]map[string]interface{}{map[string]interface{}(map[string]interface{}{"name": "Tyler"}), map[string]interface{}(map[string]interface{}{"name": "Tyler"}), map[string]interface{}(map[string]interface{}{"name": "Tyler"}), map[string]interface{}(map[string]interface{}{"name": "Tyler"}), map[string]interface{}(map[string]interface{}{"name": "Tyler"})})
+	count := 0
+	replacedVals := make([]map[string]interface{}, 0)
+	assert.Equal(t, o, o.EachMSI(func(i int, val map[string]interface{}) bool {
+
+		count++
+		replacedVals = append(replacedVals, val)
+
+		// abort early
+		if i == 2 {
+			return false
+		}
+
+		return true
+
+	}))
+
+	assert.Equal(t, count, 3)
+	assert.Equal(t, replacedVals[0], o.MustMSISlice()[0])
+	assert.Equal(t, replacedVals[1], o.MustMSISlice()[1])
+	assert.Equal(t, replacedVals[2], o.MustMSISlice()[2])
+
+}
+
+func TestWhereMSI(t *testing.T) {
+
+	o := New([]map[string]interface{}{map[string]interface{}(map[string]interface{}{"name": "Tyler"}), map[string]interface{}(map[string]interface{}{"name": "Tyler"}), map[string]interface{}(map[string]interface{}{"name": "Tyler"}), map[string]interface{}(map[string]interface{}{"name": "Tyler"}), map[string]interface{}(map[string]interface{}{"name": "Tyler"}), map[string]interface{}(map[string]interface{}{"name": "Tyler"})})
+
+	selected := o.WhereMSI(func(i int, val map[string]interface{}) bool {
+		return i%2 == 0
+	}).MustMSISlice()
+
+	assert.Equal(t, 3, len(selected))
+
+}
+
+func TestGroupMSI(t *testing.T) {
+
+	o := New([]map[string]interface{}{map[string]interface{}(map[string]interface{}{"name": "Tyler"}), map[string]interface{}(map[string]interface{}{"name": "Tyler"}), map[string]interface{}(map[string]interface{}{"name": "Tyler"}), map[string]interface{}(map[string]interface{}{"name": "Tyler"}), map[string]interface{}(map[string]interface{}{"name": "Tyler"}), map[string]interface{}(map[string]interface{}{"name": "Tyler"})})
+
+	grouped := o.GroupMSI(func(i int, val map[string]interface{}) string {
+		return fmt.Sprintf("%v", i%2 == 0)
+	}).Obj().(map[string][]map[string]interface{})
+
+	assert.Equal(t, 2, len(grouped))
+	assert.Equal(t, 3, len(grouped["true"]))
+	assert.Equal(t, 3, len(grouped["false"]))
+
+}
+
+func TestReplaceMSI(t *testing.T) {
+
+	o := New([]map[string]interface{}{map[string]interface{}(map[string]interface{}{"name": "Tyler"}), map[string]interface{}(map[string]interface{}{"name": "Tyler"}), map[string]interface{}(map[string]interface{}{"name": "Tyler"}), map[string]interface{}(map[string]interface{}{"name": "Tyler"}), map[string]interface{}(map[string]interface{}{"name": "Tyler"}), map[string]interface{}(map[string]interface{}{"name": "Tyler"})})
+
+	rawArr := o.MustMSISlice()
+
+	replaced := o.ReplaceMSI(func(index int, val map[string]interface{}) map[string]interface{} {
+		if index < len(rawArr)-1 {
+			return rawArr[index+1]
+		}
+		return rawArr[0]
+	})
+
+	replacedArr := replaced.MustMSISlice()
+	if assert.Equal(t, 6, len(replacedArr)) {
+		assert.Equal(t, replacedArr[0], rawArr[1])
+		assert.Equal(t, replacedArr[1], rawArr[2])
+		assert.Equal(t, replacedArr[2], rawArr[3])
+		assert.Equal(t, replacedArr[3], rawArr[4])
+		assert.Equal(t, replacedArr[4], rawArr[5])
+		assert.Equal(t, replacedArr[5], rawArr[0])
+	}
+
+}
+
+func TestCollectMSI(t *testing.T) {
+
+	o := New([]map[string]interface{}{map[string]interface{}(map[string]interface{}{"name": "Tyler"}), map[string]interface{}(map[string]interface{}{"name": "Tyler"}), map[string]interface{}(map[string]interface{}{"name": "Tyler"}), map[string]interface{}(map[string]interface{}{"name": "Tyler"}), map[string]interface{}(map[string]interface{}{"name": "Tyler"}), map[string]interface{}(map[string]interface{}{"name": "Tyler"})})
+
+	collected := o.CollectMSI(func(index int, val map[string]interface{}) interface{} {
+		return index
+	})
+
+	collectedArr := collected.MustInterSlice()
+	if assert.Equal(t, 6, len(collectedArr)) {
+		assert.Equal(t, collectedArr[0], 0)
+		assert.Equal(t, collectedArr[1], 1)
+		assert.Equal(t, collectedArr[2], 2)
+		assert.Equal(t, collectedArr[3], 3)
+		assert.Equal(t, collectedArr[4], 4)
+		assert.Equal(t, collectedArr[5], 5)
+	}
+
+}
+
+func TestObjxObj(t *testing.T) {
+
+	val := (*Obj)(New(1))
+	m := map[string]interface{}{"value": val, "nothing": nil}
+	assert.Equal(t, val, New(m).Get("value").ObjxObj())
+	assert.Equal(t, val, New(m).Get("value").MustObjxObj())
+	assert.Equal(t, (*Obj)(New(nil)), New(m).Get("nothing").ObjxObj())
+	assert.Equal(t, val, New(m).Get("nothing").ObjxObj(New(1)))
+
+	assert.Panics(t, func() {
+		New(m).Get("age").MustObjxObj()
+	})
+
+}
+
+func TestObjxObjSlice(t *testing.T) {
+
+	val := (*Obj)(New(1))
+	m := map[string]interface{}{"value": [](*Obj){val}, "nothing": nil}
+	assert.Equal(t, val, New(m).Get("value").ObjxObjSlice()[0])
+	assert.Equal(t, val, New(m).Get("value").MustObjxObjSlice()[0])
+	assert.Equal(t, [](*Obj)(nil), New(m).Get("nothing").ObjxObjSlice())
+	assert.Equal(t, val, New(m).Get("nothing").ObjxObjSlice([](*Obj){(*Obj)(New(1))})[0])
+
+	assert.Panics(t, func() {
+		New(m).Get("nothing").MustObjxObjSlice()
+	})
+
+}
+
+func TestIsObjxObj(t *testing.T) {
+
+	var o *Obj
+
+	o = New((*Obj)(New(1)))
+	assert.True(t, o.IsObjxObj())
+
+	o = New([](*Obj){(*Obj)(New(1))})
+	assert.True(t, o.IsObjxObjSlice())
+
+}
+
+func TestEachObjxObj(t *testing.T) {
+
+	o := New([](*Obj){(*Obj)(New(1)), (*Obj)(New(1)), (*Obj)(New(1)), (*Obj)(New(1)), (*Obj)(New(1))})
+	count := 0
+	replacedVals := make([](*Obj), 0)
+	assert.Equal(t, o, o.EachObjxObj(func(i int, val *Obj) bool {
+
+		count++
+		replacedVals = append(replacedVals, val)
+
+		// abort early
+		if i == 2 {
+			return false
+		}
+
+		return true
+
+	}))
+
+	assert.Equal(t, count, 3)
+	assert.Equal(t, replacedVals[0], o.MustObjxObjSlice()[0])
+	assert.Equal(t, replacedVals[1], o.MustObjxObjSlice()[1])
+	assert.Equal(t, replacedVals[2], o.MustObjxObjSlice()[2])
+
+}
+
+func TestWhereObjxObj(t *testing.T) {
+
+	o := New([](*Obj){(*Obj)(New(1)), (*Obj)(New(1)), (*Obj)(New(1)), (*Obj)(New(1)), (*Obj)(New(1)), (*Obj)(New(1))})
+
+	selected := o.WhereObjxObj(func(i int, val *Obj) bool {
+		return i%2 == 0
+	}).MustObjxObjSlice()
+
+	assert.Equal(t, 3, len(selected))
+
+}
+
+func TestGroupObjxObj(t *testing.T) {
+
+	o := New([](*Obj){(*Obj)(New(1)), (*Obj)(New(1)), (*Obj)(New(1)), (*Obj)(New(1)), (*Obj)(New(1)), (*Obj)(New(1))})
+
+	grouped := o.GroupObjxObj(func(i int, val *Obj) string {
+		return fmt.Sprintf("%v", i%2 == 0)
+	}).Obj().(map[string][](*Obj))
+
+	assert.Equal(t, 2, len(grouped))
+	assert.Equal(t, 3, len(grouped["true"]))
+	assert.Equal(t, 3, len(grouped["false"]))
+
+}
+
+func TestReplaceObjxObj(t *testing.T) {
+
+	o := New([](*Obj){(*Obj)(New(1)), (*Obj)(New(1)), (*Obj)(New(1)), (*Obj)(New(1)), (*Obj)(New(1)), (*Obj)(New(1))})
+
+	rawArr := o.MustObjxObjSlice()
+
+	replaced := o.ReplaceObjxObj(func(index int, val *Obj) *Obj {
+		if index < len(rawArr)-1 {
+			return rawArr[index+1]
+		}
+		return rawArr[0]
+	})
+
+	replacedArr := replaced.MustObjxObjSlice()
+	if assert.Equal(t, 6, len(replacedArr)) {
+		assert.Equal(t, replacedArr[0], rawArr[1])
+		assert.Equal(t, replacedArr[1], rawArr[2])
+		assert.Equal(t, replacedArr[2], rawArr[3])
+		assert.Equal(t, replacedArr[3], rawArr[4])
+		assert.Equal(t, replacedArr[4], rawArr[5])
+		assert.Equal(t, replacedArr[5], rawArr[0])
+	}
+
+}
+
+func TestCollectObjxObj(t *testing.T) {
+
+	o := New([](*Obj){(*Obj)(New(1)), (*Obj)(New(1)), (*Obj)(New(1)), (*Obj)(New(1)), (*Obj)(New(1)), (*Obj)(New(1))})
+
+	collected := o.CollectObjxObj(func(index int, val *Obj) interface{} {
+		return index
+	})
+
+	collectedArr := collected.MustInterSlice()
+	if assert.Equal(t, 6, len(collectedArr)) {
+		assert.Equal(t, collectedArr[0], 0)
+		assert.Equal(t, collectedArr[1], 1)
+		assert.Equal(t, collectedArr[2], 2)
+		assert.Equal(t, collectedArr[3], 3)
+		assert.Equal(t, collectedArr[4], 4)
+		assert.Equal(t, collectedArr[5], 5)
+	}
+
+}
+
 func TestBool(t *testing.T) {
 
-	m := map[string]interface{}{"value": bool(true), "nothing": nil}
-	assert.Equal(t, bool(true), New(m).Get("value").Bool())
-	assert.Equal(t, bool(true), New(m).Get("value").MustBool())
+	val := bool(true)
+	m := map[string]interface{}{"value": val, "nothing": nil}
+	assert.Equal(t, val, New(m).Get("value").Bool())
+	assert.Equal(t, val, New(m).Get("value").MustBool())
 	assert.Equal(t, bool(false), New(m).Get("nothing").Bool())
-	assert.Equal(t, bool(true), New(m).Get("nothing").Bool(true))
+	assert.Equal(t, val, New(m).Get("nothing").Bool(true))
 
 	assert.Panics(t, func() {
 		New(m).Get("age").MustBool()
@@ -147,11 +440,12 @@ func TestBool(t *testing.T) {
 
 func TestBoolSlice(t *testing.T) {
 
-	m := map[string]interface{}{"value": []bool{bool(true)}, "nothing": nil}
-	assert.Equal(t, bool(true), New(m).Get("value").BoolSlice()[0])
-	assert.Equal(t, bool(true), New(m).Get("value").MustBoolSlice()[0])
+	val := bool(true)
+	m := map[string]interface{}{"value": []bool{val}, "nothing": nil}
+	assert.Equal(t, val, New(m).Get("value").BoolSlice()[0])
+	assert.Equal(t, val, New(m).Get("value").MustBoolSlice()[0])
 	assert.Equal(t, []bool(nil), New(m).Get("nothing").BoolSlice())
-	assert.Equal(t, bool(true), New(m).Get("nothing").BoolSlice([]bool{bool(true)})[0])
+	assert.Equal(t, val, New(m).Get("nothing").BoolSlice([]bool{bool(true)})[0])
 
 	assert.Panics(t, func() {
 		New(m).Get("nothing").MustBoolSlice()
@@ -270,11 +564,12 @@ func TestCollectBool(t *testing.T) {
 
 func TestStr(t *testing.T) {
 
-	m := map[string]interface{}{"value": string("hello"), "nothing": nil}
-	assert.Equal(t, string("hello"), New(m).Get("value").Str())
-	assert.Equal(t, string("hello"), New(m).Get("value").MustStr())
+	val := string("hello")
+	m := map[string]interface{}{"value": val, "nothing": nil}
+	assert.Equal(t, val, New(m).Get("value").Str())
+	assert.Equal(t, val, New(m).Get("value").MustStr())
 	assert.Equal(t, string(""), New(m).Get("nothing").Str())
-	assert.Equal(t, string("hello"), New(m).Get("nothing").Str("hello"))
+	assert.Equal(t, val, New(m).Get("nothing").Str("hello"))
 
 	assert.Panics(t, func() {
 		New(m).Get("age").MustStr()
@@ -284,11 +579,12 @@ func TestStr(t *testing.T) {
 
 func TestStrSlice(t *testing.T) {
 
-	m := map[string]interface{}{"value": []string{string("hello")}, "nothing": nil}
-	assert.Equal(t, string("hello"), New(m).Get("value").StrSlice()[0])
-	assert.Equal(t, string("hello"), New(m).Get("value").MustStrSlice()[0])
+	val := string("hello")
+	m := map[string]interface{}{"value": []string{val}, "nothing": nil}
+	assert.Equal(t, val, New(m).Get("value").StrSlice()[0])
+	assert.Equal(t, val, New(m).Get("value").MustStrSlice()[0])
 	assert.Equal(t, []string(nil), New(m).Get("nothing").StrSlice())
-	assert.Equal(t, string("hello"), New(m).Get("nothing").StrSlice([]string{string("hello")})[0])
+	assert.Equal(t, val, New(m).Get("nothing").StrSlice([]string{string("hello")})[0])
 
 	assert.Panics(t, func() {
 		New(m).Get("nothing").MustStrSlice()
@@ -407,11 +703,12 @@ func TestCollectStr(t *testing.T) {
 
 func TestInt(t *testing.T) {
 
-	m := map[string]interface{}{"value": int(1), "nothing": nil}
-	assert.Equal(t, int(1), New(m).Get("value").Int())
-	assert.Equal(t, int(1), New(m).Get("value").MustInt())
+	val := int(1)
+	m := map[string]interface{}{"value": val, "nothing": nil}
+	assert.Equal(t, val, New(m).Get("value").Int())
+	assert.Equal(t, val, New(m).Get("value").MustInt())
 	assert.Equal(t, int(0), New(m).Get("nothing").Int())
-	assert.Equal(t, int(1), New(m).Get("nothing").Int(1))
+	assert.Equal(t, val, New(m).Get("nothing").Int(1))
 
 	assert.Panics(t, func() {
 		New(m).Get("age").MustInt()
@@ -421,11 +718,12 @@ func TestInt(t *testing.T) {
 
 func TestIntSlice(t *testing.T) {
 
-	m := map[string]interface{}{"value": []int{int(1)}, "nothing": nil}
-	assert.Equal(t, int(1), New(m).Get("value").IntSlice()[0])
-	assert.Equal(t, int(1), New(m).Get("value").MustIntSlice()[0])
+	val := int(1)
+	m := map[string]interface{}{"value": []int{val}, "nothing": nil}
+	assert.Equal(t, val, New(m).Get("value").IntSlice()[0])
+	assert.Equal(t, val, New(m).Get("value").MustIntSlice()[0])
 	assert.Equal(t, []int(nil), New(m).Get("nothing").IntSlice())
-	assert.Equal(t, int(1), New(m).Get("nothing").IntSlice([]int{int(1)})[0])
+	assert.Equal(t, val, New(m).Get("nothing").IntSlice([]int{int(1)})[0])
 
 	assert.Panics(t, func() {
 		New(m).Get("nothing").MustIntSlice()
@@ -544,11 +842,12 @@ func TestCollectInt(t *testing.T) {
 
 func TestInt8(t *testing.T) {
 
-	m := map[string]interface{}{"value": int8(1), "nothing": nil}
-	assert.Equal(t, int8(1), New(m).Get("value").Int8())
-	assert.Equal(t, int8(1), New(m).Get("value").MustInt8())
+	val := int8(1)
+	m := map[string]interface{}{"value": val, "nothing": nil}
+	assert.Equal(t, val, New(m).Get("value").Int8())
+	assert.Equal(t, val, New(m).Get("value").MustInt8())
 	assert.Equal(t, int8(0), New(m).Get("nothing").Int8())
-	assert.Equal(t, int8(1), New(m).Get("nothing").Int8(1))
+	assert.Equal(t, val, New(m).Get("nothing").Int8(1))
 
 	assert.Panics(t, func() {
 		New(m).Get("age").MustInt8()
@@ -558,11 +857,12 @@ func TestInt8(t *testing.T) {
 
 func TestInt8Slice(t *testing.T) {
 
-	m := map[string]interface{}{"value": []int8{int8(1)}, "nothing": nil}
-	assert.Equal(t, int8(1), New(m).Get("value").Int8Slice()[0])
-	assert.Equal(t, int8(1), New(m).Get("value").MustInt8Slice()[0])
+	val := int8(1)
+	m := map[string]interface{}{"value": []int8{val}, "nothing": nil}
+	assert.Equal(t, val, New(m).Get("value").Int8Slice()[0])
+	assert.Equal(t, val, New(m).Get("value").MustInt8Slice()[0])
 	assert.Equal(t, []int8(nil), New(m).Get("nothing").Int8Slice())
-	assert.Equal(t, int8(1), New(m).Get("nothing").Int8Slice([]int8{int8(1)})[0])
+	assert.Equal(t, val, New(m).Get("nothing").Int8Slice([]int8{int8(1)})[0])
 
 	assert.Panics(t, func() {
 		New(m).Get("nothing").MustInt8Slice()
@@ -681,11 +981,12 @@ func TestCollectInt8(t *testing.T) {
 
 func TestInt16(t *testing.T) {
 
-	m := map[string]interface{}{"value": int16(1), "nothing": nil}
-	assert.Equal(t, int16(1), New(m).Get("value").Int16())
-	assert.Equal(t, int16(1), New(m).Get("value").MustInt16())
+	val := int16(1)
+	m := map[string]interface{}{"value": val, "nothing": nil}
+	assert.Equal(t, val, New(m).Get("value").Int16())
+	assert.Equal(t, val, New(m).Get("value").MustInt16())
 	assert.Equal(t, int16(0), New(m).Get("nothing").Int16())
-	assert.Equal(t, int16(1), New(m).Get("nothing").Int16(1))
+	assert.Equal(t, val, New(m).Get("nothing").Int16(1))
 
 	assert.Panics(t, func() {
 		New(m).Get("age").MustInt16()
@@ -695,11 +996,12 @@ func TestInt16(t *testing.T) {
 
 func TestInt16Slice(t *testing.T) {
 
-	m := map[string]interface{}{"value": []int16{int16(1)}, "nothing": nil}
-	assert.Equal(t, int16(1), New(m).Get("value").Int16Slice()[0])
-	assert.Equal(t, int16(1), New(m).Get("value").MustInt16Slice()[0])
+	val := int16(1)
+	m := map[string]interface{}{"value": []int16{val}, "nothing": nil}
+	assert.Equal(t, val, New(m).Get("value").Int16Slice()[0])
+	assert.Equal(t, val, New(m).Get("value").MustInt16Slice()[0])
 	assert.Equal(t, []int16(nil), New(m).Get("nothing").Int16Slice())
-	assert.Equal(t, int16(1), New(m).Get("nothing").Int16Slice([]int16{int16(1)})[0])
+	assert.Equal(t, val, New(m).Get("nothing").Int16Slice([]int16{int16(1)})[0])
 
 	assert.Panics(t, func() {
 		New(m).Get("nothing").MustInt16Slice()
@@ -818,11 +1120,12 @@ func TestCollectInt16(t *testing.T) {
 
 func TestInt32(t *testing.T) {
 
-	m := map[string]interface{}{"value": int32(1), "nothing": nil}
-	assert.Equal(t, int32(1), New(m).Get("value").Int32())
-	assert.Equal(t, int32(1), New(m).Get("value").MustInt32())
+	val := int32(1)
+	m := map[string]interface{}{"value": val, "nothing": nil}
+	assert.Equal(t, val, New(m).Get("value").Int32())
+	assert.Equal(t, val, New(m).Get("value").MustInt32())
 	assert.Equal(t, int32(0), New(m).Get("nothing").Int32())
-	assert.Equal(t, int32(1), New(m).Get("nothing").Int32(1))
+	assert.Equal(t, val, New(m).Get("nothing").Int32(1))
 
 	assert.Panics(t, func() {
 		New(m).Get("age").MustInt32()
@@ -832,11 +1135,12 @@ func TestInt32(t *testing.T) {
 
 func TestInt32Slice(t *testing.T) {
 
-	m := map[string]interface{}{"value": []int32{int32(1)}, "nothing": nil}
-	assert.Equal(t, int32(1), New(m).Get("value").Int32Slice()[0])
-	assert.Equal(t, int32(1), New(m).Get("value").MustInt32Slice()[0])
+	val := int32(1)
+	m := map[string]interface{}{"value": []int32{val}, "nothing": nil}
+	assert.Equal(t, val, New(m).Get("value").Int32Slice()[0])
+	assert.Equal(t, val, New(m).Get("value").MustInt32Slice()[0])
 	assert.Equal(t, []int32(nil), New(m).Get("nothing").Int32Slice())
-	assert.Equal(t, int32(1), New(m).Get("nothing").Int32Slice([]int32{int32(1)})[0])
+	assert.Equal(t, val, New(m).Get("nothing").Int32Slice([]int32{int32(1)})[0])
 
 	assert.Panics(t, func() {
 		New(m).Get("nothing").MustInt32Slice()
@@ -955,11 +1259,12 @@ func TestCollectInt32(t *testing.T) {
 
 func TestInt64(t *testing.T) {
 
-	m := map[string]interface{}{"value": int64(1), "nothing": nil}
-	assert.Equal(t, int64(1), New(m).Get("value").Int64())
-	assert.Equal(t, int64(1), New(m).Get("value").MustInt64())
+	val := int64(1)
+	m := map[string]interface{}{"value": val, "nothing": nil}
+	assert.Equal(t, val, New(m).Get("value").Int64())
+	assert.Equal(t, val, New(m).Get("value").MustInt64())
 	assert.Equal(t, int64(0), New(m).Get("nothing").Int64())
-	assert.Equal(t, int64(1), New(m).Get("nothing").Int64(1))
+	assert.Equal(t, val, New(m).Get("nothing").Int64(1))
 
 	assert.Panics(t, func() {
 		New(m).Get("age").MustInt64()
@@ -969,11 +1274,12 @@ func TestInt64(t *testing.T) {
 
 func TestInt64Slice(t *testing.T) {
 
-	m := map[string]interface{}{"value": []int64{int64(1)}, "nothing": nil}
-	assert.Equal(t, int64(1), New(m).Get("value").Int64Slice()[0])
-	assert.Equal(t, int64(1), New(m).Get("value").MustInt64Slice()[0])
+	val := int64(1)
+	m := map[string]interface{}{"value": []int64{val}, "nothing": nil}
+	assert.Equal(t, val, New(m).Get("value").Int64Slice()[0])
+	assert.Equal(t, val, New(m).Get("value").MustInt64Slice()[0])
 	assert.Equal(t, []int64(nil), New(m).Get("nothing").Int64Slice())
-	assert.Equal(t, int64(1), New(m).Get("nothing").Int64Slice([]int64{int64(1)})[0])
+	assert.Equal(t, val, New(m).Get("nothing").Int64Slice([]int64{int64(1)})[0])
 
 	assert.Panics(t, func() {
 		New(m).Get("nothing").MustInt64Slice()
@@ -1092,11 +1398,12 @@ func TestCollectInt64(t *testing.T) {
 
 func TestUint(t *testing.T) {
 
-	m := map[string]interface{}{"value": uint(1), "nothing": nil}
-	assert.Equal(t, uint(1), New(m).Get("value").Uint())
-	assert.Equal(t, uint(1), New(m).Get("value").MustUint())
+	val := uint(1)
+	m := map[string]interface{}{"value": val, "nothing": nil}
+	assert.Equal(t, val, New(m).Get("value").Uint())
+	assert.Equal(t, val, New(m).Get("value").MustUint())
 	assert.Equal(t, uint(0), New(m).Get("nothing").Uint())
-	assert.Equal(t, uint(1), New(m).Get("nothing").Uint(1))
+	assert.Equal(t, val, New(m).Get("nothing").Uint(1))
 
 	assert.Panics(t, func() {
 		New(m).Get("age").MustUint()
@@ -1106,11 +1413,12 @@ func TestUint(t *testing.T) {
 
 func TestUintSlice(t *testing.T) {
 
-	m := map[string]interface{}{"value": []uint{uint(1)}, "nothing": nil}
-	assert.Equal(t, uint(1), New(m).Get("value").UintSlice()[0])
-	assert.Equal(t, uint(1), New(m).Get("value").MustUintSlice()[0])
+	val := uint(1)
+	m := map[string]interface{}{"value": []uint{val}, "nothing": nil}
+	assert.Equal(t, val, New(m).Get("value").UintSlice()[0])
+	assert.Equal(t, val, New(m).Get("value").MustUintSlice()[0])
 	assert.Equal(t, []uint(nil), New(m).Get("nothing").UintSlice())
-	assert.Equal(t, uint(1), New(m).Get("nothing").UintSlice([]uint{uint(1)})[0])
+	assert.Equal(t, val, New(m).Get("nothing").UintSlice([]uint{uint(1)})[0])
 
 	assert.Panics(t, func() {
 		New(m).Get("nothing").MustUintSlice()
@@ -1229,11 +1537,12 @@ func TestCollectUint(t *testing.T) {
 
 func TestUint8(t *testing.T) {
 
-	m := map[string]interface{}{"value": uint8(1), "nothing": nil}
-	assert.Equal(t, uint8(1), New(m).Get("value").Uint8())
-	assert.Equal(t, uint8(1), New(m).Get("value").MustUint8())
+	val := uint8(1)
+	m := map[string]interface{}{"value": val, "nothing": nil}
+	assert.Equal(t, val, New(m).Get("value").Uint8())
+	assert.Equal(t, val, New(m).Get("value").MustUint8())
 	assert.Equal(t, uint8(0), New(m).Get("nothing").Uint8())
-	assert.Equal(t, uint8(1), New(m).Get("nothing").Uint8(1))
+	assert.Equal(t, val, New(m).Get("nothing").Uint8(1))
 
 	assert.Panics(t, func() {
 		New(m).Get("age").MustUint8()
@@ -1243,11 +1552,12 @@ func TestUint8(t *testing.T) {
 
 func TestUint8Slice(t *testing.T) {
 
-	m := map[string]interface{}{"value": []uint8{uint8(1)}, "nothing": nil}
-	assert.Equal(t, uint8(1), New(m).Get("value").Uint8Slice()[0])
-	assert.Equal(t, uint8(1), New(m).Get("value").MustUint8Slice()[0])
+	val := uint8(1)
+	m := map[string]interface{}{"value": []uint8{val}, "nothing": nil}
+	assert.Equal(t, val, New(m).Get("value").Uint8Slice()[0])
+	assert.Equal(t, val, New(m).Get("value").MustUint8Slice()[0])
 	assert.Equal(t, []uint8(nil), New(m).Get("nothing").Uint8Slice())
-	assert.Equal(t, uint8(1), New(m).Get("nothing").Uint8Slice([]uint8{uint8(1)})[0])
+	assert.Equal(t, val, New(m).Get("nothing").Uint8Slice([]uint8{uint8(1)})[0])
 
 	assert.Panics(t, func() {
 		New(m).Get("nothing").MustUint8Slice()
@@ -1366,11 +1676,12 @@ func TestCollectUint8(t *testing.T) {
 
 func TestUint16(t *testing.T) {
 
-	m := map[string]interface{}{"value": uint16(1), "nothing": nil}
-	assert.Equal(t, uint16(1), New(m).Get("value").Uint16())
-	assert.Equal(t, uint16(1), New(m).Get("value").MustUint16())
+	val := uint16(1)
+	m := map[string]interface{}{"value": val, "nothing": nil}
+	assert.Equal(t, val, New(m).Get("value").Uint16())
+	assert.Equal(t, val, New(m).Get("value").MustUint16())
 	assert.Equal(t, uint16(0), New(m).Get("nothing").Uint16())
-	assert.Equal(t, uint16(1), New(m).Get("nothing").Uint16(1))
+	assert.Equal(t, val, New(m).Get("nothing").Uint16(1))
 
 	assert.Panics(t, func() {
 		New(m).Get("age").MustUint16()
@@ -1380,11 +1691,12 @@ func TestUint16(t *testing.T) {
 
 func TestUint16Slice(t *testing.T) {
 
-	m := map[string]interface{}{"value": []uint16{uint16(1)}, "nothing": nil}
-	assert.Equal(t, uint16(1), New(m).Get("value").Uint16Slice()[0])
-	assert.Equal(t, uint16(1), New(m).Get("value").MustUint16Slice()[0])
+	val := uint16(1)
+	m := map[string]interface{}{"value": []uint16{val}, "nothing": nil}
+	assert.Equal(t, val, New(m).Get("value").Uint16Slice()[0])
+	assert.Equal(t, val, New(m).Get("value").MustUint16Slice()[0])
 	assert.Equal(t, []uint16(nil), New(m).Get("nothing").Uint16Slice())
-	assert.Equal(t, uint16(1), New(m).Get("nothing").Uint16Slice([]uint16{uint16(1)})[0])
+	assert.Equal(t, val, New(m).Get("nothing").Uint16Slice([]uint16{uint16(1)})[0])
 
 	assert.Panics(t, func() {
 		New(m).Get("nothing").MustUint16Slice()
@@ -1503,11 +1815,12 @@ func TestCollectUint16(t *testing.T) {
 
 func TestUint32(t *testing.T) {
 
-	m := map[string]interface{}{"value": uint32(1), "nothing": nil}
-	assert.Equal(t, uint32(1), New(m).Get("value").Uint32())
-	assert.Equal(t, uint32(1), New(m).Get("value").MustUint32())
+	val := uint32(1)
+	m := map[string]interface{}{"value": val, "nothing": nil}
+	assert.Equal(t, val, New(m).Get("value").Uint32())
+	assert.Equal(t, val, New(m).Get("value").MustUint32())
 	assert.Equal(t, uint32(0), New(m).Get("nothing").Uint32())
-	assert.Equal(t, uint32(1), New(m).Get("nothing").Uint32(1))
+	assert.Equal(t, val, New(m).Get("nothing").Uint32(1))
 
 	assert.Panics(t, func() {
 		New(m).Get("age").MustUint32()
@@ -1517,11 +1830,12 @@ func TestUint32(t *testing.T) {
 
 func TestUint32Slice(t *testing.T) {
 
-	m := map[string]interface{}{"value": []uint32{uint32(1)}, "nothing": nil}
-	assert.Equal(t, uint32(1), New(m).Get("value").Uint32Slice()[0])
-	assert.Equal(t, uint32(1), New(m).Get("value").MustUint32Slice()[0])
+	val := uint32(1)
+	m := map[string]interface{}{"value": []uint32{val}, "nothing": nil}
+	assert.Equal(t, val, New(m).Get("value").Uint32Slice()[0])
+	assert.Equal(t, val, New(m).Get("value").MustUint32Slice()[0])
 	assert.Equal(t, []uint32(nil), New(m).Get("nothing").Uint32Slice())
-	assert.Equal(t, uint32(1), New(m).Get("nothing").Uint32Slice([]uint32{uint32(1)})[0])
+	assert.Equal(t, val, New(m).Get("nothing").Uint32Slice([]uint32{uint32(1)})[0])
 
 	assert.Panics(t, func() {
 		New(m).Get("nothing").MustUint32Slice()
@@ -1640,11 +1954,12 @@ func TestCollectUint32(t *testing.T) {
 
 func TestUint64(t *testing.T) {
 
-	m := map[string]interface{}{"value": uint64(1), "nothing": nil}
-	assert.Equal(t, uint64(1), New(m).Get("value").Uint64())
-	assert.Equal(t, uint64(1), New(m).Get("value").MustUint64())
+	val := uint64(1)
+	m := map[string]interface{}{"value": val, "nothing": nil}
+	assert.Equal(t, val, New(m).Get("value").Uint64())
+	assert.Equal(t, val, New(m).Get("value").MustUint64())
 	assert.Equal(t, uint64(0), New(m).Get("nothing").Uint64())
-	assert.Equal(t, uint64(1), New(m).Get("nothing").Uint64(1))
+	assert.Equal(t, val, New(m).Get("nothing").Uint64(1))
 
 	assert.Panics(t, func() {
 		New(m).Get("age").MustUint64()
@@ -1654,11 +1969,12 @@ func TestUint64(t *testing.T) {
 
 func TestUint64Slice(t *testing.T) {
 
-	m := map[string]interface{}{"value": []uint64{uint64(1)}, "nothing": nil}
-	assert.Equal(t, uint64(1), New(m).Get("value").Uint64Slice()[0])
-	assert.Equal(t, uint64(1), New(m).Get("value").MustUint64Slice()[0])
+	val := uint64(1)
+	m := map[string]interface{}{"value": []uint64{val}, "nothing": nil}
+	assert.Equal(t, val, New(m).Get("value").Uint64Slice()[0])
+	assert.Equal(t, val, New(m).Get("value").MustUint64Slice()[0])
 	assert.Equal(t, []uint64(nil), New(m).Get("nothing").Uint64Slice())
-	assert.Equal(t, uint64(1), New(m).Get("nothing").Uint64Slice([]uint64{uint64(1)})[0])
+	assert.Equal(t, val, New(m).Get("nothing").Uint64Slice([]uint64{uint64(1)})[0])
 
 	assert.Panics(t, func() {
 		New(m).Get("nothing").MustUint64Slice()
@@ -1777,11 +2093,12 @@ func TestCollectUint64(t *testing.T) {
 
 func TestUintptr(t *testing.T) {
 
-	m := map[string]interface{}{"value": uintptr(1), "nothing": nil}
-	assert.Equal(t, uintptr(1), New(m).Get("value").Uintptr())
-	assert.Equal(t, uintptr(1), New(m).Get("value").MustUintptr())
+	val := uintptr(1)
+	m := map[string]interface{}{"value": val, "nothing": nil}
+	assert.Equal(t, val, New(m).Get("value").Uintptr())
+	assert.Equal(t, val, New(m).Get("value").MustUintptr())
 	assert.Equal(t, uintptr(0), New(m).Get("nothing").Uintptr())
-	assert.Equal(t, uintptr(1), New(m).Get("nothing").Uintptr(1))
+	assert.Equal(t, val, New(m).Get("nothing").Uintptr(1))
 
 	assert.Panics(t, func() {
 		New(m).Get("age").MustUintptr()
@@ -1791,11 +2108,12 @@ func TestUintptr(t *testing.T) {
 
 func TestUintptrSlice(t *testing.T) {
 
-	m := map[string]interface{}{"value": []uintptr{uintptr(1)}, "nothing": nil}
-	assert.Equal(t, uintptr(1), New(m).Get("value").UintptrSlice()[0])
-	assert.Equal(t, uintptr(1), New(m).Get("value").MustUintptrSlice()[0])
+	val := uintptr(1)
+	m := map[string]interface{}{"value": []uintptr{val}, "nothing": nil}
+	assert.Equal(t, val, New(m).Get("value").UintptrSlice()[0])
+	assert.Equal(t, val, New(m).Get("value").MustUintptrSlice()[0])
 	assert.Equal(t, []uintptr(nil), New(m).Get("nothing").UintptrSlice())
-	assert.Equal(t, uintptr(1), New(m).Get("nothing").UintptrSlice([]uintptr{uintptr(1)})[0])
+	assert.Equal(t, val, New(m).Get("nothing").UintptrSlice([]uintptr{uintptr(1)})[0])
 
 	assert.Panics(t, func() {
 		New(m).Get("nothing").MustUintptrSlice()
@@ -1914,11 +2232,12 @@ func TestCollectUintptr(t *testing.T) {
 
 func TestFloat32(t *testing.T) {
 
-	m := map[string]interface{}{"value": float32(1), "nothing": nil}
-	assert.Equal(t, float32(1), New(m).Get("value").Float32())
-	assert.Equal(t, float32(1), New(m).Get("value").MustFloat32())
+	val := float32(1)
+	m := map[string]interface{}{"value": val, "nothing": nil}
+	assert.Equal(t, val, New(m).Get("value").Float32())
+	assert.Equal(t, val, New(m).Get("value").MustFloat32())
 	assert.Equal(t, float32(0), New(m).Get("nothing").Float32())
-	assert.Equal(t, float32(1), New(m).Get("nothing").Float32(1))
+	assert.Equal(t, val, New(m).Get("nothing").Float32(1))
 
 	assert.Panics(t, func() {
 		New(m).Get("age").MustFloat32()
@@ -1928,11 +2247,12 @@ func TestFloat32(t *testing.T) {
 
 func TestFloat32Slice(t *testing.T) {
 
-	m := map[string]interface{}{"value": []float32{float32(1)}, "nothing": nil}
-	assert.Equal(t, float32(1), New(m).Get("value").Float32Slice()[0])
-	assert.Equal(t, float32(1), New(m).Get("value").MustFloat32Slice()[0])
+	val := float32(1)
+	m := map[string]interface{}{"value": []float32{val}, "nothing": nil}
+	assert.Equal(t, val, New(m).Get("value").Float32Slice()[0])
+	assert.Equal(t, val, New(m).Get("value").MustFloat32Slice()[0])
 	assert.Equal(t, []float32(nil), New(m).Get("nothing").Float32Slice())
-	assert.Equal(t, float32(1), New(m).Get("nothing").Float32Slice([]float32{float32(1)})[0])
+	assert.Equal(t, val, New(m).Get("nothing").Float32Slice([]float32{float32(1)})[0])
 
 	assert.Panics(t, func() {
 		New(m).Get("nothing").MustFloat32Slice()
@@ -2051,11 +2371,12 @@ func TestCollectFloat32(t *testing.T) {
 
 func TestFloat64(t *testing.T) {
 
-	m := map[string]interface{}{"value": float64(1), "nothing": nil}
-	assert.Equal(t, float64(1), New(m).Get("value").Float64())
-	assert.Equal(t, float64(1), New(m).Get("value").MustFloat64())
+	val := float64(1)
+	m := map[string]interface{}{"value": val, "nothing": nil}
+	assert.Equal(t, val, New(m).Get("value").Float64())
+	assert.Equal(t, val, New(m).Get("value").MustFloat64())
 	assert.Equal(t, float64(0), New(m).Get("nothing").Float64())
-	assert.Equal(t, float64(1), New(m).Get("nothing").Float64(1))
+	assert.Equal(t, val, New(m).Get("nothing").Float64(1))
 
 	assert.Panics(t, func() {
 		New(m).Get("age").MustFloat64()
@@ -2065,11 +2386,12 @@ func TestFloat64(t *testing.T) {
 
 func TestFloat64Slice(t *testing.T) {
 
-	m := map[string]interface{}{"value": []float64{float64(1)}, "nothing": nil}
-	assert.Equal(t, float64(1), New(m).Get("value").Float64Slice()[0])
-	assert.Equal(t, float64(1), New(m).Get("value").MustFloat64Slice()[0])
+	val := float64(1)
+	m := map[string]interface{}{"value": []float64{val}, "nothing": nil}
+	assert.Equal(t, val, New(m).Get("value").Float64Slice()[0])
+	assert.Equal(t, val, New(m).Get("value").MustFloat64Slice()[0])
 	assert.Equal(t, []float64(nil), New(m).Get("nothing").Float64Slice())
-	assert.Equal(t, float64(1), New(m).Get("nothing").Float64Slice([]float64{float64(1)})[0])
+	assert.Equal(t, val, New(m).Get("nothing").Float64Slice([]float64{float64(1)})[0])
 
 	assert.Panics(t, func() {
 		New(m).Get("nothing").MustFloat64Slice()
@@ -2188,11 +2510,12 @@ func TestCollectFloat64(t *testing.T) {
 
 func TestComplex64(t *testing.T) {
 
-	m := map[string]interface{}{"value": complex64(1), "nothing": nil}
-	assert.Equal(t, complex64(1), New(m).Get("value").Complex64())
-	assert.Equal(t, complex64(1), New(m).Get("value").MustComplex64())
+	val := complex64(1)
+	m := map[string]interface{}{"value": val, "nothing": nil}
+	assert.Equal(t, val, New(m).Get("value").Complex64())
+	assert.Equal(t, val, New(m).Get("value").MustComplex64())
 	assert.Equal(t, complex64(0), New(m).Get("nothing").Complex64())
-	assert.Equal(t, complex64(1), New(m).Get("nothing").Complex64(1))
+	assert.Equal(t, val, New(m).Get("nothing").Complex64(1))
 
 	assert.Panics(t, func() {
 		New(m).Get("age").MustComplex64()
@@ -2202,11 +2525,12 @@ func TestComplex64(t *testing.T) {
 
 func TestComplex64Slice(t *testing.T) {
 
-	m := map[string]interface{}{"value": []complex64{complex64(1)}, "nothing": nil}
-	assert.Equal(t, complex64(1), New(m).Get("value").Complex64Slice()[0])
-	assert.Equal(t, complex64(1), New(m).Get("value").MustComplex64Slice()[0])
+	val := complex64(1)
+	m := map[string]interface{}{"value": []complex64{val}, "nothing": nil}
+	assert.Equal(t, val, New(m).Get("value").Complex64Slice()[0])
+	assert.Equal(t, val, New(m).Get("value").MustComplex64Slice()[0])
 	assert.Equal(t, []complex64(nil), New(m).Get("nothing").Complex64Slice())
-	assert.Equal(t, complex64(1), New(m).Get("nothing").Complex64Slice([]complex64{complex64(1)})[0])
+	assert.Equal(t, val, New(m).Get("nothing").Complex64Slice([]complex64{complex64(1)})[0])
 
 	assert.Panics(t, func() {
 		New(m).Get("nothing").MustComplex64Slice()
@@ -2325,11 +2649,12 @@ func TestCollectComplex64(t *testing.T) {
 
 func TestComplex128(t *testing.T) {
 
-	m := map[string]interface{}{"value": complex128(1), "nothing": nil}
-	assert.Equal(t, complex128(1), New(m).Get("value").Complex128())
-	assert.Equal(t, complex128(1), New(m).Get("value").MustComplex128())
+	val := complex128(1)
+	m := map[string]interface{}{"value": val, "nothing": nil}
+	assert.Equal(t, val, New(m).Get("value").Complex128())
+	assert.Equal(t, val, New(m).Get("value").MustComplex128())
 	assert.Equal(t, complex128(0), New(m).Get("nothing").Complex128())
-	assert.Equal(t, complex128(1), New(m).Get("nothing").Complex128(1))
+	assert.Equal(t, val, New(m).Get("nothing").Complex128(1))
 
 	assert.Panics(t, func() {
 		New(m).Get("age").MustComplex128()
@@ -2339,11 +2664,12 @@ func TestComplex128(t *testing.T) {
 
 func TestComplex128Slice(t *testing.T) {
 
-	m := map[string]interface{}{"value": []complex128{complex128(1)}, "nothing": nil}
-	assert.Equal(t, complex128(1), New(m).Get("value").Complex128Slice()[0])
-	assert.Equal(t, complex128(1), New(m).Get("value").MustComplex128Slice()[0])
+	val := complex128(1)
+	m := map[string]interface{}{"value": []complex128{val}, "nothing": nil}
+	assert.Equal(t, val, New(m).Get("value").Complex128Slice()[0])
+	assert.Equal(t, val, New(m).Get("value").MustComplex128Slice()[0])
 	assert.Equal(t, []complex128(nil), New(m).Get("nothing").Complex128Slice())
-	assert.Equal(t, complex128(1), New(m).Get("nothing").Complex128Slice([]complex128{complex128(1)})[0])
+	assert.Equal(t, val, New(m).Get("nothing").Complex128Slice([]complex128{complex128(1)})[0])
 
 	assert.Panics(t, func() {
 		New(m).Get("nothing").MustComplex128Slice()
