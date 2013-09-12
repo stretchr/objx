@@ -43,4 +43,19 @@
 //
 // Objx also providers stricter Must methods for each supported type (like MustStr(),
 // MustBool(), MustInt(), MustFloat64() etc.)
+//
+// Slices
+//
+// Objx provides extra support to make working with arrays and slices easy, and in a
+// fluent way.  Each method comes with strongly typed versions.
+//
+// Each* - Each methods iterate over a all items in a slice.  The callback func does the
+// work, and takes the index and object like when ranging.
+//
+// Where* - Where methods allow you to select a subset of items using a simple selector
+// func.
+//
+// Group* - Group methods (e.g. GroupStr, GroupInt etc.) allow you to generate a map[string]T
+// where the key is the name of the group, and the values is a slice of the items in that group.
+// The group name comes from the return of the func argument.
 package objx
