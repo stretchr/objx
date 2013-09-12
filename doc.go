@@ -12,7 +12,7 @@
 //       "tags": ["musician","coder","singer"],
 //       "deep": {
 //         "nested": {
-//	         "item": "easy"
+//           "item": "easy"
 //         }
 //       }
 //     }`)
@@ -32,6 +32,8 @@
 // Objx is type strong, meaning that it attempts to remove the need to
 // work so loosely with interface{}.  In that spirit, it providers
 // strongly typed accessors that make reading data easy.
+//
+// First you use the Get method to select the
 //
 // Example: Int(), Str(), Bool(), Float64(), UInt64() etc.
 //
