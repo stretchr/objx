@@ -4,6 +4,9 @@ import (
 	"reflect"
 )
 
+// More Is* type specific versions can be found in
+// type_specific_codegen.go
+
 // IsNil gets whether the data is nil or not.
 func (o *Obj) IsNil() bool {
 	return o == nil || o.Obj() == nil
