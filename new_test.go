@@ -15,6 +15,16 @@ func TestNew(t *testing.T) {
 
 }
 
+func TestNewMSI(t *testing.T) {
+
+	o := MSI("name", "Tyler")
+
+	if assert.NotNil(t, o) {
+		assert.Equal(t, o.Get("name").Str(), "Tyler")
+	}
+
+}
+
 func TestMustFromJSONWithError(t *testing.T) {
 
 	_, err := FromJSON(`"name":"Mat"}`)
