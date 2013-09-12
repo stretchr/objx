@@ -18,4 +18,7 @@ func TestHas(t *testing.T) {
 	assert.False(t, o.Has("nope"))
 	assert.False(t, o.Has("numbers[5]"))
 
+	o = nil
+	assert.False(t, o.Has("nothing"))
+
 }
