@@ -21,7 +21,7 @@ func TestIsNil(t *testing.T) {
 
 func TestIsKind(t *testing.T) {
 
-	var o *O
+	var o *Obj
 
 	o = New(bool(true))
 	assert.True(t, o.IsKind(reflect.Bool))

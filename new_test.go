@@ -36,7 +36,7 @@ func TestFromJSON(t *testing.T) {
 
 func TestFromJSONWithError(t *testing.T) {
 
-	var o *O
+	var o *Obj
 
 	assert.Panics(t, func() {
 		o = MustFromJSON(`"name":"Mat"}`)

@@ -22,7 +22,7 @@ func TestConversionJSON(t *testing.T) {
 
 func TestConversionJSONWithError(t *testing.T) {
 
-	o := new(O)
+	o := new(Obj)
 	o.obj = func() {}
 
 	assert.Panics(t, func() {
@@ -51,7 +51,7 @@ func TestConversionBase64(t *testing.T) {
 
 func TestConversionBase64WithError(t *testing.T) {
 
-	o := new(O)
+	o := new(Obj)
 	o.obj = func() {}
 
 	assert.Panics(t, func() {
@@ -80,7 +80,7 @@ func TestConversionSignedBase64(t *testing.T) {
 
 func TestConversionSignedBase64WithError(t *testing.T) {
 
-	o := new(O)
+	o := new(Obj)
 	o.obj = func() {}
 
 	assert.Panics(t, func() {

@@ -161,7 +161,7 @@ func TestBoolSlice(t *testing.T) {
 
 func TestIsBool(t *testing.T) {
 
-	var o *O
+	var o *Obj
 
 	o = New(bool(true))
 	assert.True(t, o.IsBool())
@@ -298,7 +298,7 @@ func TestStrSlice(t *testing.T) {
 
 func TestIsStr(t *testing.T) {
 
-	var o *O
+	var o *Obj
 
 	o = New(string("hello"))
 	assert.True(t, o.IsStr())
@@ -435,7 +435,7 @@ func TestIntSlice(t *testing.T) {
 
 func TestIsInt(t *testing.T) {
 
-	var o *O
+	var o *Obj
 
 	o = New(int(1))
 	assert.True(t, o.IsInt())
@@ -572,7 +572,7 @@ func TestInt8Slice(t *testing.T) {
 
 func TestIsInt8(t *testing.T) {
 
-	var o *O
+	var o *Obj
 
 	o = New(int8(1))
 	assert.True(t, o.IsInt8())
@@ -709,7 +709,7 @@ func TestInt16Slice(t *testing.T) {
 
 func TestIsInt16(t *testing.T) {
 
-	var o *O
+	var o *Obj
 
 	o = New(int16(1))
 	assert.True(t, o.IsInt16())
@@ -846,7 +846,7 @@ func TestInt32Slice(t *testing.T) {
 
 func TestIsInt32(t *testing.T) {
 
-	var o *O
+	var o *Obj
 
 	o = New(int32(1))
 	assert.True(t, o.IsInt32())
@@ -983,7 +983,7 @@ func TestInt64Slice(t *testing.T) {
 
 func TestIsInt64(t *testing.T) {
 
-	var o *O
+	var o *Obj
 
 	o = New(int64(1))
 	assert.True(t, o.IsInt64())
@@ -1120,7 +1120,7 @@ func TestUintSlice(t *testing.T) {
 
 func TestIsUint(t *testing.T) {
 
-	var o *O
+	var o *Obj
 
 	o = New(uint(1))
 	assert.True(t, o.IsUint())
@@ -1257,7 +1257,7 @@ func TestUint8Slice(t *testing.T) {
 
 func TestIsUint8(t *testing.T) {
 
-	var o *O
+	var o *Obj
 
 	o = New(uint8(1))
 	assert.True(t, o.IsUint8())
@@ -1394,7 +1394,7 @@ func TestUint16Slice(t *testing.T) {
 
 func TestIsUint16(t *testing.T) {
 
-	var o *O
+	var o *Obj
 
 	o = New(uint16(1))
 	assert.True(t, o.IsUint16())
@@ -1531,7 +1531,7 @@ func TestUint32Slice(t *testing.T) {
 
 func TestIsUint32(t *testing.T) {
 
-	var o *O
+	var o *Obj
 
 	o = New(uint32(1))
 	assert.True(t, o.IsUint32())
@@ -1668,7 +1668,7 @@ func TestUint64Slice(t *testing.T) {
 
 func TestIsUint64(t *testing.T) {
 
-	var o *O
+	var o *Obj
 
 	o = New(uint64(1))
 	assert.True(t, o.IsUint64())
@@ -1805,7 +1805,7 @@ func TestUintptrSlice(t *testing.T) {
 
 func TestIsUintptr(t *testing.T) {
 
-	var o *O
+	var o *Obj
 
 	o = New(uintptr(1))
 	assert.True(t, o.IsUintptr())
@@ -1942,7 +1942,7 @@ func TestFloat32Slice(t *testing.T) {
 
 func TestIsFloat32(t *testing.T) {
 
-	var o *O
+	var o *Obj
 
 	o = New(float32(1))
 	assert.True(t, o.IsFloat32())
@@ -2079,7 +2079,7 @@ func TestFloat64Slice(t *testing.T) {
 
 func TestIsFloat64(t *testing.T) {
 
-	var o *O
+	var o *Obj
 
 	o = New(float64(1))
 	assert.True(t, o.IsFloat64())
@@ -2216,7 +2216,7 @@ func TestComplex64Slice(t *testing.T) {
 
 func TestIsComplex64(t *testing.T) {
 
-	var o *O
+	var o *Obj
 
 	o = New(complex64(1))
 	assert.True(t, o.IsComplex64())
@@ -2353,7 +2353,7 @@ func TestComplex128Slice(t *testing.T) {
 
 func TestIsComplex128(t *testing.T) {
 
-	var o *O
+	var o *Obj
 
 	o = New(complex128(1))
 	assert.True(t, o.IsComplex128())

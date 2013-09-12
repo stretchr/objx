@@ -17,7 +17,7 @@ var arrayAccesRegex = regexp.MustCompile(arrayAccesRegexString)
 // following actions:
 // 1. if value is nil, retrieve the object at selector
 // 2. if value is not nil, set the selector to value
-func (o *O) access(selector interface{}, value interface{}, isSet bool) *O {
+func (o *Obj) access(selector interface{}, value interface{}, isSet bool) *Obj {
 
 	switch selector.(type) {
 	case string: // "address.postcode.inner"
@@ -79,7 +79,7 @@ func (o *O) access(selector interface{}, value interface{}, isSet bool) *O {
 
 }
 
-func (o *O) arrayAccess(object interface{}, index uint64, value interface{}, isSet bool) *O {
+func (o *Obj) arrayAccess(object interface{}, index uint64, value interface{}, isSet bool) *Obj {
 
 	switch object.(type) {
 	case []bool:

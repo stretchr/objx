@@ -8,16 +8,16 @@ import (
 	"strings"
 )
 
-// New creates a new O containing the specified object.
-func New(object interface{}) *O {
-	return &O{obj: object}
+// New creates a new Obj containing the specified object.
+func New(object interface{}) *Obj {
+	return &Obj{obj: object}
 }
 
-// MustFromJSON creates a new O containing the data specified in the
+// MustFromJSON creates a new Obj containing the data specified in the
 // jsonString.
 //
 // Panics if the JSON is invalid.
-func MustFromJSON(jsonString string) *O {
+func MustFromJSON(jsonString string) *Obj {
 	o, err := FromJSON(jsonString)
 
 	if err != NoError {
@@ -27,11 +27,11 @@ func MustFromJSON(jsonString string) *O {
 	return o
 }
 
-// FromJSON creates a new O containing the data specified in the
+// FromJSON creates a new Obj containing the data specified in the
 // jsonString.
 //
 // Returns an error if the JSON is invalid.
-func FromJSON(jsonString string) (*O, error) {
+func FromJSON(jsonString string) (*Obj, error) {
 
 	var data interface{}
 	err := json.Unmarshal([]byte(jsonString), &data)
@@ -44,11 +44,11 @@ func FromJSON(jsonString string) (*O, error) {
 
 }
 
-// FromBase64 creates a new O containing the data specified
+// FromBase64 creates a new Obj containing the data specified
 // in the Base64 string.
 //
 // The string is an encoded JSON string returned by Base64
-func FromBase64(base64String string) (*O, error) {
+func FromBase64(base64String string) (*Obj, error) {
 
 	decoder := base64.NewDecoder(base64.StdEncoding, strings.NewReader(base64String))
 
@@ -60,11 +60,11 @@ func FromBase64(base64String string) (*O, error) {
 	return FromJSON(string(decoded))
 }
 
-// MustFromBase64 creates a new O containing the data specified
+// MustFromBase64 creates a new Obj containing the data specified
 // in the Base64 string and panics if there is an error.
 //
 // The string is an encoded JSON string returned by Base64
-func MustFromBase64(base64String string) *O {
+func MustFromBase64(base64String string) *Obj {
 
 	result, err := FromBase64(base64String)
 
@@ -75,11 +75,11 @@ func MustFromBase64(base64String string) *O {
 	return result
 }
 
-// FromSignedBase64 creates a new O containing the data specified
+// FromSignedBase64 creates a new Obj containing the data specified
 // in the Base64 string.
 //
 // The string is an encoded JSON string returned by SignedBase64
-func FromSignedBase64(base64String, key string) (*O, error) {
+func FromSignedBase64(base64String, key string) (*Obj, error) {
 	parts := strings.Split(base64String, SignatureSeparator)
 	if len(parts) != 2 {
 		return nil, errors.New("objx: Signed base64 string is malformed.")
@@ -93,11 +93,11 @@ func FromSignedBase64(base64String, key string) (*O, error) {
 	return FromBase64(parts[0])
 }
 
-// MustFromSignedBase64 creates a new O containing the data specified
+// MustFromSignedBase64 creates a new Obj containing the data specified
 // in the Base64 string and panics if there is an error.
 //
 // The string is an encoded JSON string returned by Base64
-func MustFromSignedBase64(base64String, key string) *O {
+func MustFromSignedBase64(base64String, key string) *Obj {
 
 	result, err := FromSignedBase64(base64String, key)
 

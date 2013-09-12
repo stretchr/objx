@@ -5,7 +5,7 @@
 
 // {4} gets the value as a {1}, returns the optionalDefault
 // value or a system default object if the value is the wrong type.
-func (o *O) {4}(optionalDefault ...{1}) {1} {
+func (o *Obj) {4}(optionalDefault ...{1}) {1} {
 	if s, ok := o.obj.({1}); ok {
 		return s
 	}
@@ -18,13 +18,13 @@ func (o *O) {4}(optionalDefault ...{1}) {1} {
 // Must{4} gets the value as a {1}.
 //
 // Panics if the object is not a {1}.
-func (o *O) Must{4}() {1} {
+func (o *Obj) Must{4}() {1} {
 	return o.obj.({1})
 }
 
 // {4}Slice gets the value as a []{1}, returns the optionalDefault
 // value or nil if the value is not a []{1}.
-func (o *O) {4}Slice(optionalDefault ...[]{1}) []{1} {
+func (o *Obj) {4}Slice(optionalDefault ...[]{1}) []{1} {
 	if s, ok := o.obj.([]{1}); ok {
 		return s
 	}
@@ -37,17 +37,17 @@ func (o *O) {4}Slice(optionalDefault ...[]{1}) []{1} {
 // Must{4}Slice gets the value as a []{1}.
 //
 // Panics if the object is not a []{1}.
-func (o *O) Must{4}Slice() []{1} {
+func (o *Obj) Must{4}Slice() []{1} {
 	return o.obj.([]{1})
 }
 
 // Is{4} gets whether the object contained is a {1} or not.
-func (o *O) Is{4}() bool {
+func (o *Obj) Is{4}() bool {
 	return o.IsKind(reflect.{0})
 }
 
 // Is{4}Slice gets whether the object contained is a []{1} or not.
-func (o *O) Is{4}Slice() bool {
+func (o *Obj) Is{4}Slice() bool {
 	if !o.IsSlice() {
 		return false
 	}
@@ -59,7 +59,7 @@ func (o *O) Is{4}Slice() bool {
 // in the []{1}.
 //
 // Panics if the object is the wrong type.
-func (o *O) Each{4}(callback func(int, {1}) bool) *O {
+func (o *Obj) Each{4}(callback func(int, {1}) bool) *Obj {
 
 	for index, val := range o.Must{4}Slice() {
 		carryon := callback(index, val)
@@ -75,7 +75,7 @@ func (o *O) Each{4}(callback func(int, {1}) bool) *O {
 // Where{4} uses the specified decider function to select items
 // from the []{1}.  The object contained in the result will contain
 // only the selected items.
-func (o *O) Where{4}(decider func(int, {1}) bool) *O {
+func (o *Obj) Where{4}(decider func(int, {1}) bool) *Obj {
 
 	var selected []{1}
 
@@ -94,7 +94,7 @@ func (o *O) Where{4}(decider func(int, {1}) bool) *O {
 // Group{4} uses the specified grouper function to group the items
 // keyed by the return of the grouper.  The object contained in the
 // result will contain a map[string][]{1}.
-func (o *O) Group{4}(grouper func(int, {1}) string) *O {
+func (o *Obj) Group{4}(grouper func(int, {1}) string) *Obj {
 
 	groups := make(map[string][]{1})
 
@@ -114,7 +114,7 @@ func (o *O) Group{4}(grouper func(int, {1}) string) *O {
 // Replace{4} uses the specified function to replace each {1}s
 // by iterating each item.  The data in the returned result will be a
 // []{1} containing the replaced items.
-func (o *O) Replace{4}(replacer func(int, {1}) {1}) *O {
+func (o *Obj) Replace{4}(replacer func(int, {1}) {1}) *Obj {
 
 	arr := o.Must{4}Slice()
 	replaced := make([]{1}, len(arr))
@@ -131,7 +131,7 @@ func (o *O) Replace{4}(replacer func(int, {1}) {1}) *O {
 // Collect{4} uses the specified collector function to collect a value
 // for each of the {1}s in the slice.  The data returned will be a
 // []interface{}.
-func (o *O) Collect{4}(collector func(int, {1}) interface{}) *O {
+func (o *Obj) Collect{4}(collector func(int, {1}) interface{}) *Obj {
 
 	arr := o.Must{4}Slice()
 	collected := make([]interface{}, len(arr))
@@ -176,7 +176,7 @@ func Test{4}Slice(t *testing.T) {
 
 func TestIs{4}(t *testing.T) {
 
-	var o *O
+	var o *Obj
 
 	o = New({1}({2}))
 	assert.True(t, o.Is{4}())

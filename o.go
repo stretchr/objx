@@ -4,16 +4,16 @@ import (
 	"reflect"
 )
 
-// O is the main container for objects.
-type O struct {
+// Obj is the main container for objects.
+type Obj struct {
 	// obj is the raw object being managed by this
-	// O object.
+	// Obj object.
 	obj interface{}
 
 	// kind stores the reflect.Kind of the object stored
-	// in this O.
+	// in this Obj.
 	kind reflect.Kind
 }
 
-// Nil represents a nil O.
-var Nil *O = nil
+// Nil represents a nil Obj.
+var Nil *Obj = nil

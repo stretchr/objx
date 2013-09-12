@@ -8,7 +8,7 @@ import (
 
 func TestKind(t *testing.T) {
 
-	var o *O
+	var o *Obj
 
 	o = New(bool(true))
 	assert.Equal(t, o.Kind(), reflect.Bool)

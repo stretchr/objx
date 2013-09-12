@@ -6,7 +6,7 @@ import (
 
 // kind gets the reflect.Kind of the data stored in
 // this object.
-func (o *O) Kind() reflect.Kind {
+func (o *Obj) Kind() reflect.Kind {
 
 	// use the cache if we have it
 	if o.kind != reflect.Invalid {

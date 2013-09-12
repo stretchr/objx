@@ -9,7 +9,7 @@ import (
 
 // JSON converts the contained object to a JSON string
 // representation
-func (o *O) JSON() (string, error) {
+func (o *Obj) JSON() (string, error) {
 
 	result, err := json.Marshal(o.obj)
 
@@ -23,7 +23,7 @@ func (o *O) JSON() (string, error) {
 
 // MustJSON converts the contained object to a JSON string
 // representation and panics if there is an error
-func (o *O) MustJSON() string {
+func (o *Obj) MustJSON() string {
 	result, err := o.JSON()
 	if err != nil {
 		panic(err.Error())
@@ -33,7 +33,7 @@ func (o *O) MustJSON() string {
 
 // Base64 converts the contained object to a Base64 string
 // representation of the JSON string representation
-func (o *O) Base64() (string, error) {
+func (o *Obj) Base64() (string, error) {
 
 	var buf bytes.Buffer
 
@@ -53,7 +53,7 @@ func (o *O) Base64() (string, error) {
 // MustBase64 converts the contained object to a Base64 string
 // representation of the JSON string representation and panics
 // if there is an error
-func (o *O) MustBase64() string {
+func (o *Obj) MustBase64() string {
 	result, err := o.Base64()
 	if err != nil {
 		panic(err.Error())
@@ -64,7 +64,7 @@ func (o *O) MustBase64() string {
 // SignedBase64 converts the contained object to a Base64 string
 // representation of the JSON string representation and signs it
 // using the provided key.
-func (o *O) SignedBase64(key string) (string, error) {
+func (o *Obj) SignedBase64(key string) (string, error) {
 
 	base64, err := o.Base64()
 	if err != nil {
@@ -80,7 +80,7 @@ func (o *O) SignedBase64(key string) (string, error) {
 // MustSignedBase64 converts the contained object to a Base64 string
 // representation of the JSON string representation and signs it
 // using the provided key and panics if there is an error
-func (o *O) MustSignedBase64(key string) string {
+func (o *Obj) MustSignedBase64(key string) string {
 	result, err := o.SignedBase64(key)
 	if err != nil {
 		panic(err.Error())
