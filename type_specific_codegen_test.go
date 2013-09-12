@@ -38,11 +38,11 @@ func TestEachInter(t *testing.T) {
 
 	o := New([]interface{}{interface{}("something"), interface{}("something"), interface{}("something"), interface{}("something"), interface{}("something")})
 	count := 0
-	collectedVals := make([]interface{}, 0)
+	replacedVals := make([]interface{}, 0)
 	assert.Equal(t, o, o.EachInter(func(i int, val interface{}) bool {
 
 		count++
-		collectedVals = append(collectedVals, val)
+		replacedVals = append(replacedVals, val)
 
 		// abort early
 		if i == 2 {
@@ -54,9 +54,9 @@ func TestEachInter(t *testing.T) {
 	}))
 
 	assert.Equal(t, count, 3)
-	assert.Equal(t, collectedVals[0], o.MustInterSlice()[0])
-	assert.Equal(t, collectedVals[1], o.MustInterSlice()[1])
-	assert.Equal(t, collectedVals[2], o.MustInterSlice()[2])
+	assert.Equal(t, replacedVals[0], o.MustInterSlice()[0])
+	assert.Equal(t, replacedVals[1], o.MustInterSlice()[1])
+	assert.Equal(t, replacedVals[2], o.MustInterSlice()[2])
 
 }
 
@@ -83,6 +83,51 @@ func TestGroupInter(t *testing.T) {
 	assert.Equal(t, 2, len(grouped))
 	assert.Equal(t, 3, len(grouped["true"]))
 	assert.Equal(t, 3, len(grouped["false"]))
+
+}
+
+func TestReplaceInter(t *testing.T) {
+
+	o := New([]interface{}{interface{}("something"), interface{}("something"), interface{}("something"), interface{}("something"), interface{}("something"), interface{}("something")})
+
+	rawArr := o.MustInterSlice()
+
+	replaced := o.ReplaceInter(func(index int, val interface{}) interface{} {
+		if index < len(rawArr)-1 {
+			return rawArr[index+1]
+		}
+		return rawArr[0]
+	})
+
+	replacedArr := replaced.MustInterSlice()
+	if assert.Equal(t, 6, len(replacedArr)) {
+		assert.Equal(t, replacedArr[0], rawArr[1])
+		assert.Equal(t, replacedArr[1], rawArr[2])
+		assert.Equal(t, replacedArr[2], rawArr[3])
+		assert.Equal(t, replacedArr[3], rawArr[4])
+		assert.Equal(t, replacedArr[4], rawArr[5])
+		assert.Equal(t, replacedArr[5], rawArr[0])
+	}
+
+}
+
+func TestCollectInter(t *testing.T) {
+
+	o := New([]interface{}{interface{}("something"), interface{}("something"), interface{}("something"), interface{}("something"), interface{}("something"), interface{}("something")})
+
+	collected := o.CollectInter(func(index int, val interface{}) interface{} {
+		return index
+	})
+
+	collectedArr := collected.MustInterSlice()
+	if assert.Equal(t, 6, len(collectedArr)) {
+		assert.Equal(t, collectedArr[0], 0)
+		assert.Equal(t, collectedArr[1], 1)
+		assert.Equal(t, collectedArr[2], 2)
+		assert.Equal(t, collectedArr[3], 3)
+		assert.Equal(t, collectedArr[4], 4)
+		assert.Equal(t, collectedArr[5], 5)
+	}
 
 }
 
@@ -130,11 +175,11 @@ func TestEachBool(t *testing.T) {
 
 	o := New([]bool{bool(true), bool(true), bool(true), bool(true), bool(true)})
 	count := 0
-	collectedVals := make([]bool, 0)
+	replacedVals := make([]bool, 0)
 	assert.Equal(t, o, o.EachBool(func(i int, val bool) bool {
 
 		count++
-		collectedVals = append(collectedVals, val)
+		replacedVals = append(replacedVals, val)
 
 		// abort early
 		if i == 2 {
@@ -146,9 +191,9 @@ func TestEachBool(t *testing.T) {
 	}))
 
 	assert.Equal(t, count, 3)
-	assert.Equal(t, collectedVals[0], o.MustBoolSlice()[0])
-	assert.Equal(t, collectedVals[1], o.MustBoolSlice()[1])
-	assert.Equal(t, collectedVals[2], o.MustBoolSlice()[2])
+	assert.Equal(t, replacedVals[0], o.MustBoolSlice()[0])
+	assert.Equal(t, replacedVals[1], o.MustBoolSlice()[1])
+	assert.Equal(t, replacedVals[2], o.MustBoolSlice()[2])
 
 }
 
@@ -175,6 +220,51 @@ func TestGroupBool(t *testing.T) {
 	assert.Equal(t, 2, len(grouped))
 	assert.Equal(t, 3, len(grouped["true"]))
 	assert.Equal(t, 3, len(grouped["false"]))
+
+}
+
+func TestReplaceBool(t *testing.T) {
+
+	o := New([]bool{bool(true), bool(true), bool(true), bool(true), bool(true), bool(true)})
+
+	rawArr := o.MustBoolSlice()
+
+	replaced := o.ReplaceBool(func(index int, val bool) bool {
+		if index < len(rawArr)-1 {
+			return rawArr[index+1]
+		}
+		return rawArr[0]
+	})
+
+	replacedArr := replaced.MustBoolSlice()
+	if assert.Equal(t, 6, len(replacedArr)) {
+		assert.Equal(t, replacedArr[0], rawArr[1])
+		assert.Equal(t, replacedArr[1], rawArr[2])
+		assert.Equal(t, replacedArr[2], rawArr[3])
+		assert.Equal(t, replacedArr[3], rawArr[4])
+		assert.Equal(t, replacedArr[4], rawArr[5])
+		assert.Equal(t, replacedArr[5], rawArr[0])
+	}
+
+}
+
+func TestCollectBool(t *testing.T) {
+
+	o := New([]bool{bool(true), bool(true), bool(true), bool(true), bool(true), bool(true)})
+
+	collected := o.CollectBool(func(index int, val bool) interface{} {
+		return index
+	})
+
+	collectedArr := collected.MustInterSlice()
+	if assert.Equal(t, 6, len(collectedArr)) {
+		assert.Equal(t, collectedArr[0], 0)
+		assert.Equal(t, collectedArr[1], 1)
+		assert.Equal(t, collectedArr[2], 2)
+		assert.Equal(t, collectedArr[3], 3)
+		assert.Equal(t, collectedArr[4], 4)
+		assert.Equal(t, collectedArr[5], 5)
+	}
 
 }
 
@@ -222,11 +312,11 @@ func TestEachStr(t *testing.T) {
 
 	o := New([]string{string("hello"), string("hello"), string("hello"), string("hello"), string("hello")})
 	count := 0
-	collectedVals := make([]string, 0)
+	replacedVals := make([]string, 0)
 	assert.Equal(t, o, o.EachStr(func(i int, val string) bool {
 
 		count++
-		collectedVals = append(collectedVals, val)
+		replacedVals = append(replacedVals, val)
 
 		// abort early
 		if i == 2 {
@@ -238,9 +328,9 @@ func TestEachStr(t *testing.T) {
 	}))
 
 	assert.Equal(t, count, 3)
-	assert.Equal(t, collectedVals[0], o.MustStrSlice()[0])
-	assert.Equal(t, collectedVals[1], o.MustStrSlice()[1])
-	assert.Equal(t, collectedVals[2], o.MustStrSlice()[2])
+	assert.Equal(t, replacedVals[0], o.MustStrSlice()[0])
+	assert.Equal(t, replacedVals[1], o.MustStrSlice()[1])
+	assert.Equal(t, replacedVals[2], o.MustStrSlice()[2])
 
 }
 
@@ -267,6 +357,51 @@ func TestGroupStr(t *testing.T) {
 	assert.Equal(t, 2, len(grouped))
 	assert.Equal(t, 3, len(grouped["true"]))
 	assert.Equal(t, 3, len(grouped["false"]))
+
+}
+
+func TestReplaceStr(t *testing.T) {
+
+	o := New([]string{string("hello"), string("hello"), string("hello"), string("hello"), string("hello"), string("hello")})
+
+	rawArr := o.MustStrSlice()
+
+	replaced := o.ReplaceStr(func(index int, val string) string {
+		if index < len(rawArr)-1 {
+			return rawArr[index+1]
+		}
+		return rawArr[0]
+	})
+
+	replacedArr := replaced.MustStrSlice()
+	if assert.Equal(t, 6, len(replacedArr)) {
+		assert.Equal(t, replacedArr[0], rawArr[1])
+		assert.Equal(t, replacedArr[1], rawArr[2])
+		assert.Equal(t, replacedArr[2], rawArr[3])
+		assert.Equal(t, replacedArr[3], rawArr[4])
+		assert.Equal(t, replacedArr[4], rawArr[5])
+		assert.Equal(t, replacedArr[5], rawArr[0])
+	}
+
+}
+
+func TestCollectStr(t *testing.T) {
+
+	o := New([]string{string("hello"), string("hello"), string("hello"), string("hello"), string("hello"), string("hello")})
+
+	collected := o.CollectStr(func(index int, val string) interface{} {
+		return index
+	})
+
+	collectedArr := collected.MustInterSlice()
+	if assert.Equal(t, 6, len(collectedArr)) {
+		assert.Equal(t, collectedArr[0], 0)
+		assert.Equal(t, collectedArr[1], 1)
+		assert.Equal(t, collectedArr[2], 2)
+		assert.Equal(t, collectedArr[3], 3)
+		assert.Equal(t, collectedArr[4], 4)
+		assert.Equal(t, collectedArr[5], 5)
+	}
 
 }
 
@@ -314,11 +449,11 @@ func TestEachInt(t *testing.T) {
 
 	o := New([]int{int(1), int(1), int(1), int(1), int(1)})
 	count := 0
-	collectedVals := make([]int, 0)
+	replacedVals := make([]int, 0)
 	assert.Equal(t, o, o.EachInt(func(i int, val int) bool {
 
 		count++
-		collectedVals = append(collectedVals, val)
+		replacedVals = append(replacedVals, val)
 
 		// abort early
 		if i == 2 {
@@ -330,9 +465,9 @@ func TestEachInt(t *testing.T) {
 	}))
 
 	assert.Equal(t, count, 3)
-	assert.Equal(t, collectedVals[0], o.MustIntSlice()[0])
-	assert.Equal(t, collectedVals[1], o.MustIntSlice()[1])
-	assert.Equal(t, collectedVals[2], o.MustIntSlice()[2])
+	assert.Equal(t, replacedVals[0], o.MustIntSlice()[0])
+	assert.Equal(t, replacedVals[1], o.MustIntSlice()[1])
+	assert.Equal(t, replacedVals[2], o.MustIntSlice()[2])
 
 }
 
@@ -359,6 +494,51 @@ func TestGroupInt(t *testing.T) {
 	assert.Equal(t, 2, len(grouped))
 	assert.Equal(t, 3, len(grouped["true"]))
 	assert.Equal(t, 3, len(grouped["false"]))
+
+}
+
+func TestReplaceInt(t *testing.T) {
+
+	o := New([]int{int(1), int(1), int(1), int(1), int(1), int(1)})
+
+	rawArr := o.MustIntSlice()
+
+	replaced := o.ReplaceInt(func(index int, val int) int {
+		if index < len(rawArr)-1 {
+			return rawArr[index+1]
+		}
+		return rawArr[0]
+	})
+
+	replacedArr := replaced.MustIntSlice()
+	if assert.Equal(t, 6, len(replacedArr)) {
+		assert.Equal(t, replacedArr[0], rawArr[1])
+		assert.Equal(t, replacedArr[1], rawArr[2])
+		assert.Equal(t, replacedArr[2], rawArr[3])
+		assert.Equal(t, replacedArr[3], rawArr[4])
+		assert.Equal(t, replacedArr[4], rawArr[5])
+		assert.Equal(t, replacedArr[5], rawArr[0])
+	}
+
+}
+
+func TestCollectInt(t *testing.T) {
+
+	o := New([]int{int(1), int(1), int(1), int(1), int(1), int(1)})
+
+	collected := o.CollectInt(func(index int, val int) interface{} {
+		return index
+	})
+
+	collectedArr := collected.MustInterSlice()
+	if assert.Equal(t, 6, len(collectedArr)) {
+		assert.Equal(t, collectedArr[0], 0)
+		assert.Equal(t, collectedArr[1], 1)
+		assert.Equal(t, collectedArr[2], 2)
+		assert.Equal(t, collectedArr[3], 3)
+		assert.Equal(t, collectedArr[4], 4)
+		assert.Equal(t, collectedArr[5], 5)
+	}
 
 }
 
@@ -406,11 +586,11 @@ func TestEachInt8(t *testing.T) {
 
 	o := New([]int8{int8(1), int8(1), int8(1), int8(1), int8(1)})
 	count := 0
-	collectedVals := make([]int8, 0)
+	replacedVals := make([]int8, 0)
 	assert.Equal(t, o, o.EachInt8(func(i int, val int8) bool {
 
 		count++
-		collectedVals = append(collectedVals, val)
+		replacedVals = append(replacedVals, val)
 
 		// abort early
 		if i == 2 {
@@ -422,9 +602,9 @@ func TestEachInt8(t *testing.T) {
 	}))
 
 	assert.Equal(t, count, 3)
-	assert.Equal(t, collectedVals[0], o.MustInt8Slice()[0])
-	assert.Equal(t, collectedVals[1], o.MustInt8Slice()[1])
-	assert.Equal(t, collectedVals[2], o.MustInt8Slice()[2])
+	assert.Equal(t, replacedVals[0], o.MustInt8Slice()[0])
+	assert.Equal(t, replacedVals[1], o.MustInt8Slice()[1])
+	assert.Equal(t, replacedVals[2], o.MustInt8Slice()[2])
 
 }
 
@@ -451,6 +631,51 @@ func TestGroupInt8(t *testing.T) {
 	assert.Equal(t, 2, len(grouped))
 	assert.Equal(t, 3, len(grouped["true"]))
 	assert.Equal(t, 3, len(grouped["false"]))
+
+}
+
+func TestReplaceInt8(t *testing.T) {
+
+	o := New([]int8{int8(1), int8(1), int8(1), int8(1), int8(1), int8(1)})
+
+	rawArr := o.MustInt8Slice()
+
+	replaced := o.ReplaceInt8(func(index int, val int8) int8 {
+		if index < len(rawArr)-1 {
+			return rawArr[index+1]
+		}
+		return rawArr[0]
+	})
+
+	replacedArr := replaced.MustInt8Slice()
+	if assert.Equal(t, 6, len(replacedArr)) {
+		assert.Equal(t, replacedArr[0], rawArr[1])
+		assert.Equal(t, replacedArr[1], rawArr[2])
+		assert.Equal(t, replacedArr[2], rawArr[3])
+		assert.Equal(t, replacedArr[3], rawArr[4])
+		assert.Equal(t, replacedArr[4], rawArr[5])
+		assert.Equal(t, replacedArr[5], rawArr[0])
+	}
+
+}
+
+func TestCollectInt8(t *testing.T) {
+
+	o := New([]int8{int8(1), int8(1), int8(1), int8(1), int8(1), int8(1)})
+
+	collected := o.CollectInt8(func(index int, val int8) interface{} {
+		return index
+	})
+
+	collectedArr := collected.MustInterSlice()
+	if assert.Equal(t, 6, len(collectedArr)) {
+		assert.Equal(t, collectedArr[0], 0)
+		assert.Equal(t, collectedArr[1], 1)
+		assert.Equal(t, collectedArr[2], 2)
+		assert.Equal(t, collectedArr[3], 3)
+		assert.Equal(t, collectedArr[4], 4)
+		assert.Equal(t, collectedArr[5], 5)
+	}
 
 }
 
@@ -498,11 +723,11 @@ func TestEachInt16(t *testing.T) {
 
 	o := New([]int16{int16(1), int16(1), int16(1), int16(1), int16(1)})
 	count := 0
-	collectedVals := make([]int16, 0)
+	replacedVals := make([]int16, 0)
 	assert.Equal(t, o, o.EachInt16(func(i int, val int16) bool {
 
 		count++
-		collectedVals = append(collectedVals, val)
+		replacedVals = append(replacedVals, val)
 
 		// abort early
 		if i == 2 {
@@ -514,9 +739,9 @@ func TestEachInt16(t *testing.T) {
 	}))
 
 	assert.Equal(t, count, 3)
-	assert.Equal(t, collectedVals[0], o.MustInt16Slice()[0])
-	assert.Equal(t, collectedVals[1], o.MustInt16Slice()[1])
-	assert.Equal(t, collectedVals[2], o.MustInt16Slice()[2])
+	assert.Equal(t, replacedVals[0], o.MustInt16Slice()[0])
+	assert.Equal(t, replacedVals[1], o.MustInt16Slice()[1])
+	assert.Equal(t, replacedVals[2], o.MustInt16Slice()[2])
 
 }
 
@@ -543,6 +768,51 @@ func TestGroupInt16(t *testing.T) {
 	assert.Equal(t, 2, len(grouped))
 	assert.Equal(t, 3, len(grouped["true"]))
 	assert.Equal(t, 3, len(grouped["false"]))
+
+}
+
+func TestReplaceInt16(t *testing.T) {
+
+	o := New([]int16{int16(1), int16(1), int16(1), int16(1), int16(1), int16(1)})
+
+	rawArr := o.MustInt16Slice()
+
+	replaced := o.ReplaceInt16(func(index int, val int16) int16 {
+		if index < len(rawArr)-1 {
+			return rawArr[index+1]
+		}
+		return rawArr[0]
+	})
+
+	replacedArr := replaced.MustInt16Slice()
+	if assert.Equal(t, 6, len(replacedArr)) {
+		assert.Equal(t, replacedArr[0], rawArr[1])
+		assert.Equal(t, replacedArr[1], rawArr[2])
+		assert.Equal(t, replacedArr[2], rawArr[3])
+		assert.Equal(t, replacedArr[3], rawArr[4])
+		assert.Equal(t, replacedArr[4], rawArr[5])
+		assert.Equal(t, replacedArr[5], rawArr[0])
+	}
+
+}
+
+func TestCollectInt16(t *testing.T) {
+
+	o := New([]int16{int16(1), int16(1), int16(1), int16(1), int16(1), int16(1)})
+
+	collected := o.CollectInt16(func(index int, val int16) interface{} {
+		return index
+	})
+
+	collectedArr := collected.MustInterSlice()
+	if assert.Equal(t, 6, len(collectedArr)) {
+		assert.Equal(t, collectedArr[0], 0)
+		assert.Equal(t, collectedArr[1], 1)
+		assert.Equal(t, collectedArr[2], 2)
+		assert.Equal(t, collectedArr[3], 3)
+		assert.Equal(t, collectedArr[4], 4)
+		assert.Equal(t, collectedArr[5], 5)
+	}
 
 }
 
@@ -590,11 +860,11 @@ func TestEachInt32(t *testing.T) {
 
 	o := New([]int32{int32(1), int32(1), int32(1), int32(1), int32(1)})
 	count := 0
-	collectedVals := make([]int32, 0)
+	replacedVals := make([]int32, 0)
 	assert.Equal(t, o, o.EachInt32(func(i int, val int32) bool {
 
 		count++
-		collectedVals = append(collectedVals, val)
+		replacedVals = append(replacedVals, val)
 
 		// abort early
 		if i == 2 {
@@ -606,9 +876,9 @@ func TestEachInt32(t *testing.T) {
 	}))
 
 	assert.Equal(t, count, 3)
-	assert.Equal(t, collectedVals[0], o.MustInt32Slice()[0])
-	assert.Equal(t, collectedVals[1], o.MustInt32Slice()[1])
-	assert.Equal(t, collectedVals[2], o.MustInt32Slice()[2])
+	assert.Equal(t, replacedVals[0], o.MustInt32Slice()[0])
+	assert.Equal(t, replacedVals[1], o.MustInt32Slice()[1])
+	assert.Equal(t, replacedVals[2], o.MustInt32Slice()[2])
 
 }
 
@@ -635,6 +905,51 @@ func TestGroupInt32(t *testing.T) {
 	assert.Equal(t, 2, len(grouped))
 	assert.Equal(t, 3, len(grouped["true"]))
 	assert.Equal(t, 3, len(grouped["false"]))
+
+}
+
+func TestReplaceInt32(t *testing.T) {
+
+	o := New([]int32{int32(1), int32(1), int32(1), int32(1), int32(1), int32(1)})
+
+	rawArr := o.MustInt32Slice()
+
+	replaced := o.ReplaceInt32(func(index int, val int32) int32 {
+		if index < len(rawArr)-1 {
+			return rawArr[index+1]
+		}
+		return rawArr[0]
+	})
+
+	replacedArr := replaced.MustInt32Slice()
+	if assert.Equal(t, 6, len(replacedArr)) {
+		assert.Equal(t, replacedArr[0], rawArr[1])
+		assert.Equal(t, replacedArr[1], rawArr[2])
+		assert.Equal(t, replacedArr[2], rawArr[3])
+		assert.Equal(t, replacedArr[3], rawArr[4])
+		assert.Equal(t, replacedArr[4], rawArr[5])
+		assert.Equal(t, replacedArr[5], rawArr[0])
+	}
+
+}
+
+func TestCollectInt32(t *testing.T) {
+
+	o := New([]int32{int32(1), int32(1), int32(1), int32(1), int32(1), int32(1)})
+
+	collected := o.CollectInt32(func(index int, val int32) interface{} {
+		return index
+	})
+
+	collectedArr := collected.MustInterSlice()
+	if assert.Equal(t, 6, len(collectedArr)) {
+		assert.Equal(t, collectedArr[0], 0)
+		assert.Equal(t, collectedArr[1], 1)
+		assert.Equal(t, collectedArr[2], 2)
+		assert.Equal(t, collectedArr[3], 3)
+		assert.Equal(t, collectedArr[4], 4)
+		assert.Equal(t, collectedArr[5], 5)
+	}
 
 }
 
@@ -682,11 +997,11 @@ func TestEachInt64(t *testing.T) {
 
 	o := New([]int64{int64(1), int64(1), int64(1), int64(1), int64(1)})
 	count := 0
-	collectedVals := make([]int64, 0)
+	replacedVals := make([]int64, 0)
 	assert.Equal(t, o, o.EachInt64(func(i int, val int64) bool {
 
 		count++
-		collectedVals = append(collectedVals, val)
+		replacedVals = append(replacedVals, val)
 
 		// abort early
 		if i == 2 {
@@ -698,9 +1013,9 @@ func TestEachInt64(t *testing.T) {
 	}))
 
 	assert.Equal(t, count, 3)
-	assert.Equal(t, collectedVals[0], o.MustInt64Slice()[0])
-	assert.Equal(t, collectedVals[1], o.MustInt64Slice()[1])
-	assert.Equal(t, collectedVals[2], o.MustInt64Slice()[2])
+	assert.Equal(t, replacedVals[0], o.MustInt64Slice()[0])
+	assert.Equal(t, replacedVals[1], o.MustInt64Slice()[1])
+	assert.Equal(t, replacedVals[2], o.MustInt64Slice()[2])
 
 }
 
@@ -727,6 +1042,51 @@ func TestGroupInt64(t *testing.T) {
 	assert.Equal(t, 2, len(grouped))
 	assert.Equal(t, 3, len(grouped["true"]))
 	assert.Equal(t, 3, len(grouped["false"]))
+
+}
+
+func TestReplaceInt64(t *testing.T) {
+
+	o := New([]int64{int64(1), int64(1), int64(1), int64(1), int64(1), int64(1)})
+
+	rawArr := o.MustInt64Slice()
+
+	replaced := o.ReplaceInt64(func(index int, val int64) int64 {
+		if index < len(rawArr)-1 {
+			return rawArr[index+1]
+		}
+		return rawArr[0]
+	})
+
+	replacedArr := replaced.MustInt64Slice()
+	if assert.Equal(t, 6, len(replacedArr)) {
+		assert.Equal(t, replacedArr[0], rawArr[1])
+		assert.Equal(t, replacedArr[1], rawArr[2])
+		assert.Equal(t, replacedArr[2], rawArr[3])
+		assert.Equal(t, replacedArr[3], rawArr[4])
+		assert.Equal(t, replacedArr[4], rawArr[5])
+		assert.Equal(t, replacedArr[5], rawArr[0])
+	}
+
+}
+
+func TestCollectInt64(t *testing.T) {
+
+	o := New([]int64{int64(1), int64(1), int64(1), int64(1), int64(1), int64(1)})
+
+	collected := o.CollectInt64(func(index int, val int64) interface{} {
+		return index
+	})
+
+	collectedArr := collected.MustInterSlice()
+	if assert.Equal(t, 6, len(collectedArr)) {
+		assert.Equal(t, collectedArr[0], 0)
+		assert.Equal(t, collectedArr[1], 1)
+		assert.Equal(t, collectedArr[2], 2)
+		assert.Equal(t, collectedArr[3], 3)
+		assert.Equal(t, collectedArr[4], 4)
+		assert.Equal(t, collectedArr[5], 5)
+	}
 
 }
 
@@ -774,11 +1134,11 @@ func TestEachUint(t *testing.T) {
 
 	o := New([]uint{uint(1), uint(1), uint(1), uint(1), uint(1)})
 	count := 0
-	collectedVals := make([]uint, 0)
+	replacedVals := make([]uint, 0)
 	assert.Equal(t, o, o.EachUint(func(i int, val uint) bool {
 
 		count++
-		collectedVals = append(collectedVals, val)
+		replacedVals = append(replacedVals, val)
 
 		// abort early
 		if i == 2 {
@@ -790,9 +1150,9 @@ func TestEachUint(t *testing.T) {
 	}))
 
 	assert.Equal(t, count, 3)
-	assert.Equal(t, collectedVals[0], o.MustUintSlice()[0])
-	assert.Equal(t, collectedVals[1], o.MustUintSlice()[1])
-	assert.Equal(t, collectedVals[2], o.MustUintSlice()[2])
+	assert.Equal(t, replacedVals[0], o.MustUintSlice()[0])
+	assert.Equal(t, replacedVals[1], o.MustUintSlice()[1])
+	assert.Equal(t, replacedVals[2], o.MustUintSlice()[2])
 
 }
 
@@ -819,6 +1179,51 @@ func TestGroupUint(t *testing.T) {
 	assert.Equal(t, 2, len(grouped))
 	assert.Equal(t, 3, len(grouped["true"]))
 	assert.Equal(t, 3, len(grouped["false"]))
+
+}
+
+func TestReplaceUint(t *testing.T) {
+
+	o := New([]uint{uint(1), uint(1), uint(1), uint(1), uint(1), uint(1)})
+
+	rawArr := o.MustUintSlice()
+
+	replaced := o.ReplaceUint(func(index int, val uint) uint {
+		if index < len(rawArr)-1 {
+			return rawArr[index+1]
+		}
+		return rawArr[0]
+	})
+
+	replacedArr := replaced.MustUintSlice()
+	if assert.Equal(t, 6, len(replacedArr)) {
+		assert.Equal(t, replacedArr[0], rawArr[1])
+		assert.Equal(t, replacedArr[1], rawArr[2])
+		assert.Equal(t, replacedArr[2], rawArr[3])
+		assert.Equal(t, replacedArr[3], rawArr[4])
+		assert.Equal(t, replacedArr[4], rawArr[5])
+		assert.Equal(t, replacedArr[5], rawArr[0])
+	}
+
+}
+
+func TestCollectUint(t *testing.T) {
+
+	o := New([]uint{uint(1), uint(1), uint(1), uint(1), uint(1), uint(1)})
+
+	collected := o.CollectUint(func(index int, val uint) interface{} {
+		return index
+	})
+
+	collectedArr := collected.MustInterSlice()
+	if assert.Equal(t, 6, len(collectedArr)) {
+		assert.Equal(t, collectedArr[0], 0)
+		assert.Equal(t, collectedArr[1], 1)
+		assert.Equal(t, collectedArr[2], 2)
+		assert.Equal(t, collectedArr[3], 3)
+		assert.Equal(t, collectedArr[4], 4)
+		assert.Equal(t, collectedArr[5], 5)
+	}
 
 }
 
@@ -866,11 +1271,11 @@ func TestEachUint8(t *testing.T) {
 
 	o := New([]uint8{uint8(1), uint8(1), uint8(1), uint8(1), uint8(1)})
 	count := 0
-	collectedVals := make([]uint8, 0)
+	replacedVals := make([]uint8, 0)
 	assert.Equal(t, o, o.EachUint8(func(i int, val uint8) bool {
 
 		count++
-		collectedVals = append(collectedVals, val)
+		replacedVals = append(replacedVals, val)
 
 		// abort early
 		if i == 2 {
@@ -882,9 +1287,9 @@ func TestEachUint8(t *testing.T) {
 	}))
 
 	assert.Equal(t, count, 3)
-	assert.Equal(t, collectedVals[0], o.MustUint8Slice()[0])
-	assert.Equal(t, collectedVals[1], o.MustUint8Slice()[1])
-	assert.Equal(t, collectedVals[2], o.MustUint8Slice()[2])
+	assert.Equal(t, replacedVals[0], o.MustUint8Slice()[0])
+	assert.Equal(t, replacedVals[1], o.MustUint8Slice()[1])
+	assert.Equal(t, replacedVals[2], o.MustUint8Slice()[2])
 
 }
 
@@ -911,6 +1316,51 @@ func TestGroupUint8(t *testing.T) {
 	assert.Equal(t, 2, len(grouped))
 	assert.Equal(t, 3, len(grouped["true"]))
 	assert.Equal(t, 3, len(grouped["false"]))
+
+}
+
+func TestReplaceUint8(t *testing.T) {
+
+	o := New([]uint8{uint8(1), uint8(1), uint8(1), uint8(1), uint8(1), uint8(1)})
+
+	rawArr := o.MustUint8Slice()
+
+	replaced := o.ReplaceUint8(func(index int, val uint8) uint8 {
+		if index < len(rawArr)-1 {
+			return rawArr[index+1]
+		}
+		return rawArr[0]
+	})
+
+	replacedArr := replaced.MustUint8Slice()
+	if assert.Equal(t, 6, len(replacedArr)) {
+		assert.Equal(t, replacedArr[0], rawArr[1])
+		assert.Equal(t, replacedArr[1], rawArr[2])
+		assert.Equal(t, replacedArr[2], rawArr[3])
+		assert.Equal(t, replacedArr[3], rawArr[4])
+		assert.Equal(t, replacedArr[4], rawArr[5])
+		assert.Equal(t, replacedArr[5], rawArr[0])
+	}
+
+}
+
+func TestCollectUint8(t *testing.T) {
+
+	o := New([]uint8{uint8(1), uint8(1), uint8(1), uint8(1), uint8(1), uint8(1)})
+
+	collected := o.CollectUint8(func(index int, val uint8) interface{} {
+		return index
+	})
+
+	collectedArr := collected.MustInterSlice()
+	if assert.Equal(t, 6, len(collectedArr)) {
+		assert.Equal(t, collectedArr[0], 0)
+		assert.Equal(t, collectedArr[1], 1)
+		assert.Equal(t, collectedArr[2], 2)
+		assert.Equal(t, collectedArr[3], 3)
+		assert.Equal(t, collectedArr[4], 4)
+		assert.Equal(t, collectedArr[5], 5)
+	}
 
 }
 
@@ -958,11 +1408,11 @@ func TestEachUint16(t *testing.T) {
 
 	o := New([]uint16{uint16(1), uint16(1), uint16(1), uint16(1), uint16(1)})
 	count := 0
-	collectedVals := make([]uint16, 0)
+	replacedVals := make([]uint16, 0)
 	assert.Equal(t, o, o.EachUint16(func(i int, val uint16) bool {
 
 		count++
-		collectedVals = append(collectedVals, val)
+		replacedVals = append(replacedVals, val)
 
 		// abort early
 		if i == 2 {
@@ -974,9 +1424,9 @@ func TestEachUint16(t *testing.T) {
 	}))
 
 	assert.Equal(t, count, 3)
-	assert.Equal(t, collectedVals[0], o.MustUint16Slice()[0])
-	assert.Equal(t, collectedVals[1], o.MustUint16Slice()[1])
-	assert.Equal(t, collectedVals[2], o.MustUint16Slice()[2])
+	assert.Equal(t, replacedVals[0], o.MustUint16Slice()[0])
+	assert.Equal(t, replacedVals[1], o.MustUint16Slice()[1])
+	assert.Equal(t, replacedVals[2], o.MustUint16Slice()[2])
 
 }
 
@@ -1003,6 +1453,51 @@ func TestGroupUint16(t *testing.T) {
 	assert.Equal(t, 2, len(grouped))
 	assert.Equal(t, 3, len(grouped["true"]))
 	assert.Equal(t, 3, len(grouped["false"]))
+
+}
+
+func TestReplaceUint16(t *testing.T) {
+
+	o := New([]uint16{uint16(1), uint16(1), uint16(1), uint16(1), uint16(1), uint16(1)})
+
+	rawArr := o.MustUint16Slice()
+
+	replaced := o.ReplaceUint16(func(index int, val uint16) uint16 {
+		if index < len(rawArr)-1 {
+			return rawArr[index+1]
+		}
+		return rawArr[0]
+	})
+
+	replacedArr := replaced.MustUint16Slice()
+	if assert.Equal(t, 6, len(replacedArr)) {
+		assert.Equal(t, replacedArr[0], rawArr[1])
+		assert.Equal(t, replacedArr[1], rawArr[2])
+		assert.Equal(t, replacedArr[2], rawArr[3])
+		assert.Equal(t, replacedArr[3], rawArr[4])
+		assert.Equal(t, replacedArr[4], rawArr[5])
+		assert.Equal(t, replacedArr[5], rawArr[0])
+	}
+
+}
+
+func TestCollectUint16(t *testing.T) {
+
+	o := New([]uint16{uint16(1), uint16(1), uint16(1), uint16(1), uint16(1), uint16(1)})
+
+	collected := o.CollectUint16(func(index int, val uint16) interface{} {
+		return index
+	})
+
+	collectedArr := collected.MustInterSlice()
+	if assert.Equal(t, 6, len(collectedArr)) {
+		assert.Equal(t, collectedArr[0], 0)
+		assert.Equal(t, collectedArr[1], 1)
+		assert.Equal(t, collectedArr[2], 2)
+		assert.Equal(t, collectedArr[3], 3)
+		assert.Equal(t, collectedArr[4], 4)
+		assert.Equal(t, collectedArr[5], 5)
+	}
 
 }
 
@@ -1050,11 +1545,11 @@ func TestEachUint32(t *testing.T) {
 
 	o := New([]uint32{uint32(1), uint32(1), uint32(1), uint32(1), uint32(1)})
 	count := 0
-	collectedVals := make([]uint32, 0)
+	replacedVals := make([]uint32, 0)
 	assert.Equal(t, o, o.EachUint32(func(i int, val uint32) bool {
 
 		count++
-		collectedVals = append(collectedVals, val)
+		replacedVals = append(replacedVals, val)
 
 		// abort early
 		if i == 2 {
@@ -1066,9 +1561,9 @@ func TestEachUint32(t *testing.T) {
 	}))
 
 	assert.Equal(t, count, 3)
-	assert.Equal(t, collectedVals[0], o.MustUint32Slice()[0])
-	assert.Equal(t, collectedVals[1], o.MustUint32Slice()[1])
-	assert.Equal(t, collectedVals[2], o.MustUint32Slice()[2])
+	assert.Equal(t, replacedVals[0], o.MustUint32Slice()[0])
+	assert.Equal(t, replacedVals[1], o.MustUint32Slice()[1])
+	assert.Equal(t, replacedVals[2], o.MustUint32Slice()[2])
 
 }
 
@@ -1095,6 +1590,51 @@ func TestGroupUint32(t *testing.T) {
 	assert.Equal(t, 2, len(grouped))
 	assert.Equal(t, 3, len(grouped["true"]))
 	assert.Equal(t, 3, len(grouped["false"]))
+
+}
+
+func TestReplaceUint32(t *testing.T) {
+
+	o := New([]uint32{uint32(1), uint32(1), uint32(1), uint32(1), uint32(1), uint32(1)})
+
+	rawArr := o.MustUint32Slice()
+
+	replaced := o.ReplaceUint32(func(index int, val uint32) uint32 {
+		if index < len(rawArr)-1 {
+			return rawArr[index+1]
+		}
+		return rawArr[0]
+	})
+
+	replacedArr := replaced.MustUint32Slice()
+	if assert.Equal(t, 6, len(replacedArr)) {
+		assert.Equal(t, replacedArr[0], rawArr[1])
+		assert.Equal(t, replacedArr[1], rawArr[2])
+		assert.Equal(t, replacedArr[2], rawArr[3])
+		assert.Equal(t, replacedArr[3], rawArr[4])
+		assert.Equal(t, replacedArr[4], rawArr[5])
+		assert.Equal(t, replacedArr[5], rawArr[0])
+	}
+
+}
+
+func TestCollectUint32(t *testing.T) {
+
+	o := New([]uint32{uint32(1), uint32(1), uint32(1), uint32(1), uint32(1), uint32(1)})
+
+	collected := o.CollectUint32(func(index int, val uint32) interface{} {
+		return index
+	})
+
+	collectedArr := collected.MustInterSlice()
+	if assert.Equal(t, 6, len(collectedArr)) {
+		assert.Equal(t, collectedArr[0], 0)
+		assert.Equal(t, collectedArr[1], 1)
+		assert.Equal(t, collectedArr[2], 2)
+		assert.Equal(t, collectedArr[3], 3)
+		assert.Equal(t, collectedArr[4], 4)
+		assert.Equal(t, collectedArr[5], 5)
+	}
 
 }
 
@@ -1142,11 +1682,11 @@ func TestEachUint64(t *testing.T) {
 
 	o := New([]uint64{uint64(1), uint64(1), uint64(1), uint64(1), uint64(1)})
 	count := 0
-	collectedVals := make([]uint64, 0)
+	replacedVals := make([]uint64, 0)
 	assert.Equal(t, o, o.EachUint64(func(i int, val uint64) bool {
 
 		count++
-		collectedVals = append(collectedVals, val)
+		replacedVals = append(replacedVals, val)
 
 		// abort early
 		if i == 2 {
@@ -1158,9 +1698,9 @@ func TestEachUint64(t *testing.T) {
 	}))
 
 	assert.Equal(t, count, 3)
-	assert.Equal(t, collectedVals[0], o.MustUint64Slice()[0])
-	assert.Equal(t, collectedVals[1], o.MustUint64Slice()[1])
-	assert.Equal(t, collectedVals[2], o.MustUint64Slice()[2])
+	assert.Equal(t, replacedVals[0], o.MustUint64Slice()[0])
+	assert.Equal(t, replacedVals[1], o.MustUint64Slice()[1])
+	assert.Equal(t, replacedVals[2], o.MustUint64Slice()[2])
 
 }
 
@@ -1187,6 +1727,51 @@ func TestGroupUint64(t *testing.T) {
 	assert.Equal(t, 2, len(grouped))
 	assert.Equal(t, 3, len(grouped["true"]))
 	assert.Equal(t, 3, len(grouped["false"]))
+
+}
+
+func TestReplaceUint64(t *testing.T) {
+
+	o := New([]uint64{uint64(1), uint64(1), uint64(1), uint64(1), uint64(1), uint64(1)})
+
+	rawArr := o.MustUint64Slice()
+
+	replaced := o.ReplaceUint64(func(index int, val uint64) uint64 {
+		if index < len(rawArr)-1 {
+			return rawArr[index+1]
+		}
+		return rawArr[0]
+	})
+
+	replacedArr := replaced.MustUint64Slice()
+	if assert.Equal(t, 6, len(replacedArr)) {
+		assert.Equal(t, replacedArr[0], rawArr[1])
+		assert.Equal(t, replacedArr[1], rawArr[2])
+		assert.Equal(t, replacedArr[2], rawArr[3])
+		assert.Equal(t, replacedArr[3], rawArr[4])
+		assert.Equal(t, replacedArr[4], rawArr[5])
+		assert.Equal(t, replacedArr[5], rawArr[0])
+	}
+
+}
+
+func TestCollectUint64(t *testing.T) {
+
+	o := New([]uint64{uint64(1), uint64(1), uint64(1), uint64(1), uint64(1), uint64(1)})
+
+	collected := o.CollectUint64(func(index int, val uint64) interface{} {
+		return index
+	})
+
+	collectedArr := collected.MustInterSlice()
+	if assert.Equal(t, 6, len(collectedArr)) {
+		assert.Equal(t, collectedArr[0], 0)
+		assert.Equal(t, collectedArr[1], 1)
+		assert.Equal(t, collectedArr[2], 2)
+		assert.Equal(t, collectedArr[3], 3)
+		assert.Equal(t, collectedArr[4], 4)
+		assert.Equal(t, collectedArr[5], 5)
+	}
 
 }
 
@@ -1234,11 +1819,11 @@ func TestEachUintptr(t *testing.T) {
 
 	o := New([]uintptr{uintptr(1), uintptr(1), uintptr(1), uintptr(1), uintptr(1)})
 	count := 0
-	collectedVals := make([]uintptr, 0)
+	replacedVals := make([]uintptr, 0)
 	assert.Equal(t, o, o.EachUintptr(func(i int, val uintptr) bool {
 
 		count++
-		collectedVals = append(collectedVals, val)
+		replacedVals = append(replacedVals, val)
 
 		// abort early
 		if i == 2 {
@@ -1250,9 +1835,9 @@ func TestEachUintptr(t *testing.T) {
 	}))
 
 	assert.Equal(t, count, 3)
-	assert.Equal(t, collectedVals[0], o.MustUintptrSlice()[0])
-	assert.Equal(t, collectedVals[1], o.MustUintptrSlice()[1])
-	assert.Equal(t, collectedVals[2], o.MustUintptrSlice()[2])
+	assert.Equal(t, replacedVals[0], o.MustUintptrSlice()[0])
+	assert.Equal(t, replacedVals[1], o.MustUintptrSlice()[1])
+	assert.Equal(t, replacedVals[2], o.MustUintptrSlice()[2])
 
 }
 
@@ -1279,6 +1864,51 @@ func TestGroupUintptr(t *testing.T) {
 	assert.Equal(t, 2, len(grouped))
 	assert.Equal(t, 3, len(grouped["true"]))
 	assert.Equal(t, 3, len(grouped["false"]))
+
+}
+
+func TestReplaceUintptr(t *testing.T) {
+
+	o := New([]uintptr{uintptr(1), uintptr(1), uintptr(1), uintptr(1), uintptr(1), uintptr(1)})
+
+	rawArr := o.MustUintptrSlice()
+
+	replaced := o.ReplaceUintptr(func(index int, val uintptr) uintptr {
+		if index < len(rawArr)-1 {
+			return rawArr[index+1]
+		}
+		return rawArr[0]
+	})
+
+	replacedArr := replaced.MustUintptrSlice()
+	if assert.Equal(t, 6, len(replacedArr)) {
+		assert.Equal(t, replacedArr[0], rawArr[1])
+		assert.Equal(t, replacedArr[1], rawArr[2])
+		assert.Equal(t, replacedArr[2], rawArr[3])
+		assert.Equal(t, replacedArr[3], rawArr[4])
+		assert.Equal(t, replacedArr[4], rawArr[5])
+		assert.Equal(t, replacedArr[5], rawArr[0])
+	}
+
+}
+
+func TestCollectUintptr(t *testing.T) {
+
+	o := New([]uintptr{uintptr(1), uintptr(1), uintptr(1), uintptr(1), uintptr(1), uintptr(1)})
+
+	collected := o.CollectUintptr(func(index int, val uintptr) interface{} {
+		return index
+	})
+
+	collectedArr := collected.MustInterSlice()
+	if assert.Equal(t, 6, len(collectedArr)) {
+		assert.Equal(t, collectedArr[0], 0)
+		assert.Equal(t, collectedArr[1], 1)
+		assert.Equal(t, collectedArr[2], 2)
+		assert.Equal(t, collectedArr[3], 3)
+		assert.Equal(t, collectedArr[4], 4)
+		assert.Equal(t, collectedArr[5], 5)
+	}
 
 }
 
@@ -1326,11 +1956,11 @@ func TestEachFloat32(t *testing.T) {
 
 	o := New([]float32{float32(1), float32(1), float32(1), float32(1), float32(1)})
 	count := 0
-	collectedVals := make([]float32, 0)
+	replacedVals := make([]float32, 0)
 	assert.Equal(t, o, o.EachFloat32(func(i int, val float32) bool {
 
 		count++
-		collectedVals = append(collectedVals, val)
+		replacedVals = append(replacedVals, val)
 
 		// abort early
 		if i == 2 {
@@ -1342,9 +1972,9 @@ func TestEachFloat32(t *testing.T) {
 	}))
 
 	assert.Equal(t, count, 3)
-	assert.Equal(t, collectedVals[0], o.MustFloat32Slice()[0])
-	assert.Equal(t, collectedVals[1], o.MustFloat32Slice()[1])
-	assert.Equal(t, collectedVals[2], o.MustFloat32Slice()[2])
+	assert.Equal(t, replacedVals[0], o.MustFloat32Slice()[0])
+	assert.Equal(t, replacedVals[1], o.MustFloat32Slice()[1])
+	assert.Equal(t, replacedVals[2], o.MustFloat32Slice()[2])
 
 }
 
@@ -1371,6 +2001,51 @@ func TestGroupFloat32(t *testing.T) {
 	assert.Equal(t, 2, len(grouped))
 	assert.Equal(t, 3, len(grouped["true"]))
 	assert.Equal(t, 3, len(grouped["false"]))
+
+}
+
+func TestReplaceFloat32(t *testing.T) {
+
+	o := New([]float32{float32(1), float32(1), float32(1), float32(1), float32(1), float32(1)})
+
+	rawArr := o.MustFloat32Slice()
+
+	replaced := o.ReplaceFloat32(func(index int, val float32) float32 {
+		if index < len(rawArr)-1 {
+			return rawArr[index+1]
+		}
+		return rawArr[0]
+	})
+
+	replacedArr := replaced.MustFloat32Slice()
+	if assert.Equal(t, 6, len(replacedArr)) {
+		assert.Equal(t, replacedArr[0], rawArr[1])
+		assert.Equal(t, replacedArr[1], rawArr[2])
+		assert.Equal(t, replacedArr[2], rawArr[3])
+		assert.Equal(t, replacedArr[3], rawArr[4])
+		assert.Equal(t, replacedArr[4], rawArr[5])
+		assert.Equal(t, replacedArr[5], rawArr[0])
+	}
+
+}
+
+func TestCollectFloat32(t *testing.T) {
+
+	o := New([]float32{float32(1), float32(1), float32(1), float32(1), float32(1), float32(1)})
+
+	collected := o.CollectFloat32(func(index int, val float32) interface{} {
+		return index
+	})
+
+	collectedArr := collected.MustInterSlice()
+	if assert.Equal(t, 6, len(collectedArr)) {
+		assert.Equal(t, collectedArr[0], 0)
+		assert.Equal(t, collectedArr[1], 1)
+		assert.Equal(t, collectedArr[2], 2)
+		assert.Equal(t, collectedArr[3], 3)
+		assert.Equal(t, collectedArr[4], 4)
+		assert.Equal(t, collectedArr[5], 5)
+	}
 
 }
 
@@ -1418,11 +2093,11 @@ func TestEachFloat64(t *testing.T) {
 
 	o := New([]float64{float64(1), float64(1), float64(1), float64(1), float64(1)})
 	count := 0
-	collectedVals := make([]float64, 0)
+	replacedVals := make([]float64, 0)
 	assert.Equal(t, o, o.EachFloat64(func(i int, val float64) bool {
 
 		count++
-		collectedVals = append(collectedVals, val)
+		replacedVals = append(replacedVals, val)
 
 		// abort early
 		if i == 2 {
@@ -1434,9 +2109,9 @@ func TestEachFloat64(t *testing.T) {
 	}))
 
 	assert.Equal(t, count, 3)
-	assert.Equal(t, collectedVals[0], o.MustFloat64Slice()[0])
-	assert.Equal(t, collectedVals[1], o.MustFloat64Slice()[1])
-	assert.Equal(t, collectedVals[2], o.MustFloat64Slice()[2])
+	assert.Equal(t, replacedVals[0], o.MustFloat64Slice()[0])
+	assert.Equal(t, replacedVals[1], o.MustFloat64Slice()[1])
+	assert.Equal(t, replacedVals[2], o.MustFloat64Slice()[2])
 
 }
 
@@ -1463,6 +2138,51 @@ func TestGroupFloat64(t *testing.T) {
 	assert.Equal(t, 2, len(grouped))
 	assert.Equal(t, 3, len(grouped["true"]))
 	assert.Equal(t, 3, len(grouped["false"]))
+
+}
+
+func TestReplaceFloat64(t *testing.T) {
+
+	o := New([]float64{float64(1), float64(1), float64(1), float64(1), float64(1), float64(1)})
+
+	rawArr := o.MustFloat64Slice()
+
+	replaced := o.ReplaceFloat64(func(index int, val float64) float64 {
+		if index < len(rawArr)-1 {
+			return rawArr[index+1]
+		}
+		return rawArr[0]
+	})
+
+	replacedArr := replaced.MustFloat64Slice()
+	if assert.Equal(t, 6, len(replacedArr)) {
+		assert.Equal(t, replacedArr[0], rawArr[1])
+		assert.Equal(t, replacedArr[1], rawArr[2])
+		assert.Equal(t, replacedArr[2], rawArr[3])
+		assert.Equal(t, replacedArr[3], rawArr[4])
+		assert.Equal(t, replacedArr[4], rawArr[5])
+		assert.Equal(t, replacedArr[5], rawArr[0])
+	}
+
+}
+
+func TestCollectFloat64(t *testing.T) {
+
+	o := New([]float64{float64(1), float64(1), float64(1), float64(1), float64(1), float64(1)})
+
+	collected := o.CollectFloat64(func(index int, val float64) interface{} {
+		return index
+	})
+
+	collectedArr := collected.MustInterSlice()
+	if assert.Equal(t, 6, len(collectedArr)) {
+		assert.Equal(t, collectedArr[0], 0)
+		assert.Equal(t, collectedArr[1], 1)
+		assert.Equal(t, collectedArr[2], 2)
+		assert.Equal(t, collectedArr[3], 3)
+		assert.Equal(t, collectedArr[4], 4)
+		assert.Equal(t, collectedArr[5], 5)
+	}
 
 }
 
@@ -1510,11 +2230,11 @@ func TestEachComplex64(t *testing.T) {
 
 	o := New([]complex64{complex64(1), complex64(1), complex64(1), complex64(1), complex64(1)})
 	count := 0
-	collectedVals := make([]complex64, 0)
+	replacedVals := make([]complex64, 0)
 	assert.Equal(t, o, o.EachComplex64(func(i int, val complex64) bool {
 
 		count++
-		collectedVals = append(collectedVals, val)
+		replacedVals = append(replacedVals, val)
 
 		// abort early
 		if i == 2 {
@@ -1526,9 +2246,9 @@ func TestEachComplex64(t *testing.T) {
 	}))
 
 	assert.Equal(t, count, 3)
-	assert.Equal(t, collectedVals[0], o.MustComplex64Slice()[0])
-	assert.Equal(t, collectedVals[1], o.MustComplex64Slice()[1])
-	assert.Equal(t, collectedVals[2], o.MustComplex64Slice()[2])
+	assert.Equal(t, replacedVals[0], o.MustComplex64Slice()[0])
+	assert.Equal(t, replacedVals[1], o.MustComplex64Slice()[1])
+	assert.Equal(t, replacedVals[2], o.MustComplex64Slice()[2])
 
 }
 
@@ -1555,6 +2275,51 @@ func TestGroupComplex64(t *testing.T) {
 	assert.Equal(t, 2, len(grouped))
 	assert.Equal(t, 3, len(grouped["true"]))
 	assert.Equal(t, 3, len(grouped["false"]))
+
+}
+
+func TestReplaceComplex64(t *testing.T) {
+
+	o := New([]complex64{complex64(1), complex64(1), complex64(1), complex64(1), complex64(1), complex64(1)})
+
+	rawArr := o.MustComplex64Slice()
+
+	replaced := o.ReplaceComplex64(func(index int, val complex64) complex64 {
+		if index < len(rawArr)-1 {
+			return rawArr[index+1]
+		}
+		return rawArr[0]
+	})
+
+	replacedArr := replaced.MustComplex64Slice()
+	if assert.Equal(t, 6, len(replacedArr)) {
+		assert.Equal(t, replacedArr[0], rawArr[1])
+		assert.Equal(t, replacedArr[1], rawArr[2])
+		assert.Equal(t, replacedArr[2], rawArr[3])
+		assert.Equal(t, replacedArr[3], rawArr[4])
+		assert.Equal(t, replacedArr[4], rawArr[5])
+		assert.Equal(t, replacedArr[5], rawArr[0])
+	}
+
+}
+
+func TestCollectComplex64(t *testing.T) {
+
+	o := New([]complex64{complex64(1), complex64(1), complex64(1), complex64(1), complex64(1), complex64(1)})
+
+	collected := o.CollectComplex64(func(index int, val complex64) interface{} {
+		return index
+	})
+
+	collectedArr := collected.MustInterSlice()
+	if assert.Equal(t, 6, len(collectedArr)) {
+		assert.Equal(t, collectedArr[0], 0)
+		assert.Equal(t, collectedArr[1], 1)
+		assert.Equal(t, collectedArr[2], 2)
+		assert.Equal(t, collectedArr[3], 3)
+		assert.Equal(t, collectedArr[4], 4)
+		assert.Equal(t, collectedArr[5], 5)
+	}
 
 }
 
@@ -1602,11 +2367,11 @@ func TestEachComplex128(t *testing.T) {
 
 	o := New([]complex128{complex128(1), complex128(1), complex128(1), complex128(1), complex128(1)})
 	count := 0
-	collectedVals := make([]complex128, 0)
+	replacedVals := make([]complex128, 0)
 	assert.Equal(t, o, o.EachComplex128(func(i int, val complex128) bool {
 
 		count++
-		collectedVals = append(collectedVals, val)
+		replacedVals = append(replacedVals, val)
 
 		// abort early
 		if i == 2 {
@@ -1618,9 +2383,9 @@ func TestEachComplex128(t *testing.T) {
 	}))
 
 	assert.Equal(t, count, 3)
-	assert.Equal(t, collectedVals[0], o.MustComplex128Slice()[0])
-	assert.Equal(t, collectedVals[1], o.MustComplex128Slice()[1])
-	assert.Equal(t, collectedVals[2], o.MustComplex128Slice()[2])
+	assert.Equal(t, replacedVals[0], o.MustComplex128Slice()[0])
+	assert.Equal(t, replacedVals[1], o.MustComplex128Slice()[1])
+	assert.Equal(t, replacedVals[2], o.MustComplex128Slice()[2])
 
 }
 
@@ -1647,5 +2412,50 @@ func TestGroupComplex128(t *testing.T) {
 	assert.Equal(t, 2, len(grouped))
 	assert.Equal(t, 3, len(grouped["true"]))
 	assert.Equal(t, 3, len(grouped["false"]))
+
+}
+
+func TestReplaceComplex128(t *testing.T) {
+
+	o := New([]complex128{complex128(1), complex128(1), complex128(1), complex128(1), complex128(1), complex128(1)})
+
+	rawArr := o.MustComplex128Slice()
+
+	replaced := o.ReplaceComplex128(func(index int, val complex128) complex128 {
+		if index < len(rawArr)-1 {
+			return rawArr[index+1]
+		}
+		return rawArr[0]
+	})
+
+	replacedArr := replaced.MustComplex128Slice()
+	if assert.Equal(t, 6, len(replacedArr)) {
+		assert.Equal(t, replacedArr[0], rawArr[1])
+		assert.Equal(t, replacedArr[1], rawArr[2])
+		assert.Equal(t, replacedArr[2], rawArr[3])
+		assert.Equal(t, replacedArr[3], rawArr[4])
+		assert.Equal(t, replacedArr[4], rawArr[5])
+		assert.Equal(t, replacedArr[5], rawArr[0])
+	}
+
+}
+
+func TestCollectComplex128(t *testing.T) {
+
+	o := New([]complex128{complex128(1), complex128(1), complex128(1), complex128(1), complex128(1), complex128(1)})
+
+	collected := o.CollectComplex128(func(index int, val complex128) interface{} {
+		return index
+	})
+
+	collectedArr := collected.MustInterSlice()
+	if assert.Equal(t, 6, len(collectedArr)) {
+		assert.Equal(t, collectedArr[0], 0)
+		assert.Equal(t, collectedArr[1], 1)
+		assert.Equal(t, collectedArr[2], 2)
+		assert.Equal(t, collectedArr[3], 3)
+		assert.Equal(t, collectedArr[4], 4)
+		assert.Equal(t, collectedArr[5], 5)
+	}
 
 }

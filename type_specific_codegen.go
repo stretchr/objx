@@ -117,6 +117,39 @@ func (o *O) GroupInter(grouper func(int, interface{}) string) *O {
 
 }
 
+// ReplaceInter uses the specified function to replace each interface{}s
+// by iterating each item.  The data in the returned result will be a
+// []interface{} containing the replaced items.
+func (o *O) ReplaceInter(replacer func(int, interface{}) interface{}) *O {
+
+	arr := o.MustInterSlice()
+	replaced := make([]interface{}, len(arr))
+
+	o.EachInter(func(index int, val interface{}) bool {
+		replaced[index] = replacer(index, val)
+		return true
+	})
+
+	return New(replaced)
+
+}
+
+// CollectInter uses the specified collector function to collect a value
+// for each of the interface{}s in the slice.  The data returned will be a
+// []interface{}.
+func (o *O) CollectInter(collector func(int, interface{}) interface{}) *O {
+
+	arr := o.MustInterSlice()
+	collected := make([]interface{}, len(arr))
+
+	o.EachInter(func(index int, val interface{}) bool {
+		collected[index] = collector(index, val)
+		return true
+	})
+
+	return New(collected)
+}
+
 /*
 	Bool (bool and []bool)
 	--------------------------------------------------
@@ -228,6 +261,39 @@ func (o *O) GroupBool(grouper func(int, bool) string) *O {
 
 	return New(groups)
 
+}
+
+// ReplaceBool uses the specified function to replace each bools
+// by iterating each item.  The data in the returned result will be a
+// []bool containing the replaced items.
+func (o *O) ReplaceBool(replacer func(int, bool) bool) *O {
+
+	arr := o.MustBoolSlice()
+	replaced := make([]bool, len(arr))
+
+	o.EachBool(func(index int, val bool) bool {
+		replaced[index] = replacer(index, val)
+		return true
+	})
+
+	return New(replaced)
+
+}
+
+// CollectBool uses the specified collector function to collect a value
+// for each of the bools in the slice.  The data returned will be a
+// []interface{}.
+func (o *O) CollectBool(collector func(int, bool) interface{}) *O {
+
+	arr := o.MustBoolSlice()
+	collected := make([]interface{}, len(arr))
+
+	o.EachBool(func(index int, val bool) bool {
+		collected[index] = collector(index, val)
+		return true
+	})
+
+	return New(collected)
 }
 
 /*
@@ -343,6 +409,39 @@ func (o *O) GroupStr(grouper func(int, string) string) *O {
 
 }
 
+// ReplaceStr uses the specified function to replace each strings
+// by iterating each item.  The data in the returned result will be a
+// []string containing the replaced items.
+func (o *O) ReplaceStr(replacer func(int, string) string) *O {
+
+	arr := o.MustStrSlice()
+	replaced := make([]string, len(arr))
+
+	o.EachStr(func(index int, val string) bool {
+		replaced[index] = replacer(index, val)
+		return true
+	})
+
+	return New(replaced)
+
+}
+
+// CollectStr uses the specified collector function to collect a value
+// for each of the strings in the slice.  The data returned will be a
+// []interface{}.
+func (o *O) CollectStr(collector func(int, string) interface{}) *O {
+
+	arr := o.MustStrSlice()
+	collected := make([]interface{}, len(arr))
+
+	o.EachStr(func(index int, val string) bool {
+		collected[index] = collector(index, val)
+		return true
+	})
+
+	return New(collected)
+}
+
 /*
 	Int (int and []int)
 	--------------------------------------------------
@@ -454,6 +553,39 @@ func (o *O) GroupInt(grouper func(int, int) string) *O {
 
 	return New(groups)
 
+}
+
+// ReplaceInt uses the specified function to replace each ints
+// by iterating each item.  The data in the returned result will be a
+// []int containing the replaced items.
+func (o *O) ReplaceInt(replacer func(int, int) int) *O {
+
+	arr := o.MustIntSlice()
+	replaced := make([]int, len(arr))
+
+	o.EachInt(func(index int, val int) bool {
+		replaced[index] = replacer(index, val)
+		return true
+	})
+
+	return New(replaced)
+
+}
+
+// CollectInt uses the specified collector function to collect a value
+// for each of the ints in the slice.  The data returned will be a
+// []interface{}.
+func (o *O) CollectInt(collector func(int, int) interface{}) *O {
+
+	arr := o.MustIntSlice()
+	collected := make([]interface{}, len(arr))
+
+	o.EachInt(func(index int, val int) bool {
+		collected[index] = collector(index, val)
+		return true
+	})
+
+	return New(collected)
 }
 
 /*
@@ -569,6 +701,39 @@ func (o *O) GroupInt8(grouper func(int, int8) string) *O {
 
 }
 
+// ReplaceInt8 uses the specified function to replace each int8s
+// by iterating each item.  The data in the returned result will be a
+// []int8 containing the replaced items.
+func (o *O) ReplaceInt8(replacer func(int, int8) int8) *O {
+
+	arr := o.MustInt8Slice()
+	replaced := make([]int8, len(arr))
+
+	o.EachInt8(func(index int, val int8) bool {
+		replaced[index] = replacer(index, val)
+		return true
+	})
+
+	return New(replaced)
+
+}
+
+// CollectInt8 uses the specified collector function to collect a value
+// for each of the int8s in the slice.  The data returned will be a
+// []interface{}.
+func (o *O) CollectInt8(collector func(int, int8) interface{}) *O {
+
+	arr := o.MustInt8Slice()
+	collected := make([]interface{}, len(arr))
+
+	o.EachInt8(func(index int, val int8) bool {
+		collected[index] = collector(index, val)
+		return true
+	})
+
+	return New(collected)
+}
+
 /*
 	Int16 (int16 and []int16)
 	--------------------------------------------------
@@ -680,6 +845,39 @@ func (o *O) GroupInt16(grouper func(int, int16) string) *O {
 
 	return New(groups)
 
+}
+
+// ReplaceInt16 uses the specified function to replace each int16s
+// by iterating each item.  The data in the returned result will be a
+// []int16 containing the replaced items.
+func (o *O) ReplaceInt16(replacer func(int, int16) int16) *O {
+
+	arr := o.MustInt16Slice()
+	replaced := make([]int16, len(arr))
+
+	o.EachInt16(func(index int, val int16) bool {
+		replaced[index] = replacer(index, val)
+		return true
+	})
+
+	return New(replaced)
+
+}
+
+// CollectInt16 uses the specified collector function to collect a value
+// for each of the int16s in the slice.  The data returned will be a
+// []interface{}.
+func (o *O) CollectInt16(collector func(int, int16) interface{}) *O {
+
+	arr := o.MustInt16Slice()
+	collected := make([]interface{}, len(arr))
+
+	o.EachInt16(func(index int, val int16) bool {
+		collected[index] = collector(index, val)
+		return true
+	})
+
+	return New(collected)
 }
 
 /*
@@ -795,6 +993,39 @@ func (o *O) GroupInt32(grouper func(int, int32) string) *O {
 
 }
 
+// ReplaceInt32 uses the specified function to replace each int32s
+// by iterating each item.  The data in the returned result will be a
+// []int32 containing the replaced items.
+func (o *O) ReplaceInt32(replacer func(int, int32) int32) *O {
+
+	arr := o.MustInt32Slice()
+	replaced := make([]int32, len(arr))
+
+	o.EachInt32(func(index int, val int32) bool {
+		replaced[index] = replacer(index, val)
+		return true
+	})
+
+	return New(replaced)
+
+}
+
+// CollectInt32 uses the specified collector function to collect a value
+// for each of the int32s in the slice.  The data returned will be a
+// []interface{}.
+func (o *O) CollectInt32(collector func(int, int32) interface{}) *O {
+
+	arr := o.MustInt32Slice()
+	collected := make([]interface{}, len(arr))
+
+	o.EachInt32(func(index int, val int32) bool {
+		collected[index] = collector(index, val)
+		return true
+	})
+
+	return New(collected)
+}
+
 /*
 	Int64 (int64 and []int64)
 	--------------------------------------------------
@@ -906,6 +1137,39 @@ func (o *O) GroupInt64(grouper func(int, int64) string) *O {
 
 	return New(groups)
 
+}
+
+// ReplaceInt64 uses the specified function to replace each int64s
+// by iterating each item.  The data in the returned result will be a
+// []int64 containing the replaced items.
+func (o *O) ReplaceInt64(replacer func(int, int64) int64) *O {
+
+	arr := o.MustInt64Slice()
+	replaced := make([]int64, len(arr))
+
+	o.EachInt64(func(index int, val int64) bool {
+		replaced[index] = replacer(index, val)
+		return true
+	})
+
+	return New(replaced)
+
+}
+
+// CollectInt64 uses the specified collector function to collect a value
+// for each of the int64s in the slice.  The data returned will be a
+// []interface{}.
+func (o *O) CollectInt64(collector func(int, int64) interface{}) *O {
+
+	arr := o.MustInt64Slice()
+	collected := make([]interface{}, len(arr))
+
+	o.EachInt64(func(index int, val int64) bool {
+		collected[index] = collector(index, val)
+		return true
+	})
+
+	return New(collected)
 }
 
 /*
@@ -1021,6 +1285,39 @@ func (o *O) GroupUint(grouper func(int, uint) string) *O {
 
 }
 
+// ReplaceUint uses the specified function to replace each uints
+// by iterating each item.  The data in the returned result will be a
+// []uint containing the replaced items.
+func (o *O) ReplaceUint(replacer func(int, uint) uint) *O {
+
+	arr := o.MustUintSlice()
+	replaced := make([]uint, len(arr))
+
+	o.EachUint(func(index int, val uint) bool {
+		replaced[index] = replacer(index, val)
+		return true
+	})
+
+	return New(replaced)
+
+}
+
+// CollectUint uses the specified collector function to collect a value
+// for each of the uints in the slice.  The data returned will be a
+// []interface{}.
+func (o *O) CollectUint(collector func(int, uint) interface{}) *O {
+
+	arr := o.MustUintSlice()
+	collected := make([]interface{}, len(arr))
+
+	o.EachUint(func(index int, val uint) bool {
+		collected[index] = collector(index, val)
+		return true
+	})
+
+	return New(collected)
+}
+
 /*
 	Uint8 (uint8 and []uint8)
 	--------------------------------------------------
@@ -1132,6 +1429,39 @@ func (o *O) GroupUint8(grouper func(int, uint8) string) *O {
 
 	return New(groups)
 
+}
+
+// ReplaceUint8 uses the specified function to replace each uint8s
+// by iterating each item.  The data in the returned result will be a
+// []uint8 containing the replaced items.
+func (o *O) ReplaceUint8(replacer func(int, uint8) uint8) *O {
+
+	arr := o.MustUint8Slice()
+	replaced := make([]uint8, len(arr))
+
+	o.EachUint8(func(index int, val uint8) bool {
+		replaced[index] = replacer(index, val)
+		return true
+	})
+
+	return New(replaced)
+
+}
+
+// CollectUint8 uses the specified collector function to collect a value
+// for each of the uint8s in the slice.  The data returned will be a
+// []interface{}.
+func (o *O) CollectUint8(collector func(int, uint8) interface{}) *O {
+
+	arr := o.MustUint8Slice()
+	collected := make([]interface{}, len(arr))
+
+	o.EachUint8(func(index int, val uint8) bool {
+		collected[index] = collector(index, val)
+		return true
+	})
+
+	return New(collected)
 }
 
 /*
@@ -1247,6 +1577,39 @@ func (o *O) GroupUint16(grouper func(int, uint16) string) *O {
 
 }
 
+// ReplaceUint16 uses the specified function to replace each uint16s
+// by iterating each item.  The data in the returned result will be a
+// []uint16 containing the replaced items.
+func (o *O) ReplaceUint16(replacer func(int, uint16) uint16) *O {
+
+	arr := o.MustUint16Slice()
+	replaced := make([]uint16, len(arr))
+
+	o.EachUint16(func(index int, val uint16) bool {
+		replaced[index] = replacer(index, val)
+		return true
+	})
+
+	return New(replaced)
+
+}
+
+// CollectUint16 uses the specified collector function to collect a value
+// for each of the uint16s in the slice.  The data returned will be a
+// []interface{}.
+func (o *O) CollectUint16(collector func(int, uint16) interface{}) *O {
+
+	arr := o.MustUint16Slice()
+	collected := make([]interface{}, len(arr))
+
+	o.EachUint16(func(index int, val uint16) bool {
+		collected[index] = collector(index, val)
+		return true
+	})
+
+	return New(collected)
+}
+
 /*
 	Uint32 (uint32 and []uint32)
 	--------------------------------------------------
@@ -1358,6 +1721,39 @@ func (o *O) GroupUint32(grouper func(int, uint32) string) *O {
 
 	return New(groups)
 
+}
+
+// ReplaceUint32 uses the specified function to replace each uint32s
+// by iterating each item.  The data in the returned result will be a
+// []uint32 containing the replaced items.
+func (o *O) ReplaceUint32(replacer func(int, uint32) uint32) *O {
+
+	arr := o.MustUint32Slice()
+	replaced := make([]uint32, len(arr))
+
+	o.EachUint32(func(index int, val uint32) bool {
+		replaced[index] = replacer(index, val)
+		return true
+	})
+
+	return New(replaced)
+
+}
+
+// CollectUint32 uses the specified collector function to collect a value
+// for each of the uint32s in the slice.  The data returned will be a
+// []interface{}.
+func (o *O) CollectUint32(collector func(int, uint32) interface{}) *O {
+
+	arr := o.MustUint32Slice()
+	collected := make([]interface{}, len(arr))
+
+	o.EachUint32(func(index int, val uint32) bool {
+		collected[index] = collector(index, val)
+		return true
+	})
+
+	return New(collected)
 }
 
 /*
@@ -1473,6 +1869,39 @@ func (o *O) GroupUint64(grouper func(int, uint64) string) *O {
 
 }
 
+// ReplaceUint64 uses the specified function to replace each uint64s
+// by iterating each item.  The data in the returned result will be a
+// []uint64 containing the replaced items.
+func (o *O) ReplaceUint64(replacer func(int, uint64) uint64) *O {
+
+	arr := o.MustUint64Slice()
+	replaced := make([]uint64, len(arr))
+
+	o.EachUint64(func(index int, val uint64) bool {
+		replaced[index] = replacer(index, val)
+		return true
+	})
+
+	return New(replaced)
+
+}
+
+// CollectUint64 uses the specified collector function to collect a value
+// for each of the uint64s in the slice.  The data returned will be a
+// []interface{}.
+func (o *O) CollectUint64(collector func(int, uint64) interface{}) *O {
+
+	arr := o.MustUint64Slice()
+	collected := make([]interface{}, len(arr))
+
+	o.EachUint64(func(index int, val uint64) bool {
+		collected[index] = collector(index, val)
+		return true
+	})
+
+	return New(collected)
+}
+
 /*
 	Uintptr (uintptr and []uintptr)
 	--------------------------------------------------
@@ -1584,6 +2013,39 @@ func (o *O) GroupUintptr(grouper func(int, uintptr) string) *O {
 
 	return New(groups)
 
+}
+
+// ReplaceUintptr uses the specified function to replace each uintptrs
+// by iterating each item.  The data in the returned result will be a
+// []uintptr containing the replaced items.
+func (o *O) ReplaceUintptr(replacer func(int, uintptr) uintptr) *O {
+
+	arr := o.MustUintptrSlice()
+	replaced := make([]uintptr, len(arr))
+
+	o.EachUintptr(func(index int, val uintptr) bool {
+		replaced[index] = replacer(index, val)
+		return true
+	})
+
+	return New(replaced)
+
+}
+
+// CollectUintptr uses the specified collector function to collect a value
+// for each of the uintptrs in the slice.  The data returned will be a
+// []interface{}.
+func (o *O) CollectUintptr(collector func(int, uintptr) interface{}) *O {
+
+	arr := o.MustUintptrSlice()
+	collected := make([]interface{}, len(arr))
+
+	o.EachUintptr(func(index int, val uintptr) bool {
+		collected[index] = collector(index, val)
+		return true
+	})
+
+	return New(collected)
 }
 
 /*
@@ -1699,6 +2161,39 @@ func (o *O) GroupFloat32(grouper func(int, float32) string) *O {
 
 }
 
+// ReplaceFloat32 uses the specified function to replace each float32s
+// by iterating each item.  The data in the returned result will be a
+// []float32 containing the replaced items.
+func (o *O) ReplaceFloat32(replacer func(int, float32) float32) *O {
+
+	arr := o.MustFloat32Slice()
+	replaced := make([]float32, len(arr))
+
+	o.EachFloat32(func(index int, val float32) bool {
+		replaced[index] = replacer(index, val)
+		return true
+	})
+
+	return New(replaced)
+
+}
+
+// CollectFloat32 uses the specified collector function to collect a value
+// for each of the float32s in the slice.  The data returned will be a
+// []interface{}.
+func (o *O) CollectFloat32(collector func(int, float32) interface{}) *O {
+
+	arr := o.MustFloat32Slice()
+	collected := make([]interface{}, len(arr))
+
+	o.EachFloat32(func(index int, val float32) bool {
+		collected[index] = collector(index, val)
+		return true
+	})
+
+	return New(collected)
+}
+
 /*
 	Float64 (float64 and []float64)
 	--------------------------------------------------
@@ -1810,6 +2305,39 @@ func (o *O) GroupFloat64(grouper func(int, float64) string) *O {
 
 	return New(groups)
 
+}
+
+// ReplaceFloat64 uses the specified function to replace each float64s
+// by iterating each item.  The data in the returned result will be a
+// []float64 containing the replaced items.
+func (o *O) ReplaceFloat64(replacer func(int, float64) float64) *O {
+
+	arr := o.MustFloat64Slice()
+	replaced := make([]float64, len(arr))
+
+	o.EachFloat64(func(index int, val float64) bool {
+		replaced[index] = replacer(index, val)
+		return true
+	})
+
+	return New(replaced)
+
+}
+
+// CollectFloat64 uses the specified collector function to collect a value
+// for each of the float64s in the slice.  The data returned will be a
+// []interface{}.
+func (o *O) CollectFloat64(collector func(int, float64) interface{}) *O {
+
+	arr := o.MustFloat64Slice()
+	collected := make([]interface{}, len(arr))
+
+	o.EachFloat64(func(index int, val float64) bool {
+		collected[index] = collector(index, val)
+		return true
+	})
+
+	return New(collected)
 }
 
 /*
@@ -1925,6 +2453,39 @@ func (o *O) GroupComplex64(grouper func(int, complex64) string) *O {
 
 }
 
+// ReplaceComplex64 uses the specified function to replace each complex64s
+// by iterating each item.  The data in the returned result will be a
+// []complex64 containing the replaced items.
+func (o *O) ReplaceComplex64(replacer func(int, complex64) complex64) *O {
+
+	arr := o.MustComplex64Slice()
+	replaced := make([]complex64, len(arr))
+
+	o.EachComplex64(func(index int, val complex64) bool {
+		replaced[index] = replacer(index, val)
+		return true
+	})
+
+	return New(replaced)
+
+}
+
+// CollectComplex64 uses the specified collector function to collect a value
+// for each of the complex64s in the slice.  The data returned will be a
+// []interface{}.
+func (o *O) CollectComplex64(collector func(int, complex64) interface{}) *O {
+
+	arr := o.MustComplex64Slice()
+	collected := make([]interface{}, len(arr))
+
+	o.EachComplex64(func(index int, val complex64) bool {
+		collected[index] = collector(index, val)
+		return true
+	})
+
+	return New(collected)
+}
+
 /*
 	Complex128 (complex128 and []complex128)
 	--------------------------------------------------
@@ -2036,4 +2597,37 @@ func (o *O) GroupComplex128(grouper func(int, complex128) string) *O {
 
 	return New(groups)
 
+}
+
+// ReplaceComplex128 uses the specified function to replace each complex128s
+// by iterating each item.  The data in the returned result will be a
+// []complex128 containing the replaced items.
+func (o *O) ReplaceComplex128(replacer func(int, complex128) complex128) *O {
+
+	arr := o.MustComplex128Slice()
+	replaced := make([]complex128, len(arr))
+
+	o.EachComplex128(func(index int, val complex128) bool {
+		replaced[index] = replacer(index, val)
+		return true
+	})
+
+	return New(replaced)
+
+}
+
+// CollectComplex128 uses the specified collector function to collect a value
+// for each of the complex128s in the slice.  The data returned will be a
+// []interface{}.
+func (o *O) CollectComplex128(collector func(int, complex128) interface{}) *O {
+
+	arr := o.MustComplex128Slice()
+	collected := make([]interface{}, len(arr))
+
+	o.EachComplex128(func(index int, val complex128) bool {
+		collected[index] = collector(index, val)
+		return true
+	})
+
+	return New(collected)
 }

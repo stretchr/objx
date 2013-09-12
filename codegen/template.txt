@@ -111,6 +111,39 @@ func (o *O) Group{4}(grouper func(int, {1}) string) *O {
 
 }
 
+// Replace{4} uses the specified function to replace each {1}s
+// by iterating each item.  The data in the returned result will be a
+// []{1} containing the replaced items.
+func (o *O) Replace{4}(replacer func(int, {1}) {1}) *O {
+
+	arr := o.Must{4}Slice()
+	replaced := make([]{1}, len(arr))
+
+	o.Each{4}(func(index int, val {1}) bool {
+		replaced[index] = replacer(index, val)
+		return true
+	})
+
+	return New(replaced)
+
+}
+
+// Collect{4} uses the specified collector function to collect a value
+// for each of the {1}s in the slice.  The data returned will be a
+// []interface{}.
+func (o *O) Collect{4}(collector func(int, {1}) interface{}) *O {
+
+	arr := o.Must{4}Slice()
+	collected := make([]interface{}, len(arr))
+
+	o.Each{4}(func(index int, val {1}) bool {
+		collected[index] = collector(index, val)
+		return true
+	})
+
+	return New(collected)
+}
+
 // TESTS:
 
 func Test{4}(t *testing.T) {
@@ -157,11 +190,11 @@ func TestEach{4}(t *testing.T) {
 
 	o := New([]{1}{ {1}({2}), {1}({2}), {1}({2}), {1}({2}), {1}({2}) })
 	count := 0
-	collectedVals := make([]{1}, 0)
+	replacedVals := make([]{1}, 0)
 	assert.Equal(t, o, o.Each{4}(func(i int, val {1}) bool {
 
 		count++
-		collectedVals = append(collectedVals, val)
+		replacedVals = append(replacedVals, val)
 
 		// abort early
 		if i == 2 {
@@ -173,9 +206,9 @@ func TestEach{4}(t *testing.T) {
 	}))
 
 	assert.Equal(t, count, 3)
-	assert.Equal(t, collectedVals[0], o.Must{4}Slice()[0])
-	assert.Equal(t, collectedVals[1], o.Must{4}Slice()[1])
-	assert.Equal(t, collectedVals[2], o.Must{4}Slice()[2])
+	assert.Equal(t, replacedVals[0], o.Must{4}Slice()[0])
+	assert.Equal(t, replacedVals[1], o.Must{4}Slice()[1])
+	assert.Equal(t, replacedVals[2], o.Must{4}Slice()[2])
 
 }
 
@@ -202,5 +235,50 @@ func TestGroup{4}(t *testing.T) {
 	assert.Equal(t, 2, len(grouped))
 	assert.Equal(t, 3, len(grouped["true"]))
 	assert.Equal(t, 3, len(grouped["false"]))
+
+}
+
+func TestReplace{4}(t *testing.T) {
+
+	o := New([]{1}{ {1}({2}), {1}({2}), {1}({2}), {1}({2}), {1}({2}), {1}({2}) })
+
+	rawArr := o.Must{4}Slice()
+
+	replaced := o.Replace{4}(func(index int, val {1}) {1} {
+		if index < len(rawArr)-1 {
+			return rawArr[index+1]
+		}
+		return rawArr[0]
+	})
+
+	replacedArr := replaced.Must{4}Slice()
+	if assert.Equal(t, 6, len(replacedArr)) {
+		assert.Equal(t, replacedArr[0], rawArr[1])
+		assert.Equal(t, replacedArr[1], rawArr[2])
+		assert.Equal(t, replacedArr[2], rawArr[3])
+		assert.Equal(t, replacedArr[3], rawArr[4])
+		assert.Equal(t, replacedArr[4], rawArr[5])
+		assert.Equal(t, replacedArr[5], rawArr[0])
+	}
+
+}
+
+func TestCollect{4}(t *testing.T) {
+
+	o := New([]{1}{ {1}({2}), {1}({2}), {1}({2}), {1}({2}), {1}({2}), {1}({2}) })
+
+	collected := o.Collect{4}(func(index int, val {1}) interface{} {
+		return index
+	})
+
+	collectedArr := collected.MustInterSlice()
+	if assert.Equal(t, 6, len(collectedArr)) {
+		assert.Equal(t, collectedArr[0], 0)
+		assert.Equal(t, collectedArr[1], 1)
+		assert.Equal(t, collectedArr[2], 2)
+		assert.Equal(t, collectedArr[3], 3)
+		assert.Equal(t, collectedArr[4], 4)
+		assert.Equal(t, collectedArr[5], 5)
+	}
 
 }
