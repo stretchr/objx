@@ -85,12 +85,13 @@ func (o *O) WhereInter(decider func(int, interface{}) bool) *O {
 
 	var selected []interface{}
 
-	for index, val := range o.MustInterSlice() {
+	o.EachInter(func(index int, val interface{}) bool {
 		shouldSelect := decider(index, val)
 		if shouldSelect == false {
 			selected = append(selected, val)
 		}
-	}
+		return true
+	})
 
 	return New(selected)
 
@@ -103,13 +104,14 @@ func (o *O) GroupInter(grouper func(int, interface{}) string) *O {
 
 	groups := make(map[string][]interface{})
 
-	for index, val := range o.MustInterSlice() {
+	o.EachInter(func(index int, val interface{}) bool {
 		group := grouper(index, val)
 		if _, ok := groups[group]; !ok {
 			groups[group] = make([]interface{}, 0)
 		}
 		groups[group] = append(groups[group], val)
-	}
+		return true
+	})
 
 	return New(groups)
 
@@ -196,12 +198,13 @@ func (o *O) WhereBool(decider func(int, bool) bool) *O {
 
 	var selected []bool
 
-	for index, val := range o.MustBoolSlice() {
+	o.EachBool(func(index int, val bool) bool {
 		shouldSelect := decider(index, val)
 		if shouldSelect == false {
 			selected = append(selected, val)
 		}
-	}
+		return true
+	})
 
 	return New(selected)
 
@@ -214,13 +217,14 @@ func (o *O) GroupBool(grouper func(int, bool) string) *O {
 
 	groups := make(map[string][]bool)
 
-	for index, val := range o.MustBoolSlice() {
+	o.EachBool(func(index int, val bool) bool {
 		group := grouper(index, val)
 		if _, ok := groups[group]; !ok {
 			groups[group] = make([]bool, 0)
 		}
 		groups[group] = append(groups[group], val)
-	}
+		return true
+	})
 
 	return New(groups)
 
@@ -307,12 +311,13 @@ func (o *O) WhereStr(decider func(int, string) bool) *O {
 
 	var selected []string
 
-	for index, val := range o.MustStrSlice() {
+	o.EachStr(func(index int, val string) bool {
 		shouldSelect := decider(index, val)
 		if shouldSelect == false {
 			selected = append(selected, val)
 		}
-	}
+		return true
+	})
 
 	return New(selected)
 
@@ -325,13 +330,14 @@ func (o *O) GroupStr(grouper func(int, string) string) *O {
 
 	groups := make(map[string][]string)
 
-	for index, val := range o.MustStrSlice() {
+	o.EachStr(func(index int, val string) bool {
 		group := grouper(index, val)
 		if _, ok := groups[group]; !ok {
 			groups[group] = make([]string, 0)
 		}
 		groups[group] = append(groups[group], val)
-	}
+		return true
+	})
 
 	return New(groups)
 
@@ -418,12 +424,13 @@ func (o *O) WhereInt(decider func(int, int) bool) *O {
 
 	var selected []int
 
-	for index, val := range o.MustIntSlice() {
+	o.EachInt(func(index int, val int) bool {
 		shouldSelect := decider(index, val)
 		if shouldSelect == false {
 			selected = append(selected, val)
 		}
-	}
+		return true
+	})
 
 	return New(selected)
 
@@ -436,13 +443,14 @@ func (o *O) GroupInt(grouper func(int, int) string) *O {
 
 	groups := make(map[string][]int)
 
-	for index, val := range o.MustIntSlice() {
+	o.EachInt(func(index int, val int) bool {
 		group := grouper(index, val)
 		if _, ok := groups[group]; !ok {
 			groups[group] = make([]int, 0)
 		}
 		groups[group] = append(groups[group], val)
-	}
+		return true
+	})
 
 	return New(groups)
 
@@ -529,12 +537,13 @@ func (o *O) WhereInt8(decider func(int, int8) bool) *O {
 
 	var selected []int8
 
-	for index, val := range o.MustInt8Slice() {
+	o.EachInt8(func(index int, val int8) bool {
 		shouldSelect := decider(index, val)
 		if shouldSelect == false {
 			selected = append(selected, val)
 		}
-	}
+		return true
+	})
 
 	return New(selected)
 
@@ -547,13 +556,14 @@ func (o *O) GroupInt8(grouper func(int, int8) string) *O {
 
 	groups := make(map[string][]int8)
 
-	for index, val := range o.MustInt8Slice() {
+	o.EachInt8(func(index int, val int8) bool {
 		group := grouper(index, val)
 		if _, ok := groups[group]; !ok {
 			groups[group] = make([]int8, 0)
 		}
 		groups[group] = append(groups[group], val)
-	}
+		return true
+	})
 
 	return New(groups)
 
@@ -640,12 +650,13 @@ func (o *O) WhereInt16(decider func(int, int16) bool) *O {
 
 	var selected []int16
 
-	for index, val := range o.MustInt16Slice() {
+	o.EachInt16(func(index int, val int16) bool {
 		shouldSelect := decider(index, val)
 		if shouldSelect == false {
 			selected = append(selected, val)
 		}
-	}
+		return true
+	})
 
 	return New(selected)
 
@@ -658,13 +669,14 @@ func (o *O) GroupInt16(grouper func(int, int16) string) *O {
 
 	groups := make(map[string][]int16)
 
-	for index, val := range o.MustInt16Slice() {
+	o.EachInt16(func(index int, val int16) bool {
 		group := grouper(index, val)
 		if _, ok := groups[group]; !ok {
 			groups[group] = make([]int16, 0)
 		}
 		groups[group] = append(groups[group], val)
-	}
+		return true
+	})
 
 	return New(groups)
 
@@ -751,12 +763,13 @@ func (o *O) WhereInt32(decider func(int, int32) bool) *O {
 
 	var selected []int32
 
-	for index, val := range o.MustInt32Slice() {
+	o.EachInt32(func(index int, val int32) bool {
 		shouldSelect := decider(index, val)
 		if shouldSelect == false {
 			selected = append(selected, val)
 		}
-	}
+		return true
+	})
 
 	return New(selected)
 
@@ -769,13 +782,14 @@ func (o *O) GroupInt32(grouper func(int, int32) string) *O {
 
 	groups := make(map[string][]int32)
 
-	for index, val := range o.MustInt32Slice() {
+	o.EachInt32(func(index int, val int32) bool {
 		group := grouper(index, val)
 		if _, ok := groups[group]; !ok {
 			groups[group] = make([]int32, 0)
 		}
 		groups[group] = append(groups[group], val)
-	}
+		return true
+	})
 
 	return New(groups)
 
@@ -862,12 +876,13 @@ func (o *O) WhereInt64(decider func(int, int64) bool) *O {
 
 	var selected []int64
 
-	for index, val := range o.MustInt64Slice() {
+	o.EachInt64(func(index int, val int64) bool {
 		shouldSelect := decider(index, val)
 		if shouldSelect == false {
 			selected = append(selected, val)
 		}
-	}
+		return true
+	})
 
 	return New(selected)
 
@@ -880,13 +895,14 @@ func (o *O) GroupInt64(grouper func(int, int64) string) *O {
 
 	groups := make(map[string][]int64)
 
-	for index, val := range o.MustInt64Slice() {
+	o.EachInt64(func(index int, val int64) bool {
 		group := grouper(index, val)
 		if _, ok := groups[group]; !ok {
 			groups[group] = make([]int64, 0)
 		}
 		groups[group] = append(groups[group], val)
-	}
+		return true
+	})
 
 	return New(groups)
 
@@ -973,12 +989,13 @@ func (o *O) WhereUint(decider func(int, uint) bool) *O {
 
 	var selected []uint
 
-	for index, val := range o.MustUintSlice() {
+	o.EachUint(func(index int, val uint) bool {
 		shouldSelect := decider(index, val)
 		if shouldSelect == false {
 			selected = append(selected, val)
 		}
-	}
+		return true
+	})
 
 	return New(selected)
 
@@ -991,13 +1008,14 @@ func (o *O) GroupUint(grouper func(int, uint) string) *O {
 
 	groups := make(map[string][]uint)
 
-	for index, val := range o.MustUintSlice() {
+	o.EachUint(func(index int, val uint) bool {
 		group := grouper(index, val)
 		if _, ok := groups[group]; !ok {
 			groups[group] = make([]uint, 0)
 		}
 		groups[group] = append(groups[group], val)
-	}
+		return true
+	})
 
 	return New(groups)
 
@@ -1084,12 +1102,13 @@ func (o *O) WhereUint8(decider func(int, uint8) bool) *O {
 
 	var selected []uint8
 
-	for index, val := range o.MustUint8Slice() {
+	o.EachUint8(func(index int, val uint8) bool {
 		shouldSelect := decider(index, val)
 		if shouldSelect == false {
 			selected = append(selected, val)
 		}
-	}
+		return true
+	})
 
 	return New(selected)
 
@@ -1102,13 +1121,14 @@ func (o *O) GroupUint8(grouper func(int, uint8) string) *O {
 
 	groups := make(map[string][]uint8)
 
-	for index, val := range o.MustUint8Slice() {
+	o.EachUint8(func(index int, val uint8) bool {
 		group := grouper(index, val)
 		if _, ok := groups[group]; !ok {
 			groups[group] = make([]uint8, 0)
 		}
 		groups[group] = append(groups[group], val)
-	}
+		return true
+	})
 
 	return New(groups)
 
@@ -1195,12 +1215,13 @@ func (o *O) WhereUint16(decider func(int, uint16) bool) *O {
 
 	var selected []uint16
 
-	for index, val := range o.MustUint16Slice() {
+	o.EachUint16(func(index int, val uint16) bool {
 		shouldSelect := decider(index, val)
 		if shouldSelect == false {
 			selected = append(selected, val)
 		}
-	}
+		return true
+	})
 
 	return New(selected)
 
@@ -1213,13 +1234,14 @@ func (o *O) GroupUint16(grouper func(int, uint16) string) *O {
 
 	groups := make(map[string][]uint16)
 
-	for index, val := range o.MustUint16Slice() {
+	o.EachUint16(func(index int, val uint16) bool {
 		group := grouper(index, val)
 		if _, ok := groups[group]; !ok {
 			groups[group] = make([]uint16, 0)
 		}
 		groups[group] = append(groups[group], val)
-	}
+		return true
+	})
 
 	return New(groups)
 
@@ -1306,12 +1328,13 @@ func (o *O) WhereUint32(decider func(int, uint32) bool) *O {
 
 	var selected []uint32
 
-	for index, val := range o.MustUint32Slice() {
+	o.EachUint32(func(index int, val uint32) bool {
 		shouldSelect := decider(index, val)
 		if shouldSelect == false {
 			selected = append(selected, val)
 		}
-	}
+		return true
+	})
 
 	return New(selected)
 
@@ -1324,13 +1347,14 @@ func (o *O) GroupUint32(grouper func(int, uint32) string) *O {
 
 	groups := make(map[string][]uint32)
 
-	for index, val := range o.MustUint32Slice() {
+	o.EachUint32(func(index int, val uint32) bool {
 		group := grouper(index, val)
 		if _, ok := groups[group]; !ok {
 			groups[group] = make([]uint32, 0)
 		}
 		groups[group] = append(groups[group], val)
-	}
+		return true
+	})
 
 	return New(groups)
 
@@ -1417,12 +1441,13 @@ func (o *O) WhereUint64(decider func(int, uint64) bool) *O {
 
 	var selected []uint64
 
-	for index, val := range o.MustUint64Slice() {
+	o.EachUint64(func(index int, val uint64) bool {
 		shouldSelect := decider(index, val)
 		if shouldSelect == false {
 			selected = append(selected, val)
 		}
-	}
+		return true
+	})
 
 	return New(selected)
 
@@ -1435,13 +1460,14 @@ func (o *O) GroupUint64(grouper func(int, uint64) string) *O {
 
 	groups := make(map[string][]uint64)
 
-	for index, val := range o.MustUint64Slice() {
+	o.EachUint64(func(index int, val uint64) bool {
 		group := grouper(index, val)
 		if _, ok := groups[group]; !ok {
 			groups[group] = make([]uint64, 0)
 		}
 		groups[group] = append(groups[group], val)
-	}
+		return true
+	})
 
 	return New(groups)
 
@@ -1528,12 +1554,13 @@ func (o *O) WhereUintptr(decider func(int, uintptr) bool) *O {
 
 	var selected []uintptr
 
-	for index, val := range o.MustUintptrSlice() {
+	o.EachUintptr(func(index int, val uintptr) bool {
 		shouldSelect := decider(index, val)
 		if shouldSelect == false {
 			selected = append(selected, val)
 		}
-	}
+		return true
+	})
 
 	return New(selected)
 
@@ -1546,13 +1573,14 @@ func (o *O) GroupUintptr(grouper func(int, uintptr) string) *O {
 
 	groups := make(map[string][]uintptr)
 
-	for index, val := range o.MustUintptrSlice() {
+	o.EachUintptr(func(index int, val uintptr) bool {
 		group := grouper(index, val)
 		if _, ok := groups[group]; !ok {
 			groups[group] = make([]uintptr, 0)
 		}
 		groups[group] = append(groups[group], val)
-	}
+		return true
+	})
 
 	return New(groups)
 
@@ -1639,12 +1667,13 @@ func (o *O) WhereFloat32(decider func(int, float32) bool) *O {
 
 	var selected []float32
 
-	for index, val := range o.MustFloat32Slice() {
+	o.EachFloat32(func(index int, val float32) bool {
 		shouldSelect := decider(index, val)
 		if shouldSelect == false {
 			selected = append(selected, val)
 		}
-	}
+		return true
+	})
 
 	return New(selected)
 
@@ -1657,13 +1686,14 @@ func (o *O) GroupFloat32(grouper func(int, float32) string) *O {
 
 	groups := make(map[string][]float32)
 
-	for index, val := range o.MustFloat32Slice() {
+	o.EachFloat32(func(index int, val float32) bool {
 		group := grouper(index, val)
 		if _, ok := groups[group]; !ok {
 			groups[group] = make([]float32, 0)
 		}
 		groups[group] = append(groups[group], val)
-	}
+		return true
+	})
 
 	return New(groups)
 
@@ -1750,12 +1780,13 @@ func (o *O) WhereFloat64(decider func(int, float64) bool) *O {
 
 	var selected []float64
 
-	for index, val := range o.MustFloat64Slice() {
+	o.EachFloat64(func(index int, val float64) bool {
 		shouldSelect := decider(index, val)
 		if shouldSelect == false {
 			selected = append(selected, val)
 		}
-	}
+		return true
+	})
 
 	return New(selected)
 
@@ -1768,13 +1799,14 @@ func (o *O) GroupFloat64(grouper func(int, float64) string) *O {
 
 	groups := make(map[string][]float64)
 
-	for index, val := range o.MustFloat64Slice() {
+	o.EachFloat64(func(index int, val float64) bool {
 		group := grouper(index, val)
 		if _, ok := groups[group]; !ok {
 			groups[group] = make([]float64, 0)
 		}
 		groups[group] = append(groups[group], val)
-	}
+		return true
+	})
 
 	return New(groups)
 
@@ -1861,12 +1893,13 @@ func (o *O) WhereComplex64(decider func(int, complex64) bool) *O {
 
 	var selected []complex64
 
-	for index, val := range o.MustComplex64Slice() {
+	o.EachComplex64(func(index int, val complex64) bool {
 		shouldSelect := decider(index, val)
 		if shouldSelect == false {
 			selected = append(selected, val)
 		}
-	}
+		return true
+	})
 
 	return New(selected)
 
@@ -1879,13 +1912,14 @@ func (o *O) GroupComplex64(grouper func(int, complex64) string) *O {
 
 	groups := make(map[string][]complex64)
 
-	for index, val := range o.MustComplex64Slice() {
+	o.EachComplex64(func(index int, val complex64) bool {
 		group := grouper(index, val)
 		if _, ok := groups[group]; !ok {
 			groups[group] = make([]complex64, 0)
 		}
 		groups[group] = append(groups[group], val)
-	}
+		return true
+	})
 
 	return New(groups)
 
@@ -1972,12 +2006,13 @@ func (o *O) WhereComplex128(decider func(int, complex128) bool) *O {
 
 	var selected []complex128
 
-	for index, val := range o.MustComplex128Slice() {
+	o.EachComplex128(func(index int, val complex128) bool {
 		shouldSelect := decider(index, val)
 		if shouldSelect == false {
 			selected = append(selected, val)
 		}
-	}
+		return true
+	})
 
 	return New(selected)
 
@@ -1990,13 +2025,14 @@ func (o *O) GroupComplex128(grouper func(int, complex128) string) *O {
 
 	groups := make(map[string][]complex128)
 
-	for index, val := range o.MustComplex128Slice() {
+	o.EachComplex128(func(index int, val complex128) bool {
 		group := grouper(index, val)
 		if _, ok := groups[group]; !ok {
 			groups[group] = make([]complex128, 0)
 		}
 		groups[group] = append(groups[group], val)
-	}
+		return true
+	})
 
 	return New(groups)
 

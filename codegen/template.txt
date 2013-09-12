@@ -79,12 +79,13 @@ func (o *O) Where{4}(decider func(int, {1}) bool) *O {
 
 	var selected []{1}
 
-	for index, val := range o.Must{4}Slice() {
+	o.Each{4}(func(index int, val {1}) bool {
 		shouldSelect := decider(index, val)
 		if shouldSelect == false {
 			selected = append(selected, val)
 		}
-	}
+		return true
+	})
 
 	return New(selected)
 
@@ -97,13 +98,14 @@ func (o *O) Group{4}(grouper func(int, {1}) string) *O {
 
 	groups := make(map[string][]{1})
 
-	for index, val := range o.Must{4}Slice() {
+	o.Each{4}(func(index int, val {1}) bool {
 		group := grouper(index, val)
 		if _, ok := groups[group]; !ok {
 			groups[group] = make([]{1}, 0)
 		}
 		groups[group] = append(groups[group], val)
-	}
+		return true
+	})
 
 	return New(groups)
 
