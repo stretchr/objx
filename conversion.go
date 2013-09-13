@@ -115,30 +115,3 @@ func (o *Obj) URLValues() url.Values {
 func (o *Obj) URLQuery() (string, error) {
 	return o.URLValues().Encode(), nil
 }
-
-// Transform builds a new Obj giving the transformer a chance
-// to change the keys and values as it goes. This method requires that
-// the wrapped object be a map[string]interface{}
-func (o *Obj) Transform(transformer func(key string, value interface{}) (string, interface{})) *Obj {
-	m := make(map[string]interface{})
-	for k, v := range o.MSI() {
-		modifiedKey, modifiedVal := transformer(k, v)
-		m[modifiedKey] = modifiedVal
-	}
-	return New(m)
-}
-
-// TransformKeys builds a new map using the specified key mapping.
-//
-// Unspecified keys will be unaltered.
-// This method requires that the wrapped object be a map[string]interface{}
-func (o *Obj) TransformKeys(mapping map[string]string) *Obj {
-	return o.Transform(func(key string, value interface{}) (string, interface{}) {
-
-		if newKey, ok := mapping[key]; ok {
-			return newKey, value
-		}
-
-		return key, value
-	})
-}
