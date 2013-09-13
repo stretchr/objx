@@ -25,14 +25,14 @@ func TestNewMSI(t *testing.T) {
 
 }
 
-func TestMustFromJSONWithError(t *testing.T) {
+func TesNewtMustFromJSONWithError(t *testing.T) {
 
 	_, err := FromJSON(`"name":"Mat"}`)
 	assert.Error(t, err)
 
 }
 
-func TestFromJSON(t *testing.T) {
+func TestNewFromJSON(t *testing.T) {
 
 	o := MustFromJSON(`{"name":"Mat"}`)
 
@@ -44,7 +44,7 @@ func TestFromJSON(t *testing.T) {
 
 }
 
-func TestFromJSONWithError(t *testing.T) {
+func TestNewFromJSONWithError(t *testing.T) {
 
 	var o *Obj
 
@@ -56,7 +56,7 @@ func TestFromJSONWithError(t *testing.T) {
 
 }
 
-func TestFromBase64String(t *testing.T) {
+func TestNewFromBase64String(t *testing.T) {
 
 	base64String := "eyJuYW1lIjoiTWF0In0="
 
@@ -70,7 +70,7 @@ func TestFromBase64String(t *testing.T) {
 
 }
 
-func TestFromBase64StringWithError(t *testing.T) {
+func TestNewFromBase64StringWithError(t *testing.T) {
 
 	base64String := "eyJuYW1lIjoiTWFasd0In0="
 
@@ -84,7 +84,7 @@ func TestFromBase64StringWithError(t *testing.T) {
 
 }
 
-func TestFromSignedBase64String(t *testing.T) {
+func TestNewFromSignedBase64String(t *testing.T) {
 
 	base64String := "eyJuYW1lIjoiTWF0In0=_67ee82916f90b2c0d68c903266e8998c9ef0c3d6"
 
@@ -98,7 +98,7 @@ func TestFromSignedBase64String(t *testing.T) {
 
 }
 
-func TestFromSignedBase64StringWithError(t *testing.T) {
+func TestNewFromSignedBase64StringWithError(t *testing.T) {
 
 	base64String := "eyJuYW1lasdIjoiTWF0In0=_67ee82916f90b2c0d68c903266e8998c9ef0c3d6"
 
@@ -109,5 +109,15 @@ func TestFromSignedBase64StringWithError(t *testing.T) {
 	assert.Panics(t, func() {
 		MustFromSignedBase64(base64String, "key")
 	})
+
+}
+
+func TestNewFromURLQuery(t *testing.T) {
+
+	m, err := FromURLQuery("name=tyler&state=UT")
+	if assert.NoError(t, err) && assert.NotNil(t, m) {
+		assert.Equal(t, "tyler", m.Get("name").Str())
+		assert.Equal(t, "UT", m.Get("state").Str())
+	}
 
 }

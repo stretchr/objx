@@ -6,6 +6,7 @@ import (
 	"errors"
 	"fmt"
 	"io/ioutil"
+	"net/url"
 	"strings"
 )
 
@@ -150,4 +151,24 @@ func MustFromSignedBase64(base64String, key string) *Obj {
 	}
 
 	return result
+}
+
+// FromURLQuery generates a new Obj by parsing the specified
+// query.
+//
+// For queries with multiple values, the first value is selected.
+func FromURLQuery(query string) (*Obj, error) {
+
+	vals, err := url.ParseQuery(query)
+
+	if err != nil {
+		return nil, err
+	}
+
+	m := make(map[string]interface{})
+	for k, vals := range vals {
+		m[k] = vals[0]
+	}
+
+	return New(m), nil
 }
