@@ -14,26 +14,6 @@ const arrayAccesRegexString = `^(.+)\[([0-9]+)\]$`
 // arrayAccesRegex is the compiled arrayAccesRegexString
 var arrayAccesRegex = regexp.MustCompile(arrayAccesRegexString)
 
-// Data returns the raw internal object managed by this Map
-func (m *Map) Data() interface{} {
-	return m.value.data
-}
-
-// Set sets the value using the specified selector and
-// returns the object on which Set was called.
-//
-// Set can only operate directly on map[string]interface{} and []interface
-//
-// Example
-//
-// To set the title of the third chapter of the second book, do:
-//
-//    o.Set("books[1].chapters[2].title","Time to Go")
-func (m *Map) Set(selector, value interface{}) *Map {
-	access(m.value.data, selector, value, true, false)
-	return m
-}
-
 // Get gets the value using the specified selector and
 // returns it inside a new Obj object.
 //
@@ -47,9 +27,24 @@ func (m *Map) Set(selector, value interface{}) *Map {
 // To access the title of the third chapter of the second book, do:
 //
 //    o.Get("books[1].chapters[2].title")
-func (m *Map) Get(selector interface{}) *Value {
+func (m *Map) Get(selector string) *Value {
 	rawObj := access(m.value.data, selector, nil, false, false)
 	return &Value{data: rawObj}
+}
+
+// Set sets the value using the specified selector and
+// returns the object on which Set was called.
+//
+// Set can only operate directly on map[string]interface{} and []interface
+//
+// Example
+//
+// To set the title of the third chapter of the second book, do:
+//
+//    o.Set("books[1].chapters[2].title","Time to Go")
+func (m *Map) Set(selector string, value interface{}) *Map {
+	access(m.value.data, selector, value, true, false)
+	return m
 }
 
 // access accesses the object using the selector and performs the
