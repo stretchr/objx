@@ -19,19 +19,26 @@ func (o *Objx) Data() interface{} {
 	return o.data
 }
 
+// Set sets the value using the specified selector and
+// returns the object on which Set was called.
+func (o *Objx) Set(selector, value interface{}) *Objx {
+	access(o.data, selector, value, true, false)
+	return o
+}
+
 // Get gets the value using the specified selector and
 // returns it inside a new Obj object.
 //
 // If it cannot find the value, Get will return a nil
 // value inside an instance of Obj.
 func (o *Objx) Get(selector interface{}) *Objx {
-	rawObj := access(o.data, selector, false)
+	rawObj := access(o.data, selector, nil, false, false)
 	return New(rawObj)
 }
 
 // access accesses the object using the selector and performs the
 // appropriate action.
-func access(current interface{}, selector interface{}, panics bool) interface{} {
+func access(current, selector, value interface{}, isSet, panics bool) interface{} {
 
 	switch selector.(type) {
 	case int, int8, int16, int32, int64, uint, uint8, uint16, uint32, uint64:
@@ -80,7 +87,19 @@ func access(current interface{}, selector interface{}, panics bool) interface{} 
 		// get the object in question
 		switch current.(type) {
 		case map[string]interface{}:
-			current = current.(map[string]interface{})[thisSel]
+			curMSI := current.(map[string]interface{})
+			if len(selSegs) <= 1 && isSet {
+				if _, ok := curMSI[thisSel]; ok {
+					curMSI[thisSel] = value
+					return nil
+				} else {
+					if panics {
+						panic(fmt.Sprintf("objx: '%v' invalid on object.", selector))
+					}
+				}
+			} else {
+				current = curMSI[thisSel]
+			}
 		default:
 			current = nil
 		}
@@ -91,7 +110,6 @@ func access(current interface{}, selector interface{}, panics bool) interface{} 
 
 		// do we need to access the item of an array?
 		if index > -1 {
-
 			if array, ok := current.([]interface{}); ok {
 				if index < len(array) {
 					current = array[index]
@@ -102,13 +120,10 @@ func access(current interface{}, selector interface{}, panics bool) interface{} 
 					current = nil
 				}
 			}
-
 		}
 
 		if len(selSegs) > 1 {
-
-			current = access(current, selSegs[1], panics)
-
+			current = access(current, selSegs[1], value, isSet, panics)
 		}
 
 	}
