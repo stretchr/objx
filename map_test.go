@@ -53,13 +53,13 @@ func TestMapFromJSON(t *testing.T) {
 
 func TestMapFromJSONWithError(t *testing.T) {
 
-	var o *Map
+	var m *Map
 
 	assert.Panics(t, func() {
-		o = MustFromJSON(`"name":"Mat"}`)
+		m = MustFromJSON(`"name":"Mat"}`)
 	})
 
-	assert.Nil(t, o)
+	assert.Nil(t, m)
 
 }
 
