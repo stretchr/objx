@@ -5,8 +5,8 @@
 
 // {4} gets the value as a {1}, returns the optionalDefault
 // value or a system default object if the value is the wrong type.
-func (o *Obj) {4}(optionalDefault ...{1}) {1} {
-	if s, ok := o.obj.({1}); ok {
+func (o *Objx) {4}(optionalDefault ...{1}) {1} {
+	if s, ok := o.data.({1}); ok {
 		return s
 	}
 	if len(optionalDefault) == 1 {
@@ -18,14 +18,14 @@ func (o *Obj) {4}(optionalDefault ...{1}) {1} {
 // Must{4} gets the value as a {1}.
 //
 // Panics if the object is not a {1}.
-func (o *Obj) Must{4}() {1} {
-	return o.obj.({1})
+func (o *Objx) Must{4}() {1} {
+	return o.data.({1})
 }
 
 // {4}Slice gets the value as a []{1}, returns the optionalDefault
 // value or nil if the value is not a []{1}.
-func (o *Obj) {4}Slice(optionalDefault ...[]{1}) []{1} {
-	if s, ok := o.obj.([]{1}); ok {
+func (o *Objx) {4}Slice(optionalDefault ...[]{1}) []{1} {
+	if s, ok := o.data.([]{1}); ok {
 		return s
 	}
 	if len(optionalDefault) == 1 {
@@ -37,19 +37,19 @@ func (o *Obj) {4}Slice(optionalDefault ...[]{1}) []{1} {
 // Must{4}Slice gets the value as a []{1}.
 //
 // Panics if the object is not a []{1}.
-func (o *Obj) Must{4}Slice() []{1} {
-	return o.obj.([]{1})
+func (o *Objx) Must{4}Slice() []{1} {
+	return o.data.([]{1})
 }
 
 // Is{4} gets whether the object contained is a {1} or not.
-func (o *Obj) Is{4}() bool {
-  _, ok := o.obj.({1})
+func (o *Objx) Is{4}() bool {
+  _, ok := o.data.({1})
   return ok
 }
 
 // Is{4}Slice gets whether the object contained is a []{1} or not.
-func (o *Obj) Is{4}Slice() bool {
-	_, ok := o.obj.([]{1})
+func (o *Objx) Is{4}Slice() bool {
+	_, ok := o.data.([]{1})
 	return ok
 }
 
@@ -57,7 +57,7 @@ func (o *Obj) Is{4}Slice() bool {
 // in the []{1}.
 //
 // Panics if the object is the wrong type.
-func (o *Obj) Each{4}(callback func(int, {1}) bool) *Obj {
+func (o *Objx) Each{4}(callback func(int, {1}) bool) *Objx {
 
 	for index, val := range o.Must{4}Slice() {
 		carryon := callback(index, val)
@@ -73,7 +73,7 @@ func (o *Obj) Each{4}(callback func(int, {1}) bool) *Obj {
 // Where{4} uses the specified decider function to select items
 // from the []{1}.  The object contained in the result will contain
 // only the selected items.
-func (o *Obj) Where{4}(decider func(int, {1}) bool) *Obj {
+func (o *Objx) Where{4}(decider func(int, {1}) bool) *Objx {
 
 	var selected []{1}
 
@@ -92,7 +92,7 @@ func (o *Obj) Where{4}(decider func(int, {1}) bool) *Obj {
 // Group{4} uses the specified grouper function to group the items
 // keyed by the return of the grouper.  The object contained in the
 // result will contain a map[string][]{1}.
-func (o *Obj) Group{4}(grouper func(int, {1}) string) *Obj {
+func (o *Objx) Group{4}(grouper func(int, {1}) string) *Objx {
 
 	groups := make(map[string][]{1})
 
@@ -112,7 +112,7 @@ func (o *Obj) Group{4}(grouper func(int, {1}) string) *Obj {
 // Replace{4} uses the specified function to replace each {1}s
 // by iterating each item.  The data in the returned result will be a
 // []{1} containing the replaced items.
-func (o *Obj) Replace{4}(replacer func(int, {1}) {1}) *Obj {
+func (o *Objx) Replace{4}(replacer func(int, {1}) {1}) *Objx {
 
 	arr := o.Must{4}Slice()
 	replaced := make([]{1}, len(arr))
@@ -129,7 +129,7 @@ func (o *Obj) Replace{4}(replacer func(int, {1}) {1}) *Obj {
 // Collect{4} uses the specified collector function to collect a value
 // for each of the {1}s in the slice.  The data returned will be a
 // []interface{}.
-func (o *Obj) Collect{4}(collector func(int, {1}) interface{}) *Obj {
+func (o *Objx) Collect{4}(collector func(int, {1}) interface{}) *Objx {
 
 	arr := o.Must{4}Slice()
 	collected := make([]interface{}, len(arr))
@@ -178,7 +178,7 @@ func Test{4}Slice(t *testing.T) {
 
 func TestIs{4}(t *testing.T) {
 
-	var o *Obj
+	var o *Objx
 
 	o = New({1}({2}))
 	assert.True(t, o.Is{4}())
@@ -232,7 +232,7 @@ func TestGroup{4}(t *testing.T) {
 
 	grouped := o.Group{4}(func(i int, val {1}) string {
 		return fmt.Sprintf("%v", i%2==0)
-	}).Obj().(map[string][]{1})
+	}).data.(map[string][]{1})
 
 	assert.Equal(t, 2, len(grouped))
 	assert.Equal(t, 3, len(grouped["true"]))
