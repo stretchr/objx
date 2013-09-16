@@ -5,66 +5,55 @@ import (
 	"testing"
 )
 
-func TestObjxCreation(t *testing.T) {
+func TestMapCreation(t *testing.T) {
 
-	objx := new(Objx)
-	if assert.NotNil(t, objx) {
-		assert.Nil(t, objx.data)
+	o := new(Map)
+	if assert.NotNil(t, o) {
+		assert.Nil(t, o.value)
 	}
 
-	objx = New(nil)
-	if assert.NotNil(t, objx) {
-		assert.Nil(t, objx.data)
+	o = New(nil)
+	assert.Nil(t, o)
+
+	o = New("Tyler")
+	assert.Nil(t, o)
+
+	o = MSI()
+	if assert.NotNil(t, o) {
+		assert.NotNil(t, o.value.data)
 	}
 
-	objx = New("Tyler")
-	if assert.NotNil(t, objx) {
-		if assert.NotNil(t, objx.data) {
-			assert.Equal(t, "Tyler", objx.data)
-		}
-	}
-
-	objx = MSI("name", "Tyler")
-	if assert.NotNil(t, objx) {
-		if assert.NotNil(t, objx.data) {
-			assert.Equal(t, objx.data.(map[string]interface{})["name"], "Tyler")
-		}
-	}
-
-	objx = Slice("Tyler", "Mat", "Ryan")
-	if assert.NotNil(t, objx) {
-		if assert.NotNil(t, objx.data) {
-			array := objx.data.([]interface{})
-			assert.Equal(t, array[0], "Tyler")
-			assert.Equal(t, array[1], "Mat")
-			assert.Equal(t, array[2], "Ryan")
+	o = MSI("name", "Tyler")
+	if assert.NotNil(t, o) {
+		if assert.NotNil(t, o.value.data) {
+			assert.Equal(t, o.value.data.(map[string]interface{})["name"], "Tyler")
 		}
 	}
 
 }
 
-func TestObjxMustFromJSONWithError(t *testing.T) {
+func TestMapMustFromJSONWithError(t *testing.T) {
 
 	_, err := FromJSON(`"name":"Mat"}`)
 	assert.Error(t, err)
 
 }
 
-func TestObjxFromJSON(t *testing.T) {
+func TestMapFromJSON(t *testing.T) {
 
 	o := MustFromJSON(`{"name":"Mat"}`)
 
 	if assert.NotNil(t, o) {
-		if assert.NotNil(t, o.data) {
-			assert.Equal(t, "Mat", o.data.(map[string]interface{})["name"])
+		if assert.NotNil(t, o.value.data) {
+			assert.Equal(t, "Mat", o.value.data.(map[string]interface{})["name"])
 		}
 	}
 
 }
 
-func TestObjxFromJSONWithError(t *testing.T) {
+func TestMapFromJSONWithError(t *testing.T) {
 
-	var o *Objx
+	var o *Map
 
 	assert.Panics(t, func() {
 		o = MustFromJSON(`"name":"Mat"}`)
@@ -74,7 +63,7 @@ func TestObjxFromJSONWithError(t *testing.T) {
 
 }
 
-func TestObjxFromBase64String(t *testing.T) {
+func TestMapFromBase64String(t *testing.T) {
 
 	base64String := "eyJuYW1lIjoiTWF0In0="
 
@@ -88,7 +77,7 @@ func TestObjxFromBase64String(t *testing.T) {
 
 }
 
-func TestObjxFromBase64StringWithError(t *testing.T) {
+func TestMapFromBase64StringWithError(t *testing.T) {
 
 	base64String := "eyJuYW1lIjoiTWFasd0In0="
 
@@ -102,7 +91,7 @@ func TestObjxFromBase64StringWithError(t *testing.T) {
 
 }
 
-func TestObjxFromSignedBase64String(t *testing.T) {
+func TestMapFromSignedBase64String(t *testing.T) {
 
 	base64String := "eyJuYW1lIjoiTWF0In0=_67ee82916f90b2c0d68c903266e8998c9ef0c3d6"
 
@@ -116,7 +105,7 @@ func TestObjxFromSignedBase64String(t *testing.T) {
 
 }
 
-func TestObjxFromSignedBase64StringWithError(t *testing.T) {
+func TestMapFromSignedBase64StringWithError(t *testing.T) {
 
 	base64String := "eyJuYW1lasdIjoiTWF0In0=_67ee82916f90b2c0d68c903266e8998c9ef0c3d6"
 
@@ -130,7 +119,7 @@ func TestObjxFromSignedBase64StringWithError(t *testing.T) {
 
 }
 
-func TestObjxFromURLQuery(t *testing.T) {
+func TestMapFromURLQuery(t *testing.T) {
 
 	m, err := FromURLQuery("name=tyler&state=UT")
 	if assert.NoError(t, err) && assert.NotNil(t, m) {

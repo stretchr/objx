@@ -14,9 +14,9 @@ const arrayAccesRegexString = `^(.+)\[([0-9]+)\]$`
 // arrayAccesRegex is the compiled arrayAccesRegexString
 var arrayAccesRegex = regexp.MustCompile(arrayAccesRegexString)
 
-// Data returns the raw internal object managed by this Objx
-func (o *Objx) Data() interface{} {
-	return o.data
+// Data returns the raw internal object managed by this Map
+func (o *Map) Data() interface{} {
+	return o.value.data
 }
 
 // Set sets the value using the specified selector and
@@ -29,8 +29,8 @@ func (o *Objx) Data() interface{} {
 // To set the title of the third chapter of the second book, do:
 //
 //    o.Set("books[1].chapters[2].title","Time to Go")
-func (o *Objx) Set(selector, value interface{}) *Objx {
-	access(o.data, selector, value, true, false)
+func (o *Map) Set(selector, value interface{}) *Map {
+	access(o.value.data, selector, value, true, false)
 	return o
 }
 
@@ -47,9 +47,9 @@ func (o *Objx) Set(selector, value interface{}) *Objx {
 // To access the title of the third chapter of the second book, do:
 //
 //    o.Get("books[1].chapters[2].title")
-func (o *Objx) Get(selector interface{}) *Objx {
-	rawObj := access(o.data, selector, nil, false, false)
-	return New(rawObj)
+func (o *Map) Get(selector interface{}) *Value {
+	rawObj := access(o.value.data, selector, nil, false, false)
+	return &Value{data: rawObj}
 }
 
 // access accesses the object using the selector and performs the

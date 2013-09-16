@@ -5,8 +5,8 @@
 
 // {4} gets the value as a {1}, returns the optionalDefault
 // value or a system default object if the value is the wrong type.
-func (o *Objx) {4}(optionalDefault ...{1}) {1} {
-	if s, ok := o.data.({1}); ok {
+func (v *Value) {4}(optionalDefault ...{1}) {1} {
+	if s, ok := v.data.({1}); ok {
 		return s
 	}
 	if len(optionalDefault) == 1 {
@@ -18,14 +18,14 @@ func (o *Objx) {4}(optionalDefault ...{1}) {1} {
 // Must{4} gets the value as a {1}.
 //
 // Panics if the object is not a {1}.
-func (o *Objx) Must{4}() {1} {
-	return o.data.({1})
+func (v *Value) Must{4}() {1} {
+	return v.data.({1})
 }
 
 // {4}Slice gets the value as a []{1}, returns the optionalDefault
 // value or nil if the value is not a []{1}.
-func (o *Objx) {4}Slice(optionalDefault ...[]{1}) []{1} {
-	if s, ok := o.data.([]{1}); ok {
+func (v *Value) {4}Slice(optionalDefault ...[]{1}) []{1} {
+	if s, ok := v.data.([]{1}); ok {
 		return s
 	}
 	if len(optionalDefault) == 1 {
@@ -37,19 +37,19 @@ func (o *Objx) {4}Slice(optionalDefault ...[]{1}) []{1} {
 // Must{4}Slice gets the value as a []{1}.
 //
 // Panics if the object is not a []{1}.
-func (o *Objx) Must{4}Slice() []{1} {
-	return o.data.([]{1})
+func (v *Value) Must{4}Slice() []{1} {
+	return v.data.([]{1})
 }
 
 // Is{4} gets whether the object contained is a {1} or not.
-func (o *Objx) Is{4}() bool {
-  _, ok := o.data.({1})
+func (v *Value) Is{4}() bool {
+  _, ok := v.data.({1})
   return ok
 }
 
 // Is{4}Slice gets whether the object contained is a []{1} or not.
-func (o *Objx) Is{4}Slice() bool {
-	_, ok := o.data.([]{1})
+func (v *Value) Is{4}Slice() bool {
+	_, ok := v.data.([]{1})
 	return ok
 }
 
@@ -57,27 +57,27 @@ func (o *Objx) Is{4}Slice() bool {
 // in the []{1}.
 //
 // Panics if the object is the wrong type.
-func (o *Objx) Each{4}(callback func(int, {1}) bool) *Objx {
+func (v *Value) Each{4}(callback func(int, {1}) bool) *Value {
 
-	for index, val := range o.Must{4}Slice() {
+	for index, val := range v.Must{4}Slice() {
 		carryon := callback(index, val)
 		if carryon == false {
 			break
 		}
 	}
 
-	return o
+	return v
 
 }
 
 // Where{4} uses the specified decider function to select items
 // from the []{1}.  The object contained in the result will contain
 // only the selected items.
-func (o *Objx) Where{4}(decider func(int, {1}) bool) *Objx {
+func (v *Value) Where{4}(decider func(int, {1}) bool) *Value {
 
 	var selected []{1}
 
-	o.Each{4}(func(index int, val {1}) bool {
+	v.Each{4}(func(index int, val {1}) bool {
 		shouldSelect := decider(index, val)
 		if shouldSelect == false {
 			selected = append(selected, val)
@@ -85,18 +85,18 @@ func (o *Objx) Where{4}(decider func(int, {1}) bool) *Objx {
 		return true
 	})
 
-	return New(selected)
+	return &Value{data:selected}
 
 }
 
 // Group{4} uses the specified grouper function to group the items
 // keyed by the return of the grouper.  The object contained in the
 // result will contain a map[string][]{1}.
-func (o *Objx) Group{4}(grouper func(int, {1}) string) *Objx {
+func (v *Value) Group{4}(grouper func(int, {1}) string) *Value {
 
 	groups := make(map[string][]{1})
 
-	o.Each{4}(func(index int, val {1}) bool {
+	v.Each{4}(func(index int, val {1}) bool {
 		group := grouper(index, val)
 		if _, ok := groups[group]; !ok {
 			groups[group] = make([]{1}, 0)
@@ -105,41 +105,41 @@ func (o *Objx) Group{4}(grouper func(int, {1}) string) *Objx {
 		return true
 	})
 
-	return New(groups)
+	return &Value{data:groups}
 
 }
 
 // Replace{4} uses the specified function to replace each {1}s
 // by iterating each item.  The data in the returned result will be a
 // []{1} containing the replaced items.
-func (o *Objx) Replace{4}(replacer func(int, {1}) {1}) *Objx {
+func (v *Value) Replace{4}(replacer func(int, {1}) {1}) *Value {
 
-	arr := o.Must{4}Slice()
+	arr := v.Must{4}Slice()
 	replaced := make([]{1}, len(arr))
 
-	o.Each{4}(func(index int, val {1}) bool {
+	v.Each{4}(func(index int, val {1}) bool {
 		replaced[index] = replacer(index, val)
 		return true
 	})
 
-	return New(replaced)
+	return &Value{data:replaced}
 
 }
 
 // Collect{4} uses the specified collector function to collect a value
 // for each of the {1}s in the slice.  The data returned will be a
 // []interface{}.
-func (o *Objx) Collect{4}(collector func(int, {1}) interface{}) *Objx {
+func (v *Value) Collect{4}(collector func(int, {1}) interface{}) *Value {
 
-	arr := o.Must{4}Slice()
+	arr := v.Must{4}Slice()
 	collected := make([]interface{}, len(arr))
 
-	o.Each{4}(func(index int, val {1}) bool {
+	v.Each{4}(func(index int, val {1}) bool {
 		collected[index] = collector(index, val)
 		return true
 	})
 
-	return New(collected)
+	return &Value{data:collected}
 }
 
 // ************************************************************
@@ -178,22 +178,22 @@ func Test{4}Slice(t *testing.T) {
 
 func TestIs{4}(t *testing.T) {
 
-	var o *Objx
+	var v *Value
 
-	o = New({1}({2}))
-	assert.True(t, o.Is{4}())
+	v = &Value{data: {1}({2})}
+	assert.True(t, v.Is{4}())
 
-	o = New([]{1}{ {1}({2}) })
-	assert.True(t, o.Is{4}Slice())
+	v = &Value{data: []{1}{ {1}({2}) }}
+	assert.True(t, v.Is{4}Slice())
 
 }
 
 func TestEach{4}(t *testing.T) {
 
-	o := New([]{1}{ {1}({2}), {1}({2}), {1}({2}), {1}({2}), {1}({2}) })
+	v := &Value{data: []{1}{ {1}({2}), {1}({2}), {1}({2}), {1}({2}), {1}({2}) }}
 	count := 0
 	replacedVals := make([]{1}, 0)
-	assert.Equal(t, o, o.Each{4}(func(i int, val {1}) bool {
+	assert.Equal(t, v, v.Each{4}(func(i int, val {1}) bool {
 
 		count++
 		replacedVals = append(replacedVals, val)
@@ -208,17 +208,17 @@ func TestEach{4}(t *testing.T) {
 	}))
 
 	assert.Equal(t, count, 3)
-	assert.Equal(t, replacedVals[0], o.Must{4}Slice()[0])
-	assert.Equal(t, replacedVals[1], o.Must{4}Slice()[1])
-	assert.Equal(t, replacedVals[2], o.Must{4}Slice()[2])
+	assert.Equal(t, replacedVals[0], v.Must{4}Slice()[0])
+	assert.Equal(t, replacedVals[1], v.Must{4}Slice()[1])
+	assert.Equal(t, replacedVals[2], v.Must{4}Slice()[2])
 
 }
 
 func TestWhere{4}(t *testing.T) {
 
-	o := New([]{1}{ {1}({2}), {1}({2}), {1}({2}), {1}({2}), {1}({2}), {1}({2}) })
+	v := &Value{data: []{1}{ {1}({2}), {1}({2}), {1}({2}), {1}({2}), {1}({2}), {1}({2}) }}
 
-	selected := o.Where{4}(func(i int, val {1}) bool {
+	selected := v.Where{4}(func(i int, val {1}) bool {
 		return i%2==0
 	}).Must{4}Slice()
 
@@ -228,9 +228,9 @@ func TestWhere{4}(t *testing.T) {
 
 func TestGroup{4}(t *testing.T) {
 
-	o := New([]{1}{ {1}({2}), {1}({2}), {1}({2}), {1}({2}), {1}({2}), {1}({2}) })
+	v := &Value{data: []{1}{ {1}({2}), {1}({2}), {1}({2}), {1}({2}), {1}({2}), {1}({2}) }}
 
-	grouped := o.Group{4}(func(i int, val {1}) string {
+	grouped := v.Group{4}(func(i int, val {1}) string {
 		return fmt.Sprintf("%v", i%2==0)
 	}).data.(map[string][]{1})
 
@@ -242,11 +242,11 @@ func TestGroup{4}(t *testing.T) {
 
 func TestReplace{4}(t *testing.T) {
 
-	o := New([]{1}{ {1}({2}), {1}({2}), {1}({2}), {1}({2}), {1}({2}), {1}({2}) })
+	v := &Value{data: []{1}{ {1}({2}), {1}({2}), {1}({2}), {1}({2}), {1}({2}), {1}({2}) }}
 
-	rawArr := o.Must{4}Slice()
+	rawArr := v.Must{4}Slice()
 
-	replaced := o.Replace{4}(func(index int, val {1}) {1} {
+	replaced := v.Replace{4}(func(index int, val {1}) {1} {
 		if index < len(rawArr)-1 {
 			return rawArr[index+1]
 		}
@@ -267,9 +267,9 @@ func TestReplace{4}(t *testing.T) {
 
 func TestCollect{4}(t *testing.T) {
 
-	o := New([]{1}{ {1}({2}), {1}({2}), {1}({2}), {1}({2}), {1}({2}), {1}({2}) })
+	v := &Value{data: []{1}{ {1}({2}), {1}({2}), {1}({2}), {1}({2}), {1}({2}), {1}({2}) }}
 
-	collected := o.Collect{4}(func(index int, val {1}) interface{} {
+	collected := v.Collect{4}(func(index int, val {1}) interface{} {
 		return index
 	})
 

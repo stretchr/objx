@@ -9,24 +9,27 @@ import (
 	"strings"
 )
 
-// Objx provides extended functionality for working with
+// Map provides extended functionality for working with
 // untyped data, particularly map[string]interface{},
 // []interface{} and interface{}.
-type Objx struct {
-	// data is the raw data being managed by this Objx
-	data interface{}
+type Map struct {
+	// value is an object containing the raw data managed by this Map
+	value *Value
 }
 
-// Nil represents a nil Objx.
-var Nil *Objx = New(nil)
+// Nil represents a nil Map.
+var Nil *Map = New(nil)
 
-// New creates a new *Objx containing the data
-// in the data argument.
-func New(data interface{}) *Objx {
-	return &Objx{data: data}
+// New creates a new *Map containing the map[string]interface{} in the data argument.
+// The data argument must be a map[string]interface{}
+func New(data interface{}) *Map {
+	if _, ok := data.(map[string]interface{}); !ok {
+		return nil
+	}
+	return &Map{value: &Value{data: data}}
 }
 
-// MSI creates a map[string]interface{} and puts it inside a new Objx.
+// MSI creates a map[string]interface{} and puts it inside a new Map.
 //
 // The arguments follow a key, value pattern.
 //
@@ -40,9 +43,9 @@ func New(data interface{}) *Objx {
 //
 //     m := objx.MSI("name", "Mat", "age", 29, "subobj", objx.MSI("active", true))
 //
-//     // creates an Objx equivalent to
+//     // creates an Map equivalent to
 //     m := objx.New(map[string]interface{}{"name": "Mat", "age": 29, "subobj": map[string]interface{}{"active": true}})
-func MSI(keyAndValuePairs ...interface{}) *Objx {
+func MSI(keyAndValuePairs ...interface{}) *Map {
 
 	newMap := make(map[string]interface{})
 	keyAndValuePairsLen := len(keyAndValuePairs)
@@ -69,19 +72,13 @@ func MSI(keyAndValuePairs ...interface{}) *Objx {
 	return New(newMap)
 }
 
-// Slice creates an []interface{} and puts it inside an Objx.
-// Arguments are a comma separated list of objects.
-func Slice(objects ...interface{}) *Objx {
-	return New(objects)
-}
-
 // ****** Conversion Constructors
 
-// MustFromJSON creates a new Objx containing the data specified in the
+// MustFromJSON creates a new Map containing the data specified in the
 // jsonString.
 //
 // Panics if the JSON is invalid.
-func MustFromJSON(jsonString string) *Objx {
+func MustFromJSON(jsonString string) *Map {
 	o, err := FromJSON(jsonString)
 
 	if err != nil {
@@ -91,11 +88,11 @@ func MustFromJSON(jsonString string) *Objx {
 	return o
 }
 
-// FromJSON creates a new Objx containing the data specified in the
+// FromJSON creates a new Map containing the data specified in the
 // jsonString.
 //
 // Returns an error if the JSON is invalid.
-func FromJSON(jsonString string) (*Objx, error) {
+func FromJSON(jsonString string) (*Map, error) {
 
 	var data interface{}
 	err := json.Unmarshal([]byte(jsonString), &data)
@@ -112,7 +109,7 @@ func FromJSON(jsonString string) (*Objx, error) {
 // in the Base64 string.
 //
 // The string is an encoded JSON string returned by Base64
-func FromBase64(base64String string) (*Objx, error) {
+func FromBase64(base64String string) (*Map, error) {
 
 	decoder := base64.NewDecoder(base64.StdEncoding, strings.NewReader(base64String))
 
@@ -128,7 +125,7 @@ func FromBase64(base64String string) (*Objx, error) {
 // in the Base64 string and panics if there is an error.
 //
 // The string is an encoded JSON string returned by Base64
-func MustFromBase64(base64String string) *Objx {
+func MustFromBase64(base64String string) *Map {
 
 	result, err := FromBase64(base64String)
 
@@ -143,7 +140,7 @@ func MustFromBase64(base64String string) *Objx {
 // in the Base64 string.
 //
 // The string is an encoded JSON string returned by SignedBase64
-func FromSignedBase64(base64String, key string) (*Objx, error) {
+func FromSignedBase64(base64String, key string) (*Map, error) {
 	parts := strings.Split(base64String, SignatureSeparator)
 	if len(parts) != 2 {
 		return nil, errors.New("objx: Signed base64 string is malformed.")
@@ -161,7 +158,7 @@ func FromSignedBase64(base64String, key string) (*Objx, error) {
 // in the Base64 string and panics if there is an error.
 //
 // The string is an encoded JSON string returned by Base64
-func MustFromSignedBase64(base64String, key string) *Objx {
+func MustFromSignedBase64(base64String, key string) *Map {
 
 	result, err := FromSignedBase64(base64String, key)
 
@@ -176,7 +173,7 @@ func MustFromSignedBase64(base64String, key string) *Objx {
 // query.
 //
 // For queries with multiple values, the first value is selected.
-func FromURLQuery(query string) (*Objx, error) {
+func FromURLQuery(query string) (*Map, error) {
 
 	vals, err := url.ParseQuery(query)
 
@@ -198,7 +195,7 @@ func FromURLQuery(query string) (*Objx, error) {
 // For queries with multiple values, the first value is selected.
 //
 // Panics if it encounters an error
-func MustFromURLQuery(query string) *Objx {
+func MustFromURLQuery(query string) *Map {
 
 	o, err := FromURLQuery(query)
 
