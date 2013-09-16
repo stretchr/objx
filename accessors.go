@@ -21,6 +21,14 @@ func (o *Objx) Data() interface{} {
 
 // Set sets the value using the specified selector and
 // returns the object on which Set was called.
+//
+// Set can only operate directly on map[string]interface{} and []interface
+//
+// Example
+//
+// To set the title of the third chapter of the second book, do:
+//
+//    o.Set("books[1].chapters[2].title","Time to Go")
 func (o *Objx) Set(selector, value interface{}) *Objx {
 	access(o.data, selector, value, true, false)
 	return o
@@ -31,6 +39,14 @@ func (o *Objx) Set(selector, value interface{}) *Objx {
 //
 // If it cannot find the value, Get will return a nil
 // value inside an instance of Obj.
+//
+// Get can only operate directly on map[string]interface{} and []interface.
+//
+// Example
+//
+// To access the title of the third chapter of the second book, do:
+//
+//    o.Get("books[1].chapters[2].title")
 func (o *Objx) Get(selector interface{}) *Objx {
 	rawObj := access(o.data, selector, nil, false, false)
 	return New(rawObj)
