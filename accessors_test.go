@@ -26,16 +26,22 @@ func TestAccessGetDeepDeep(t *testing.T) {
 }
 func TestAccessGetInsideArray(t *testing.T) {
 
-	current := map[string]interface{}{"names": []map[string]interface{}{map[string]interface{}{"first": "Tyler", "last": "Bunnell"}, map[string]interface{}{"first": "Capitol", "last": "Bollocks"}}}
+	current := map[string]interface{}{"names": []interface{}{map[string]interface{}{"first": "Tyler", "last": "Bunnell"}, map[string]interface{}{"first": "Capitol", "last": "Bollocks"}}}
 	assert.Equal(t, "Tyler", access(current, "names[0].first", true))
 	assert.Equal(t, "Bunnell", access(current, "names[0].last", true))
 	assert.Equal(t, "Capitol", access(current, "names[1].first", true))
 	assert.Equal(t, "Bollocks", access(current, "names[1].last", true))
 
+	assert.Panics(t, func() {
+		access(current, "names[2]", true)
+	})
+	assert.Nil(t, access(current, "names[2]", false))
+
 }
+
 func TestAccessGetFromArrayWithInt(t *testing.T) {
 
-	current := []map[string]interface{}{map[string]interface{}{"first": "Tyler", "last": "Bunnell"}, map[string]interface{}{"first": "Capitol", "last": "Bollocks"}}
+	current := []interface{}{map[string]interface{}{"first": "Tyler", "last": "Bunnell"}, map[string]interface{}{"first": "Capitol", "last": "Bollocks"}}
 	one := access(current, 0, false)
 	two := access(current, 1, false)
 	three := access(current, 2, false)
