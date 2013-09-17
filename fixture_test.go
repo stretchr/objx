@@ -5,7 +5,7 @@ import (
 	"testing"
 )
 
-var getFixtures = []struct {
+var fixtures = []struct {
 	// name is the name of the fixture (used for reporting
 	// failures)
 	name string
@@ -65,12 +65,6 @@ var getFixtures = []struct {
 		output: "pizza",
 	},
 	{
-		name:   "Get with integer argument",
-		data:   `["one", "two", "three"]`,
-		get:    1,
-		output: "two",
-	},
-	{
 		name:   "Get field from within string should be nil",
 		data:   `{"name":"Tyler"}`,
 		get:    "name.something",
@@ -86,16 +80,16 @@ var getFixtures = []struct {
 
 func TestFixtures(t *testing.T) {
 
-	for _, fixture := range getFixtures {
+	for _, fixture := range fixtures {
 
-		o := MustFromJSON(fixture.data)
+		m := MustFromJSON(fixture.data)
 
 		// get the value
 		t.Logf("Running get fixture: \"%s\" (%v)", fixture.name, fixture)
-		newO := o.Get(fixture.get)
+		value := m.Get(fixture.get.(string))
 
 		// make sure it matches
-		assert.Equal(t, fixture.output, newO.Obj(),
+		assert.Equal(t, fixture.output, value.data,
 			"Get fixture \"%s\" failed: %v", fixture.name, fixture,
 		)
 

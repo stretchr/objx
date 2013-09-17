@@ -6,6 +6,10 @@ import (
 	"testing"
 )
 
+// ************************************************************
+// TESTS
+// ************************************************************
+
 func TestInter(t *testing.T) {
 
 	val := interface{}("something")
@@ -38,22 +42,22 @@ func TestInterSlice(t *testing.T) {
 
 func TestIsInter(t *testing.T) {
 
-	var o *Obj
+	var v *Value
 
-	o = New(interface{}("something"))
-	assert.True(t, o.IsInter())
+	v = &Value{data: interface{}("something")}
+	assert.True(t, v.IsInter())
 
-	o = New([]interface{}{interface{}("something")})
-	assert.True(t, o.IsInterSlice())
+	v = &Value{data: []interface{}{interface{}("something")}}
+	assert.True(t, v.IsInterSlice())
 
 }
 
 func TestEachInter(t *testing.T) {
 
-	o := New([]interface{}{interface{}("something"), interface{}("something"), interface{}("something"), interface{}("something"), interface{}("something")})
+	v := &Value{data: []interface{}{interface{}("something"), interface{}("something"), interface{}("something"), interface{}("something"), interface{}("something")}}
 	count := 0
 	replacedVals := make([]interface{}, 0)
-	assert.Equal(t, o, o.EachInter(func(i int, val interface{}) bool {
+	assert.Equal(t, v, v.EachInter(func(i int, val interface{}) bool {
 
 		count++
 		replacedVals = append(replacedVals, val)
@@ -68,17 +72,17 @@ func TestEachInter(t *testing.T) {
 	}))
 
 	assert.Equal(t, count, 3)
-	assert.Equal(t, replacedVals[0], o.MustInterSlice()[0])
-	assert.Equal(t, replacedVals[1], o.MustInterSlice()[1])
-	assert.Equal(t, replacedVals[2], o.MustInterSlice()[2])
+	assert.Equal(t, replacedVals[0], v.MustInterSlice()[0])
+	assert.Equal(t, replacedVals[1], v.MustInterSlice()[1])
+	assert.Equal(t, replacedVals[2], v.MustInterSlice()[2])
 
 }
 
 func TestWhereInter(t *testing.T) {
 
-	o := New([]interface{}{interface{}("something"), interface{}("something"), interface{}("something"), interface{}("something"), interface{}("something"), interface{}("something")})
+	v := &Value{data: []interface{}{interface{}("something"), interface{}("something"), interface{}("something"), interface{}("something"), interface{}("something"), interface{}("something")}}
 
-	selected := o.WhereInter(func(i int, val interface{}) bool {
+	selected := v.WhereInter(func(i int, val interface{}) bool {
 		return i%2 == 0
 	}).MustInterSlice()
 
@@ -88,11 +92,11 @@ func TestWhereInter(t *testing.T) {
 
 func TestGroupInter(t *testing.T) {
 
-	o := New([]interface{}{interface{}("something"), interface{}("something"), interface{}("something"), interface{}("something"), interface{}("something"), interface{}("something")})
+	v := &Value{data: []interface{}{interface{}("something"), interface{}("something"), interface{}("something"), interface{}("something"), interface{}("something"), interface{}("something")}}
 
-	grouped := o.GroupInter(func(i int, val interface{}) string {
+	grouped := v.GroupInter(func(i int, val interface{}) string {
 		return fmt.Sprintf("%v", i%2 == 0)
-	}).Obj().(map[string][]interface{})
+	}).data.(map[string][]interface{})
 
 	assert.Equal(t, 2, len(grouped))
 	assert.Equal(t, 3, len(grouped["true"]))
@@ -102,11 +106,11 @@ func TestGroupInter(t *testing.T) {
 
 func TestReplaceInter(t *testing.T) {
 
-	o := New([]interface{}{interface{}("something"), interface{}("something"), interface{}("something"), interface{}("something"), interface{}("something"), interface{}("something")})
+	v := &Value{data: []interface{}{interface{}("something"), interface{}("something"), interface{}("something"), interface{}("something"), interface{}("something"), interface{}("something")}}
 
-	rawArr := o.MustInterSlice()
+	rawArr := v.MustInterSlice()
 
-	replaced := o.ReplaceInter(func(index int, val interface{}) interface{} {
+	replaced := v.ReplaceInter(func(index int, val interface{}) interface{} {
 		if index < len(rawArr)-1 {
 			return rawArr[index+1]
 		}
@@ -127,9 +131,9 @@ func TestReplaceInter(t *testing.T) {
 
 func TestCollectInter(t *testing.T) {
 
-	o := New([]interface{}{interface{}("something"), interface{}("something"), interface{}("something"), interface{}("something"), interface{}("something"), interface{}("something")})
+	v := &Value{data: []interface{}{interface{}("something"), interface{}("something"), interface{}("something"), interface{}("something"), interface{}("something"), interface{}("something")}}
 
-	collected := o.CollectInter(func(index int, val interface{}) interface{} {
+	collected := v.CollectInter(func(index int, val interface{}) interface{} {
 		return index
 	})
 
@@ -144,6 +148,10 @@ func TestCollectInter(t *testing.T) {
 	}
 
 }
+
+// ************************************************************
+// TESTS
+// ************************************************************
 
 func TestMSI(t *testing.T) {
 
@@ -177,22 +185,22 @@ func TestMSISlice(t *testing.T) {
 
 func TestIsMSI(t *testing.T) {
 
-	var o *Obj
+	var v *Value
 
-	o = New(map[string]interface{}(map[string]interface{}{"name": "Tyler"}))
-	assert.True(t, o.IsMSI())
+	v = &Value{data: map[string]interface{}(map[string]interface{}{"name": "Tyler"})}
+	assert.True(t, v.IsMSI())
 
-	o = New([]map[string]interface{}{map[string]interface{}(map[string]interface{}{"name": "Tyler"})})
-	assert.True(t, o.IsMSISlice())
+	v = &Value{data: []map[string]interface{}{map[string]interface{}(map[string]interface{}{"name": "Tyler"})}}
+	assert.True(t, v.IsMSISlice())
 
 }
 
 func TestEachMSI(t *testing.T) {
 
-	o := New([]map[string]interface{}{map[string]interface{}(map[string]interface{}{"name": "Tyler"}), map[string]interface{}(map[string]interface{}{"name": "Tyler"}), map[string]interface{}(map[string]interface{}{"name": "Tyler"}), map[string]interface{}(map[string]interface{}{"name": "Tyler"}), map[string]interface{}(map[string]interface{}{"name": "Tyler"})})
+	v := &Value{data: []map[string]interface{}{map[string]interface{}(map[string]interface{}{"name": "Tyler"}), map[string]interface{}(map[string]interface{}{"name": "Tyler"}), map[string]interface{}(map[string]interface{}{"name": "Tyler"}), map[string]interface{}(map[string]interface{}{"name": "Tyler"}), map[string]interface{}(map[string]interface{}{"name": "Tyler"})}}
 	count := 0
 	replacedVals := make([]map[string]interface{}, 0)
-	assert.Equal(t, o, o.EachMSI(func(i int, val map[string]interface{}) bool {
+	assert.Equal(t, v, v.EachMSI(func(i int, val map[string]interface{}) bool {
 
 		count++
 		replacedVals = append(replacedVals, val)
@@ -207,17 +215,17 @@ func TestEachMSI(t *testing.T) {
 	}))
 
 	assert.Equal(t, count, 3)
-	assert.Equal(t, replacedVals[0], o.MustMSISlice()[0])
-	assert.Equal(t, replacedVals[1], o.MustMSISlice()[1])
-	assert.Equal(t, replacedVals[2], o.MustMSISlice()[2])
+	assert.Equal(t, replacedVals[0], v.MustMSISlice()[0])
+	assert.Equal(t, replacedVals[1], v.MustMSISlice()[1])
+	assert.Equal(t, replacedVals[2], v.MustMSISlice()[2])
 
 }
 
 func TestWhereMSI(t *testing.T) {
 
-	o := New([]map[string]interface{}{map[string]interface{}(map[string]interface{}{"name": "Tyler"}), map[string]interface{}(map[string]interface{}{"name": "Tyler"}), map[string]interface{}(map[string]interface{}{"name": "Tyler"}), map[string]interface{}(map[string]interface{}{"name": "Tyler"}), map[string]interface{}(map[string]interface{}{"name": "Tyler"}), map[string]interface{}(map[string]interface{}{"name": "Tyler"})})
+	v := &Value{data: []map[string]interface{}{map[string]interface{}(map[string]interface{}{"name": "Tyler"}), map[string]interface{}(map[string]interface{}{"name": "Tyler"}), map[string]interface{}(map[string]interface{}{"name": "Tyler"}), map[string]interface{}(map[string]interface{}{"name": "Tyler"}), map[string]interface{}(map[string]interface{}{"name": "Tyler"}), map[string]interface{}(map[string]interface{}{"name": "Tyler"})}}
 
-	selected := o.WhereMSI(func(i int, val map[string]interface{}) bool {
+	selected := v.WhereMSI(func(i int, val map[string]interface{}) bool {
 		return i%2 == 0
 	}).MustMSISlice()
 
@@ -227,11 +235,11 @@ func TestWhereMSI(t *testing.T) {
 
 func TestGroupMSI(t *testing.T) {
 
-	o := New([]map[string]interface{}{map[string]interface{}(map[string]interface{}{"name": "Tyler"}), map[string]interface{}(map[string]interface{}{"name": "Tyler"}), map[string]interface{}(map[string]interface{}{"name": "Tyler"}), map[string]interface{}(map[string]interface{}{"name": "Tyler"}), map[string]interface{}(map[string]interface{}{"name": "Tyler"}), map[string]interface{}(map[string]interface{}{"name": "Tyler"})})
+	v := &Value{data: []map[string]interface{}{map[string]interface{}(map[string]interface{}{"name": "Tyler"}), map[string]interface{}(map[string]interface{}{"name": "Tyler"}), map[string]interface{}(map[string]interface{}{"name": "Tyler"}), map[string]interface{}(map[string]interface{}{"name": "Tyler"}), map[string]interface{}(map[string]interface{}{"name": "Tyler"}), map[string]interface{}(map[string]interface{}{"name": "Tyler"})}}
 
-	grouped := o.GroupMSI(func(i int, val map[string]interface{}) string {
+	grouped := v.GroupMSI(func(i int, val map[string]interface{}) string {
 		return fmt.Sprintf("%v", i%2 == 0)
-	}).Obj().(map[string][]map[string]interface{})
+	}).data.(map[string][]map[string]interface{})
 
 	assert.Equal(t, 2, len(grouped))
 	assert.Equal(t, 3, len(grouped["true"]))
@@ -241,11 +249,11 @@ func TestGroupMSI(t *testing.T) {
 
 func TestReplaceMSI(t *testing.T) {
 
-	o := New([]map[string]interface{}{map[string]interface{}(map[string]interface{}{"name": "Tyler"}), map[string]interface{}(map[string]interface{}{"name": "Tyler"}), map[string]interface{}(map[string]interface{}{"name": "Tyler"}), map[string]interface{}(map[string]interface{}{"name": "Tyler"}), map[string]interface{}(map[string]interface{}{"name": "Tyler"}), map[string]interface{}(map[string]interface{}{"name": "Tyler"})})
+	v := &Value{data: []map[string]interface{}{map[string]interface{}(map[string]interface{}{"name": "Tyler"}), map[string]interface{}(map[string]interface{}{"name": "Tyler"}), map[string]interface{}(map[string]interface{}{"name": "Tyler"}), map[string]interface{}(map[string]interface{}{"name": "Tyler"}), map[string]interface{}(map[string]interface{}{"name": "Tyler"}), map[string]interface{}(map[string]interface{}{"name": "Tyler"})}}
 
-	rawArr := o.MustMSISlice()
+	rawArr := v.MustMSISlice()
 
-	replaced := o.ReplaceMSI(func(index int, val map[string]interface{}) map[string]interface{} {
+	replaced := v.ReplaceMSI(func(index int, val map[string]interface{}) map[string]interface{} {
 		if index < len(rawArr)-1 {
 			return rawArr[index+1]
 		}
@@ -266,9 +274,9 @@ func TestReplaceMSI(t *testing.T) {
 
 func TestCollectMSI(t *testing.T) {
 
-	o := New([]map[string]interface{}{map[string]interface{}(map[string]interface{}{"name": "Tyler"}), map[string]interface{}(map[string]interface{}{"name": "Tyler"}), map[string]interface{}(map[string]interface{}{"name": "Tyler"}), map[string]interface{}(map[string]interface{}{"name": "Tyler"}), map[string]interface{}(map[string]interface{}{"name": "Tyler"}), map[string]interface{}(map[string]interface{}{"name": "Tyler"})})
+	v := &Value{data: []map[string]interface{}{map[string]interface{}(map[string]interface{}{"name": "Tyler"}), map[string]interface{}(map[string]interface{}{"name": "Tyler"}), map[string]interface{}(map[string]interface{}{"name": "Tyler"}), map[string]interface{}(map[string]interface{}{"name": "Tyler"}), map[string]interface{}(map[string]interface{}{"name": "Tyler"}), map[string]interface{}(map[string]interface{}{"name": "Tyler"})}}
 
-	collected := o.CollectMSI(func(index int, val map[string]interface{}) interface{} {
+	collected := v.CollectMSI(func(index int, val map[string]interface{}) interface{} {
 		return index
 	})
 
@@ -284,54 +292,58 @@ func TestCollectMSI(t *testing.T) {
 
 }
 
-func TestObjxObj(t *testing.T) {
+// ************************************************************
+// TESTS
+// ************************************************************
 
-	val := (*Obj)(New(1))
+func TestObjxMap(t *testing.T) {
+
+	val := (*Map)(New(1))
 	m := map[string]interface{}{"value": val, "nothing": nil}
-	assert.Equal(t, val, New(m).Get("value").ObjxObj())
-	assert.Equal(t, val, New(m).Get("value").MustObjxObj())
-	assert.Equal(t, (*Obj)(New(nil)), New(m).Get("nothing").ObjxObj())
-	assert.Equal(t, val, New(m).Get("nothing").ObjxObj(New(1)))
+	assert.Equal(t, val, New(m).Get("value").ObjxMap())
+	assert.Equal(t, val, New(m).Get("value").MustObjxMap())
+	assert.Equal(t, (*Map)(New(nil)), New(m).Get("nothing").ObjxMap())
+	assert.Equal(t, val, New(m).Get("nothing").ObjxMap(New(1)))
 
 	assert.Panics(t, func() {
-		New(m).Get("age").MustObjxObj()
+		New(m).Get("age").MustObjxMap()
 	})
 
 }
 
-func TestObjxObjSlice(t *testing.T) {
+func TestObjxMapSlice(t *testing.T) {
 
-	val := (*Obj)(New(1))
-	m := map[string]interface{}{"value": [](*Obj){val}, "nothing": nil}
-	assert.Equal(t, val, New(m).Get("value").ObjxObjSlice()[0])
-	assert.Equal(t, val, New(m).Get("value").MustObjxObjSlice()[0])
-	assert.Equal(t, [](*Obj)(nil), New(m).Get("nothing").ObjxObjSlice())
-	assert.Equal(t, val, New(m).Get("nothing").ObjxObjSlice([](*Obj){(*Obj)(New(1))})[0])
+	val := (*Map)(New(1))
+	m := map[string]interface{}{"value": [](*Map){val}, "nothing": nil}
+	assert.Equal(t, val, New(m).Get("value").ObjxMapSlice()[0])
+	assert.Equal(t, val, New(m).Get("value").MustObjxMapSlice()[0])
+	assert.Equal(t, [](*Map)(nil), New(m).Get("nothing").ObjxMapSlice())
+	assert.Equal(t, val, New(m).Get("nothing").ObjxMapSlice([](*Map){(*Map)(New(1))})[0])
 
 	assert.Panics(t, func() {
-		New(m).Get("nothing").MustObjxObjSlice()
+		New(m).Get("nothing").MustObjxMapSlice()
 	})
 
 }
 
-func TestIsObjxObj(t *testing.T) {
+func TestIsObjxMap(t *testing.T) {
 
-	var o *Obj
+	var v *Value
 
-	o = New((*Obj)(New(1)))
-	assert.True(t, o.IsObjxObj())
+	v = &Value{data: (*Map)(New(1))}
+	assert.True(t, v.IsObjxMap())
 
-	o = New([](*Obj){(*Obj)(New(1))})
-	assert.True(t, o.IsObjxObjSlice())
+	v = &Value{data: [](*Map){(*Map)(New(1))}}
+	assert.True(t, v.IsObjxMapSlice())
 
 }
 
-func TestEachObjxObj(t *testing.T) {
+func TestEachObjxMap(t *testing.T) {
 
-	o := New([](*Obj){(*Obj)(New(1)), (*Obj)(New(1)), (*Obj)(New(1)), (*Obj)(New(1)), (*Obj)(New(1))})
+	v := &Value{data: [](*Map){(*Map)(New(1)), (*Map)(New(1)), (*Map)(New(1)), (*Map)(New(1)), (*Map)(New(1))}}
 	count := 0
-	replacedVals := make([](*Obj), 0)
-	assert.Equal(t, o, o.EachObjxObj(func(i int, val *Obj) bool {
+	replacedVals := make([](*Map), 0)
+	assert.Equal(t, v, v.EachObjxMap(func(i int, val *Map) bool {
 
 		count++
 		replacedVals = append(replacedVals, val)
@@ -346,31 +358,31 @@ func TestEachObjxObj(t *testing.T) {
 	}))
 
 	assert.Equal(t, count, 3)
-	assert.Equal(t, replacedVals[0], o.MustObjxObjSlice()[0])
-	assert.Equal(t, replacedVals[1], o.MustObjxObjSlice()[1])
-	assert.Equal(t, replacedVals[2], o.MustObjxObjSlice()[2])
+	assert.Equal(t, replacedVals[0], v.MustObjxMapSlice()[0])
+	assert.Equal(t, replacedVals[1], v.MustObjxMapSlice()[1])
+	assert.Equal(t, replacedVals[2], v.MustObjxMapSlice()[2])
 
 }
 
-func TestWhereObjxObj(t *testing.T) {
+func TestWhereObjxMap(t *testing.T) {
 
-	o := New([](*Obj){(*Obj)(New(1)), (*Obj)(New(1)), (*Obj)(New(1)), (*Obj)(New(1)), (*Obj)(New(1)), (*Obj)(New(1))})
+	v := &Value{data: [](*Map){(*Map)(New(1)), (*Map)(New(1)), (*Map)(New(1)), (*Map)(New(1)), (*Map)(New(1)), (*Map)(New(1))}}
 
-	selected := o.WhereObjxObj(func(i int, val *Obj) bool {
+	selected := v.WhereObjxMap(func(i int, val *Map) bool {
 		return i%2 == 0
-	}).MustObjxObjSlice()
+	}).MustObjxMapSlice()
 
 	assert.Equal(t, 3, len(selected))
 
 }
 
-func TestGroupObjxObj(t *testing.T) {
+func TestGroupObjxMap(t *testing.T) {
 
-	o := New([](*Obj){(*Obj)(New(1)), (*Obj)(New(1)), (*Obj)(New(1)), (*Obj)(New(1)), (*Obj)(New(1)), (*Obj)(New(1))})
+	v := &Value{data: [](*Map){(*Map)(New(1)), (*Map)(New(1)), (*Map)(New(1)), (*Map)(New(1)), (*Map)(New(1)), (*Map)(New(1))}}
 
-	grouped := o.GroupObjxObj(func(i int, val *Obj) string {
+	grouped := v.GroupObjxMap(func(i int, val *Map) string {
 		return fmt.Sprintf("%v", i%2 == 0)
-	}).Obj().(map[string][](*Obj))
+	}).data.(map[string][](*Map))
 
 	assert.Equal(t, 2, len(grouped))
 	assert.Equal(t, 3, len(grouped["true"]))
@@ -378,20 +390,20 @@ func TestGroupObjxObj(t *testing.T) {
 
 }
 
-func TestReplaceObjxObj(t *testing.T) {
+func TestReplaceObjxMap(t *testing.T) {
 
-	o := New([](*Obj){(*Obj)(New(1)), (*Obj)(New(1)), (*Obj)(New(1)), (*Obj)(New(1)), (*Obj)(New(1)), (*Obj)(New(1))})
+	v := &Value{data: [](*Map){(*Map)(New(1)), (*Map)(New(1)), (*Map)(New(1)), (*Map)(New(1)), (*Map)(New(1)), (*Map)(New(1))}}
 
-	rawArr := o.MustObjxObjSlice()
+	rawArr := v.MustObjxMapSlice()
 
-	replaced := o.ReplaceObjxObj(func(index int, val *Obj) *Obj {
+	replaced := v.ReplaceObjxMap(func(index int, val *Map) *Map {
 		if index < len(rawArr)-1 {
 			return rawArr[index+1]
 		}
 		return rawArr[0]
 	})
 
-	replacedArr := replaced.MustObjxObjSlice()
+	replacedArr := replaced.MustObjxMapSlice()
 	if assert.Equal(t, 6, len(replacedArr)) {
 		assert.Equal(t, replacedArr[0], rawArr[1])
 		assert.Equal(t, replacedArr[1], rawArr[2])
@@ -403,11 +415,11 @@ func TestReplaceObjxObj(t *testing.T) {
 
 }
 
-func TestCollectObjxObj(t *testing.T) {
+func TestCollectObjxMap(t *testing.T) {
 
-	o := New([](*Obj){(*Obj)(New(1)), (*Obj)(New(1)), (*Obj)(New(1)), (*Obj)(New(1)), (*Obj)(New(1)), (*Obj)(New(1))})
+	v := &Value{data: [](*Map){(*Map)(New(1)), (*Map)(New(1)), (*Map)(New(1)), (*Map)(New(1)), (*Map)(New(1)), (*Map)(New(1))}}
 
-	collected := o.CollectObjxObj(func(index int, val *Obj) interface{} {
+	collected := v.CollectObjxMap(func(index int, val *Map) interface{} {
 		return index
 	})
 
@@ -422,6 +434,10 @@ func TestCollectObjxObj(t *testing.T) {
 	}
 
 }
+
+// ************************************************************
+// TESTS
+// ************************************************************
 
 func TestBool(t *testing.T) {
 
@@ -455,22 +471,22 @@ func TestBoolSlice(t *testing.T) {
 
 func TestIsBool(t *testing.T) {
 
-	var o *Obj
+	var v *Value
 
-	o = New(bool(true))
-	assert.True(t, o.IsBool())
+	v = &Value{data: bool(true)}
+	assert.True(t, v.IsBool())
 
-	o = New([]bool{bool(true)})
-	assert.True(t, o.IsBoolSlice())
+	v = &Value{data: []bool{bool(true)}}
+	assert.True(t, v.IsBoolSlice())
 
 }
 
 func TestEachBool(t *testing.T) {
 
-	o := New([]bool{bool(true), bool(true), bool(true), bool(true), bool(true)})
+	v := &Value{data: []bool{bool(true), bool(true), bool(true), bool(true), bool(true)}}
 	count := 0
 	replacedVals := make([]bool, 0)
-	assert.Equal(t, o, o.EachBool(func(i int, val bool) bool {
+	assert.Equal(t, v, v.EachBool(func(i int, val bool) bool {
 
 		count++
 		replacedVals = append(replacedVals, val)
@@ -485,17 +501,17 @@ func TestEachBool(t *testing.T) {
 	}))
 
 	assert.Equal(t, count, 3)
-	assert.Equal(t, replacedVals[0], o.MustBoolSlice()[0])
-	assert.Equal(t, replacedVals[1], o.MustBoolSlice()[1])
-	assert.Equal(t, replacedVals[2], o.MustBoolSlice()[2])
+	assert.Equal(t, replacedVals[0], v.MustBoolSlice()[0])
+	assert.Equal(t, replacedVals[1], v.MustBoolSlice()[1])
+	assert.Equal(t, replacedVals[2], v.MustBoolSlice()[2])
 
 }
 
 func TestWhereBool(t *testing.T) {
 
-	o := New([]bool{bool(true), bool(true), bool(true), bool(true), bool(true), bool(true)})
+	v := &Value{data: []bool{bool(true), bool(true), bool(true), bool(true), bool(true), bool(true)}}
 
-	selected := o.WhereBool(func(i int, val bool) bool {
+	selected := v.WhereBool(func(i int, val bool) bool {
 		return i%2 == 0
 	}).MustBoolSlice()
 
@@ -505,11 +521,11 @@ func TestWhereBool(t *testing.T) {
 
 func TestGroupBool(t *testing.T) {
 
-	o := New([]bool{bool(true), bool(true), bool(true), bool(true), bool(true), bool(true)})
+	v := &Value{data: []bool{bool(true), bool(true), bool(true), bool(true), bool(true), bool(true)}}
 
-	grouped := o.GroupBool(func(i int, val bool) string {
+	grouped := v.GroupBool(func(i int, val bool) string {
 		return fmt.Sprintf("%v", i%2 == 0)
-	}).Obj().(map[string][]bool)
+	}).data.(map[string][]bool)
 
 	assert.Equal(t, 2, len(grouped))
 	assert.Equal(t, 3, len(grouped["true"]))
@@ -519,11 +535,11 @@ func TestGroupBool(t *testing.T) {
 
 func TestReplaceBool(t *testing.T) {
 
-	o := New([]bool{bool(true), bool(true), bool(true), bool(true), bool(true), bool(true)})
+	v := &Value{data: []bool{bool(true), bool(true), bool(true), bool(true), bool(true), bool(true)}}
 
-	rawArr := o.MustBoolSlice()
+	rawArr := v.MustBoolSlice()
 
-	replaced := o.ReplaceBool(func(index int, val bool) bool {
+	replaced := v.ReplaceBool(func(index int, val bool) bool {
 		if index < len(rawArr)-1 {
 			return rawArr[index+1]
 		}
@@ -544,9 +560,9 @@ func TestReplaceBool(t *testing.T) {
 
 func TestCollectBool(t *testing.T) {
 
-	o := New([]bool{bool(true), bool(true), bool(true), bool(true), bool(true), bool(true)})
+	v := &Value{data: []bool{bool(true), bool(true), bool(true), bool(true), bool(true), bool(true)}}
 
-	collected := o.CollectBool(func(index int, val bool) interface{} {
+	collected := v.CollectBool(func(index int, val bool) interface{} {
 		return index
 	})
 
@@ -561,6 +577,10 @@ func TestCollectBool(t *testing.T) {
 	}
 
 }
+
+// ************************************************************
+// TESTS
+// ************************************************************
 
 func TestStr(t *testing.T) {
 
@@ -594,22 +614,22 @@ func TestStrSlice(t *testing.T) {
 
 func TestIsStr(t *testing.T) {
 
-	var o *Obj
+	var v *Value
 
-	o = New(string("hello"))
-	assert.True(t, o.IsStr())
+	v = &Value{data: string("hello")}
+	assert.True(t, v.IsStr())
 
-	o = New([]string{string("hello")})
-	assert.True(t, o.IsStrSlice())
+	v = &Value{data: []string{string("hello")}}
+	assert.True(t, v.IsStrSlice())
 
 }
 
 func TestEachStr(t *testing.T) {
 
-	o := New([]string{string("hello"), string("hello"), string("hello"), string("hello"), string("hello")})
+	v := &Value{data: []string{string("hello"), string("hello"), string("hello"), string("hello"), string("hello")}}
 	count := 0
 	replacedVals := make([]string, 0)
-	assert.Equal(t, o, o.EachStr(func(i int, val string) bool {
+	assert.Equal(t, v, v.EachStr(func(i int, val string) bool {
 
 		count++
 		replacedVals = append(replacedVals, val)
@@ -624,17 +644,17 @@ func TestEachStr(t *testing.T) {
 	}))
 
 	assert.Equal(t, count, 3)
-	assert.Equal(t, replacedVals[0], o.MustStrSlice()[0])
-	assert.Equal(t, replacedVals[1], o.MustStrSlice()[1])
-	assert.Equal(t, replacedVals[2], o.MustStrSlice()[2])
+	assert.Equal(t, replacedVals[0], v.MustStrSlice()[0])
+	assert.Equal(t, replacedVals[1], v.MustStrSlice()[1])
+	assert.Equal(t, replacedVals[2], v.MustStrSlice()[2])
 
 }
 
 func TestWhereStr(t *testing.T) {
 
-	o := New([]string{string("hello"), string("hello"), string("hello"), string("hello"), string("hello"), string("hello")})
+	v := &Value{data: []string{string("hello"), string("hello"), string("hello"), string("hello"), string("hello"), string("hello")}}
 
-	selected := o.WhereStr(func(i int, val string) bool {
+	selected := v.WhereStr(func(i int, val string) bool {
 		return i%2 == 0
 	}).MustStrSlice()
 
@@ -644,11 +664,11 @@ func TestWhereStr(t *testing.T) {
 
 func TestGroupStr(t *testing.T) {
 
-	o := New([]string{string("hello"), string("hello"), string("hello"), string("hello"), string("hello"), string("hello")})
+	v := &Value{data: []string{string("hello"), string("hello"), string("hello"), string("hello"), string("hello"), string("hello")}}
 
-	grouped := o.GroupStr(func(i int, val string) string {
+	grouped := v.GroupStr(func(i int, val string) string {
 		return fmt.Sprintf("%v", i%2 == 0)
-	}).Obj().(map[string][]string)
+	}).data.(map[string][]string)
 
 	assert.Equal(t, 2, len(grouped))
 	assert.Equal(t, 3, len(grouped["true"]))
@@ -658,11 +678,11 @@ func TestGroupStr(t *testing.T) {
 
 func TestReplaceStr(t *testing.T) {
 
-	o := New([]string{string("hello"), string("hello"), string("hello"), string("hello"), string("hello"), string("hello")})
+	v := &Value{data: []string{string("hello"), string("hello"), string("hello"), string("hello"), string("hello"), string("hello")}}
 
-	rawArr := o.MustStrSlice()
+	rawArr := v.MustStrSlice()
 
-	replaced := o.ReplaceStr(func(index int, val string) string {
+	replaced := v.ReplaceStr(func(index int, val string) string {
 		if index < len(rawArr)-1 {
 			return rawArr[index+1]
 		}
@@ -683,9 +703,9 @@ func TestReplaceStr(t *testing.T) {
 
 func TestCollectStr(t *testing.T) {
 
-	o := New([]string{string("hello"), string("hello"), string("hello"), string("hello"), string("hello"), string("hello")})
+	v := &Value{data: []string{string("hello"), string("hello"), string("hello"), string("hello"), string("hello"), string("hello")}}
 
-	collected := o.CollectStr(func(index int, val string) interface{} {
+	collected := v.CollectStr(func(index int, val string) interface{} {
 		return index
 	})
 
@@ -700,6 +720,10 @@ func TestCollectStr(t *testing.T) {
 	}
 
 }
+
+// ************************************************************
+// TESTS
+// ************************************************************
 
 func TestInt(t *testing.T) {
 
@@ -733,22 +757,22 @@ func TestIntSlice(t *testing.T) {
 
 func TestIsInt(t *testing.T) {
 
-	var o *Obj
+	var v *Value
 
-	o = New(int(1))
-	assert.True(t, o.IsInt())
+	v = &Value{data: int(1)}
+	assert.True(t, v.IsInt())
 
-	o = New([]int{int(1)})
-	assert.True(t, o.IsIntSlice())
+	v = &Value{data: []int{int(1)}}
+	assert.True(t, v.IsIntSlice())
 
 }
 
 func TestEachInt(t *testing.T) {
 
-	o := New([]int{int(1), int(1), int(1), int(1), int(1)})
+	v := &Value{data: []int{int(1), int(1), int(1), int(1), int(1)}}
 	count := 0
 	replacedVals := make([]int, 0)
-	assert.Equal(t, o, o.EachInt(func(i int, val int) bool {
+	assert.Equal(t, v, v.EachInt(func(i int, val int) bool {
 
 		count++
 		replacedVals = append(replacedVals, val)
@@ -763,17 +787,17 @@ func TestEachInt(t *testing.T) {
 	}))
 
 	assert.Equal(t, count, 3)
-	assert.Equal(t, replacedVals[0], o.MustIntSlice()[0])
-	assert.Equal(t, replacedVals[1], o.MustIntSlice()[1])
-	assert.Equal(t, replacedVals[2], o.MustIntSlice()[2])
+	assert.Equal(t, replacedVals[0], v.MustIntSlice()[0])
+	assert.Equal(t, replacedVals[1], v.MustIntSlice()[1])
+	assert.Equal(t, replacedVals[2], v.MustIntSlice()[2])
 
 }
 
 func TestWhereInt(t *testing.T) {
 
-	o := New([]int{int(1), int(1), int(1), int(1), int(1), int(1)})
+	v := &Value{data: []int{int(1), int(1), int(1), int(1), int(1), int(1)}}
 
-	selected := o.WhereInt(func(i int, val int) bool {
+	selected := v.WhereInt(func(i int, val int) bool {
 		return i%2 == 0
 	}).MustIntSlice()
 
@@ -783,11 +807,11 @@ func TestWhereInt(t *testing.T) {
 
 func TestGroupInt(t *testing.T) {
 
-	o := New([]int{int(1), int(1), int(1), int(1), int(1), int(1)})
+	v := &Value{data: []int{int(1), int(1), int(1), int(1), int(1), int(1)}}
 
-	grouped := o.GroupInt(func(i int, val int) string {
+	grouped := v.GroupInt(func(i int, val int) string {
 		return fmt.Sprintf("%v", i%2 == 0)
-	}).Obj().(map[string][]int)
+	}).data.(map[string][]int)
 
 	assert.Equal(t, 2, len(grouped))
 	assert.Equal(t, 3, len(grouped["true"]))
@@ -797,11 +821,11 @@ func TestGroupInt(t *testing.T) {
 
 func TestReplaceInt(t *testing.T) {
 
-	o := New([]int{int(1), int(1), int(1), int(1), int(1), int(1)})
+	v := &Value{data: []int{int(1), int(1), int(1), int(1), int(1), int(1)}}
 
-	rawArr := o.MustIntSlice()
+	rawArr := v.MustIntSlice()
 
-	replaced := o.ReplaceInt(func(index int, val int) int {
+	replaced := v.ReplaceInt(func(index int, val int) int {
 		if index < len(rawArr)-1 {
 			return rawArr[index+1]
 		}
@@ -822,9 +846,9 @@ func TestReplaceInt(t *testing.T) {
 
 func TestCollectInt(t *testing.T) {
 
-	o := New([]int{int(1), int(1), int(1), int(1), int(1), int(1)})
+	v := &Value{data: []int{int(1), int(1), int(1), int(1), int(1), int(1)}}
 
-	collected := o.CollectInt(func(index int, val int) interface{} {
+	collected := v.CollectInt(func(index int, val int) interface{} {
 		return index
 	})
 
@@ -839,6 +863,10 @@ func TestCollectInt(t *testing.T) {
 	}
 
 }
+
+// ************************************************************
+// TESTS
+// ************************************************************
 
 func TestInt8(t *testing.T) {
 
@@ -872,22 +900,22 @@ func TestInt8Slice(t *testing.T) {
 
 func TestIsInt8(t *testing.T) {
 
-	var o *Obj
+	var v *Value
 
-	o = New(int8(1))
-	assert.True(t, o.IsInt8())
+	v = &Value{data: int8(1)}
+	assert.True(t, v.IsInt8())
 
-	o = New([]int8{int8(1)})
-	assert.True(t, o.IsInt8Slice())
+	v = &Value{data: []int8{int8(1)}}
+	assert.True(t, v.IsInt8Slice())
 
 }
 
 func TestEachInt8(t *testing.T) {
 
-	o := New([]int8{int8(1), int8(1), int8(1), int8(1), int8(1)})
+	v := &Value{data: []int8{int8(1), int8(1), int8(1), int8(1), int8(1)}}
 	count := 0
 	replacedVals := make([]int8, 0)
-	assert.Equal(t, o, o.EachInt8(func(i int, val int8) bool {
+	assert.Equal(t, v, v.EachInt8(func(i int, val int8) bool {
 
 		count++
 		replacedVals = append(replacedVals, val)
@@ -902,17 +930,17 @@ func TestEachInt8(t *testing.T) {
 	}))
 
 	assert.Equal(t, count, 3)
-	assert.Equal(t, replacedVals[0], o.MustInt8Slice()[0])
-	assert.Equal(t, replacedVals[1], o.MustInt8Slice()[1])
-	assert.Equal(t, replacedVals[2], o.MustInt8Slice()[2])
+	assert.Equal(t, replacedVals[0], v.MustInt8Slice()[0])
+	assert.Equal(t, replacedVals[1], v.MustInt8Slice()[1])
+	assert.Equal(t, replacedVals[2], v.MustInt8Slice()[2])
 
 }
 
 func TestWhereInt8(t *testing.T) {
 
-	o := New([]int8{int8(1), int8(1), int8(1), int8(1), int8(1), int8(1)})
+	v := &Value{data: []int8{int8(1), int8(1), int8(1), int8(1), int8(1), int8(1)}}
 
-	selected := o.WhereInt8(func(i int, val int8) bool {
+	selected := v.WhereInt8(func(i int, val int8) bool {
 		return i%2 == 0
 	}).MustInt8Slice()
 
@@ -922,11 +950,11 @@ func TestWhereInt8(t *testing.T) {
 
 func TestGroupInt8(t *testing.T) {
 
-	o := New([]int8{int8(1), int8(1), int8(1), int8(1), int8(1), int8(1)})
+	v := &Value{data: []int8{int8(1), int8(1), int8(1), int8(1), int8(1), int8(1)}}
 
-	grouped := o.GroupInt8(func(i int, val int8) string {
+	grouped := v.GroupInt8(func(i int, val int8) string {
 		return fmt.Sprintf("%v", i%2 == 0)
-	}).Obj().(map[string][]int8)
+	}).data.(map[string][]int8)
 
 	assert.Equal(t, 2, len(grouped))
 	assert.Equal(t, 3, len(grouped["true"]))
@@ -936,11 +964,11 @@ func TestGroupInt8(t *testing.T) {
 
 func TestReplaceInt8(t *testing.T) {
 
-	o := New([]int8{int8(1), int8(1), int8(1), int8(1), int8(1), int8(1)})
+	v := &Value{data: []int8{int8(1), int8(1), int8(1), int8(1), int8(1), int8(1)}}
 
-	rawArr := o.MustInt8Slice()
+	rawArr := v.MustInt8Slice()
 
-	replaced := o.ReplaceInt8(func(index int, val int8) int8 {
+	replaced := v.ReplaceInt8(func(index int, val int8) int8 {
 		if index < len(rawArr)-1 {
 			return rawArr[index+1]
 		}
@@ -961,9 +989,9 @@ func TestReplaceInt8(t *testing.T) {
 
 func TestCollectInt8(t *testing.T) {
 
-	o := New([]int8{int8(1), int8(1), int8(1), int8(1), int8(1), int8(1)})
+	v := &Value{data: []int8{int8(1), int8(1), int8(1), int8(1), int8(1), int8(1)}}
 
-	collected := o.CollectInt8(func(index int, val int8) interface{} {
+	collected := v.CollectInt8(func(index int, val int8) interface{} {
 		return index
 	})
 
@@ -978,6 +1006,10 @@ func TestCollectInt8(t *testing.T) {
 	}
 
 }
+
+// ************************************************************
+// TESTS
+// ************************************************************
 
 func TestInt16(t *testing.T) {
 
@@ -1011,22 +1043,22 @@ func TestInt16Slice(t *testing.T) {
 
 func TestIsInt16(t *testing.T) {
 
-	var o *Obj
+	var v *Value
 
-	o = New(int16(1))
-	assert.True(t, o.IsInt16())
+	v = &Value{data: int16(1)}
+	assert.True(t, v.IsInt16())
 
-	o = New([]int16{int16(1)})
-	assert.True(t, o.IsInt16Slice())
+	v = &Value{data: []int16{int16(1)}}
+	assert.True(t, v.IsInt16Slice())
 
 }
 
 func TestEachInt16(t *testing.T) {
 
-	o := New([]int16{int16(1), int16(1), int16(1), int16(1), int16(1)})
+	v := &Value{data: []int16{int16(1), int16(1), int16(1), int16(1), int16(1)}}
 	count := 0
 	replacedVals := make([]int16, 0)
-	assert.Equal(t, o, o.EachInt16(func(i int, val int16) bool {
+	assert.Equal(t, v, v.EachInt16(func(i int, val int16) bool {
 
 		count++
 		replacedVals = append(replacedVals, val)
@@ -1041,17 +1073,17 @@ func TestEachInt16(t *testing.T) {
 	}))
 
 	assert.Equal(t, count, 3)
-	assert.Equal(t, replacedVals[0], o.MustInt16Slice()[0])
-	assert.Equal(t, replacedVals[1], o.MustInt16Slice()[1])
-	assert.Equal(t, replacedVals[2], o.MustInt16Slice()[2])
+	assert.Equal(t, replacedVals[0], v.MustInt16Slice()[0])
+	assert.Equal(t, replacedVals[1], v.MustInt16Slice()[1])
+	assert.Equal(t, replacedVals[2], v.MustInt16Slice()[2])
 
 }
 
 func TestWhereInt16(t *testing.T) {
 
-	o := New([]int16{int16(1), int16(1), int16(1), int16(1), int16(1), int16(1)})
+	v := &Value{data: []int16{int16(1), int16(1), int16(1), int16(1), int16(1), int16(1)}}
 
-	selected := o.WhereInt16(func(i int, val int16) bool {
+	selected := v.WhereInt16(func(i int, val int16) bool {
 		return i%2 == 0
 	}).MustInt16Slice()
 
@@ -1061,11 +1093,11 @@ func TestWhereInt16(t *testing.T) {
 
 func TestGroupInt16(t *testing.T) {
 
-	o := New([]int16{int16(1), int16(1), int16(1), int16(1), int16(1), int16(1)})
+	v := &Value{data: []int16{int16(1), int16(1), int16(1), int16(1), int16(1), int16(1)}}
 
-	grouped := o.GroupInt16(func(i int, val int16) string {
+	grouped := v.GroupInt16(func(i int, val int16) string {
 		return fmt.Sprintf("%v", i%2 == 0)
-	}).Obj().(map[string][]int16)
+	}).data.(map[string][]int16)
 
 	assert.Equal(t, 2, len(grouped))
 	assert.Equal(t, 3, len(grouped["true"]))
@@ -1075,11 +1107,11 @@ func TestGroupInt16(t *testing.T) {
 
 func TestReplaceInt16(t *testing.T) {
 
-	o := New([]int16{int16(1), int16(1), int16(1), int16(1), int16(1), int16(1)})
+	v := &Value{data: []int16{int16(1), int16(1), int16(1), int16(1), int16(1), int16(1)}}
 
-	rawArr := o.MustInt16Slice()
+	rawArr := v.MustInt16Slice()
 
-	replaced := o.ReplaceInt16(func(index int, val int16) int16 {
+	replaced := v.ReplaceInt16(func(index int, val int16) int16 {
 		if index < len(rawArr)-1 {
 			return rawArr[index+1]
 		}
@@ -1100,9 +1132,9 @@ func TestReplaceInt16(t *testing.T) {
 
 func TestCollectInt16(t *testing.T) {
 
-	o := New([]int16{int16(1), int16(1), int16(1), int16(1), int16(1), int16(1)})
+	v := &Value{data: []int16{int16(1), int16(1), int16(1), int16(1), int16(1), int16(1)}}
 
-	collected := o.CollectInt16(func(index int, val int16) interface{} {
+	collected := v.CollectInt16(func(index int, val int16) interface{} {
 		return index
 	})
 
@@ -1117,6 +1149,10 @@ func TestCollectInt16(t *testing.T) {
 	}
 
 }
+
+// ************************************************************
+// TESTS
+// ************************************************************
 
 func TestInt32(t *testing.T) {
 
@@ -1150,22 +1186,22 @@ func TestInt32Slice(t *testing.T) {
 
 func TestIsInt32(t *testing.T) {
 
-	var o *Obj
+	var v *Value
 
-	o = New(int32(1))
-	assert.True(t, o.IsInt32())
+	v = &Value{data: int32(1)}
+	assert.True(t, v.IsInt32())
 
-	o = New([]int32{int32(1)})
-	assert.True(t, o.IsInt32Slice())
+	v = &Value{data: []int32{int32(1)}}
+	assert.True(t, v.IsInt32Slice())
 
 }
 
 func TestEachInt32(t *testing.T) {
 
-	o := New([]int32{int32(1), int32(1), int32(1), int32(1), int32(1)})
+	v := &Value{data: []int32{int32(1), int32(1), int32(1), int32(1), int32(1)}}
 	count := 0
 	replacedVals := make([]int32, 0)
-	assert.Equal(t, o, o.EachInt32(func(i int, val int32) bool {
+	assert.Equal(t, v, v.EachInt32(func(i int, val int32) bool {
 
 		count++
 		replacedVals = append(replacedVals, val)
@@ -1180,17 +1216,17 @@ func TestEachInt32(t *testing.T) {
 	}))
 
 	assert.Equal(t, count, 3)
-	assert.Equal(t, replacedVals[0], o.MustInt32Slice()[0])
-	assert.Equal(t, replacedVals[1], o.MustInt32Slice()[1])
-	assert.Equal(t, replacedVals[2], o.MustInt32Slice()[2])
+	assert.Equal(t, replacedVals[0], v.MustInt32Slice()[0])
+	assert.Equal(t, replacedVals[1], v.MustInt32Slice()[1])
+	assert.Equal(t, replacedVals[2], v.MustInt32Slice()[2])
 
 }
 
 func TestWhereInt32(t *testing.T) {
 
-	o := New([]int32{int32(1), int32(1), int32(1), int32(1), int32(1), int32(1)})
+	v := &Value{data: []int32{int32(1), int32(1), int32(1), int32(1), int32(1), int32(1)}}
 
-	selected := o.WhereInt32(func(i int, val int32) bool {
+	selected := v.WhereInt32(func(i int, val int32) bool {
 		return i%2 == 0
 	}).MustInt32Slice()
 
@@ -1200,11 +1236,11 @@ func TestWhereInt32(t *testing.T) {
 
 func TestGroupInt32(t *testing.T) {
 
-	o := New([]int32{int32(1), int32(1), int32(1), int32(1), int32(1), int32(1)})
+	v := &Value{data: []int32{int32(1), int32(1), int32(1), int32(1), int32(1), int32(1)}}
 
-	grouped := o.GroupInt32(func(i int, val int32) string {
+	grouped := v.GroupInt32(func(i int, val int32) string {
 		return fmt.Sprintf("%v", i%2 == 0)
-	}).Obj().(map[string][]int32)
+	}).data.(map[string][]int32)
 
 	assert.Equal(t, 2, len(grouped))
 	assert.Equal(t, 3, len(grouped["true"]))
@@ -1214,11 +1250,11 @@ func TestGroupInt32(t *testing.T) {
 
 func TestReplaceInt32(t *testing.T) {
 
-	o := New([]int32{int32(1), int32(1), int32(1), int32(1), int32(1), int32(1)})
+	v := &Value{data: []int32{int32(1), int32(1), int32(1), int32(1), int32(1), int32(1)}}
 
-	rawArr := o.MustInt32Slice()
+	rawArr := v.MustInt32Slice()
 
-	replaced := o.ReplaceInt32(func(index int, val int32) int32 {
+	replaced := v.ReplaceInt32(func(index int, val int32) int32 {
 		if index < len(rawArr)-1 {
 			return rawArr[index+1]
 		}
@@ -1239,9 +1275,9 @@ func TestReplaceInt32(t *testing.T) {
 
 func TestCollectInt32(t *testing.T) {
 
-	o := New([]int32{int32(1), int32(1), int32(1), int32(1), int32(1), int32(1)})
+	v := &Value{data: []int32{int32(1), int32(1), int32(1), int32(1), int32(1), int32(1)}}
 
-	collected := o.CollectInt32(func(index int, val int32) interface{} {
+	collected := v.CollectInt32(func(index int, val int32) interface{} {
 		return index
 	})
 
@@ -1256,6 +1292,10 @@ func TestCollectInt32(t *testing.T) {
 	}
 
 }
+
+// ************************************************************
+// TESTS
+// ************************************************************
 
 func TestInt64(t *testing.T) {
 
@@ -1289,22 +1329,22 @@ func TestInt64Slice(t *testing.T) {
 
 func TestIsInt64(t *testing.T) {
 
-	var o *Obj
+	var v *Value
 
-	o = New(int64(1))
-	assert.True(t, o.IsInt64())
+	v = &Value{data: int64(1)}
+	assert.True(t, v.IsInt64())
 
-	o = New([]int64{int64(1)})
-	assert.True(t, o.IsInt64Slice())
+	v = &Value{data: []int64{int64(1)}}
+	assert.True(t, v.IsInt64Slice())
 
 }
 
 func TestEachInt64(t *testing.T) {
 
-	o := New([]int64{int64(1), int64(1), int64(1), int64(1), int64(1)})
+	v := &Value{data: []int64{int64(1), int64(1), int64(1), int64(1), int64(1)}}
 	count := 0
 	replacedVals := make([]int64, 0)
-	assert.Equal(t, o, o.EachInt64(func(i int, val int64) bool {
+	assert.Equal(t, v, v.EachInt64(func(i int, val int64) bool {
 
 		count++
 		replacedVals = append(replacedVals, val)
@@ -1319,17 +1359,17 @@ func TestEachInt64(t *testing.T) {
 	}))
 
 	assert.Equal(t, count, 3)
-	assert.Equal(t, replacedVals[0], o.MustInt64Slice()[0])
-	assert.Equal(t, replacedVals[1], o.MustInt64Slice()[1])
-	assert.Equal(t, replacedVals[2], o.MustInt64Slice()[2])
+	assert.Equal(t, replacedVals[0], v.MustInt64Slice()[0])
+	assert.Equal(t, replacedVals[1], v.MustInt64Slice()[1])
+	assert.Equal(t, replacedVals[2], v.MustInt64Slice()[2])
 
 }
 
 func TestWhereInt64(t *testing.T) {
 
-	o := New([]int64{int64(1), int64(1), int64(1), int64(1), int64(1), int64(1)})
+	v := &Value{data: []int64{int64(1), int64(1), int64(1), int64(1), int64(1), int64(1)}}
 
-	selected := o.WhereInt64(func(i int, val int64) bool {
+	selected := v.WhereInt64(func(i int, val int64) bool {
 		return i%2 == 0
 	}).MustInt64Slice()
 
@@ -1339,11 +1379,11 @@ func TestWhereInt64(t *testing.T) {
 
 func TestGroupInt64(t *testing.T) {
 
-	o := New([]int64{int64(1), int64(1), int64(1), int64(1), int64(1), int64(1)})
+	v := &Value{data: []int64{int64(1), int64(1), int64(1), int64(1), int64(1), int64(1)}}
 
-	grouped := o.GroupInt64(func(i int, val int64) string {
+	grouped := v.GroupInt64(func(i int, val int64) string {
 		return fmt.Sprintf("%v", i%2 == 0)
-	}).Obj().(map[string][]int64)
+	}).data.(map[string][]int64)
 
 	assert.Equal(t, 2, len(grouped))
 	assert.Equal(t, 3, len(grouped["true"]))
@@ -1353,11 +1393,11 @@ func TestGroupInt64(t *testing.T) {
 
 func TestReplaceInt64(t *testing.T) {
 
-	o := New([]int64{int64(1), int64(1), int64(1), int64(1), int64(1), int64(1)})
+	v := &Value{data: []int64{int64(1), int64(1), int64(1), int64(1), int64(1), int64(1)}}
 
-	rawArr := o.MustInt64Slice()
+	rawArr := v.MustInt64Slice()
 
-	replaced := o.ReplaceInt64(func(index int, val int64) int64 {
+	replaced := v.ReplaceInt64(func(index int, val int64) int64 {
 		if index < len(rawArr)-1 {
 			return rawArr[index+1]
 		}
@@ -1378,9 +1418,9 @@ func TestReplaceInt64(t *testing.T) {
 
 func TestCollectInt64(t *testing.T) {
 
-	o := New([]int64{int64(1), int64(1), int64(1), int64(1), int64(1), int64(1)})
+	v := &Value{data: []int64{int64(1), int64(1), int64(1), int64(1), int64(1), int64(1)}}
 
-	collected := o.CollectInt64(func(index int, val int64) interface{} {
+	collected := v.CollectInt64(func(index int, val int64) interface{} {
 		return index
 	})
 
@@ -1395,6 +1435,10 @@ func TestCollectInt64(t *testing.T) {
 	}
 
 }
+
+// ************************************************************
+// TESTS
+// ************************************************************
 
 func TestUint(t *testing.T) {
 
@@ -1428,22 +1472,22 @@ func TestUintSlice(t *testing.T) {
 
 func TestIsUint(t *testing.T) {
 
-	var o *Obj
+	var v *Value
 
-	o = New(uint(1))
-	assert.True(t, o.IsUint())
+	v = &Value{data: uint(1)}
+	assert.True(t, v.IsUint())
 
-	o = New([]uint{uint(1)})
-	assert.True(t, o.IsUintSlice())
+	v = &Value{data: []uint{uint(1)}}
+	assert.True(t, v.IsUintSlice())
 
 }
 
 func TestEachUint(t *testing.T) {
 
-	o := New([]uint{uint(1), uint(1), uint(1), uint(1), uint(1)})
+	v := &Value{data: []uint{uint(1), uint(1), uint(1), uint(1), uint(1)}}
 	count := 0
 	replacedVals := make([]uint, 0)
-	assert.Equal(t, o, o.EachUint(func(i int, val uint) bool {
+	assert.Equal(t, v, v.EachUint(func(i int, val uint) bool {
 
 		count++
 		replacedVals = append(replacedVals, val)
@@ -1458,17 +1502,17 @@ func TestEachUint(t *testing.T) {
 	}))
 
 	assert.Equal(t, count, 3)
-	assert.Equal(t, replacedVals[0], o.MustUintSlice()[0])
-	assert.Equal(t, replacedVals[1], o.MustUintSlice()[1])
-	assert.Equal(t, replacedVals[2], o.MustUintSlice()[2])
+	assert.Equal(t, replacedVals[0], v.MustUintSlice()[0])
+	assert.Equal(t, replacedVals[1], v.MustUintSlice()[1])
+	assert.Equal(t, replacedVals[2], v.MustUintSlice()[2])
 
 }
 
 func TestWhereUint(t *testing.T) {
 
-	o := New([]uint{uint(1), uint(1), uint(1), uint(1), uint(1), uint(1)})
+	v := &Value{data: []uint{uint(1), uint(1), uint(1), uint(1), uint(1), uint(1)}}
 
-	selected := o.WhereUint(func(i int, val uint) bool {
+	selected := v.WhereUint(func(i int, val uint) bool {
 		return i%2 == 0
 	}).MustUintSlice()
 
@@ -1478,11 +1522,11 @@ func TestWhereUint(t *testing.T) {
 
 func TestGroupUint(t *testing.T) {
 
-	o := New([]uint{uint(1), uint(1), uint(1), uint(1), uint(1), uint(1)})
+	v := &Value{data: []uint{uint(1), uint(1), uint(1), uint(1), uint(1), uint(1)}}
 
-	grouped := o.GroupUint(func(i int, val uint) string {
+	grouped := v.GroupUint(func(i int, val uint) string {
 		return fmt.Sprintf("%v", i%2 == 0)
-	}).Obj().(map[string][]uint)
+	}).data.(map[string][]uint)
 
 	assert.Equal(t, 2, len(grouped))
 	assert.Equal(t, 3, len(grouped["true"]))
@@ -1492,11 +1536,11 @@ func TestGroupUint(t *testing.T) {
 
 func TestReplaceUint(t *testing.T) {
 
-	o := New([]uint{uint(1), uint(1), uint(1), uint(1), uint(1), uint(1)})
+	v := &Value{data: []uint{uint(1), uint(1), uint(1), uint(1), uint(1), uint(1)}}
 
-	rawArr := o.MustUintSlice()
+	rawArr := v.MustUintSlice()
 
-	replaced := o.ReplaceUint(func(index int, val uint) uint {
+	replaced := v.ReplaceUint(func(index int, val uint) uint {
 		if index < len(rawArr)-1 {
 			return rawArr[index+1]
 		}
@@ -1517,9 +1561,9 @@ func TestReplaceUint(t *testing.T) {
 
 func TestCollectUint(t *testing.T) {
 
-	o := New([]uint{uint(1), uint(1), uint(1), uint(1), uint(1), uint(1)})
+	v := &Value{data: []uint{uint(1), uint(1), uint(1), uint(1), uint(1), uint(1)}}
 
-	collected := o.CollectUint(func(index int, val uint) interface{} {
+	collected := v.CollectUint(func(index int, val uint) interface{} {
 		return index
 	})
 
@@ -1534,6 +1578,10 @@ func TestCollectUint(t *testing.T) {
 	}
 
 }
+
+// ************************************************************
+// TESTS
+// ************************************************************
 
 func TestUint8(t *testing.T) {
 
@@ -1567,22 +1615,22 @@ func TestUint8Slice(t *testing.T) {
 
 func TestIsUint8(t *testing.T) {
 
-	var o *Obj
+	var v *Value
 
-	o = New(uint8(1))
-	assert.True(t, o.IsUint8())
+	v = &Value{data: uint8(1)}
+	assert.True(t, v.IsUint8())
 
-	o = New([]uint8{uint8(1)})
-	assert.True(t, o.IsUint8Slice())
+	v = &Value{data: []uint8{uint8(1)}}
+	assert.True(t, v.IsUint8Slice())
 
 }
 
 func TestEachUint8(t *testing.T) {
 
-	o := New([]uint8{uint8(1), uint8(1), uint8(1), uint8(1), uint8(1)})
+	v := &Value{data: []uint8{uint8(1), uint8(1), uint8(1), uint8(1), uint8(1)}}
 	count := 0
 	replacedVals := make([]uint8, 0)
-	assert.Equal(t, o, o.EachUint8(func(i int, val uint8) bool {
+	assert.Equal(t, v, v.EachUint8(func(i int, val uint8) bool {
 
 		count++
 		replacedVals = append(replacedVals, val)
@@ -1597,17 +1645,17 @@ func TestEachUint8(t *testing.T) {
 	}))
 
 	assert.Equal(t, count, 3)
-	assert.Equal(t, replacedVals[0], o.MustUint8Slice()[0])
-	assert.Equal(t, replacedVals[1], o.MustUint8Slice()[1])
-	assert.Equal(t, replacedVals[2], o.MustUint8Slice()[2])
+	assert.Equal(t, replacedVals[0], v.MustUint8Slice()[0])
+	assert.Equal(t, replacedVals[1], v.MustUint8Slice()[1])
+	assert.Equal(t, replacedVals[2], v.MustUint8Slice()[2])
 
 }
 
 func TestWhereUint8(t *testing.T) {
 
-	o := New([]uint8{uint8(1), uint8(1), uint8(1), uint8(1), uint8(1), uint8(1)})
+	v := &Value{data: []uint8{uint8(1), uint8(1), uint8(1), uint8(1), uint8(1), uint8(1)}}
 
-	selected := o.WhereUint8(func(i int, val uint8) bool {
+	selected := v.WhereUint8(func(i int, val uint8) bool {
 		return i%2 == 0
 	}).MustUint8Slice()
 
@@ -1617,11 +1665,11 @@ func TestWhereUint8(t *testing.T) {
 
 func TestGroupUint8(t *testing.T) {
 
-	o := New([]uint8{uint8(1), uint8(1), uint8(1), uint8(1), uint8(1), uint8(1)})
+	v := &Value{data: []uint8{uint8(1), uint8(1), uint8(1), uint8(1), uint8(1), uint8(1)}}
 
-	grouped := o.GroupUint8(func(i int, val uint8) string {
+	grouped := v.GroupUint8(func(i int, val uint8) string {
 		return fmt.Sprintf("%v", i%2 == 0)
-	}).Obj().(map[string][]uint8)
+	}).data.(map[string][]uint8)
 
 	assert.Equal(t, 2, len(grouped))
 	assert.Equal(t, 3, len(grouped["true"]))
@@ -1631,11 +1679,11 @@ func TestGroupUint8(t *testing.T) {
 
 func TestReplaceUint8(t *testing.T) {
 
-	o := New([]uint8{uint8(1), uint8(1), uint8(1), uint8(1), uint8(1), uint8(1)})
+	v := &Value{data: []uint8{uint8(1), uint8(1), uint8(1), uint8(1), uint8(1), uint8(1)}}
 
-	rawArr := o.MustUint8Slice()
+	rawArr := v.MustUint8Slice()
 
-	replaced := o.ReplaceUint8(func(index int, val uint8) uint8 {
+	replaced := v.ReplaceUint8(func(index int, val uint8) uint8 {
 		if index < len(rawArr)-1 {
 			return rawArr[index+1]
 		}
@@ -1656,9 +1704,9 @@ func TestReplaceUint8(t *testing.T) {
 
 func TestCollectUint8(t *testing.T) {
 
-	o := New([]uint8{uint8(1), uint8(1), uint8(1), uint8(1), uint8(1), uint8(1)})
+	v := &Value{data: []uint8{uint8(1), uint8(1), uint8(1), uint8(1), uint8(1), uint8(1)}}
 
-	collected := o.CollectUint8(func(index int, val uint8) interface{} {
+	collected := v.CollectUint8(func(index int, val uint8) interface{} {
 		return index
 	})
 
@@ -1673,6 +1721,10 @@ func TestCollectUint8(t *testing.T) {
 	}
 
 }
+
+// ************************************************************
+// TESTS
+// ************************************************************
 
 func TestUint16(t *testing.T) {
 
@@ -1706,22 +1758,22 @@ func TestUint16Slice(t *testing.T) {
 
 func TestIsUint16(t *testing.T) {
 
-	var o *Obj
+	var v *Value
 
-	o = New(uint16(1))
-	assert.True(t, o.IsUint16())
+	v = &Value{data: uint16(1)}
+	assert.True(t, v.IsUint16())
 
-	o = New([]uint16{uint16(1)})
-	assert.True(t, o.IsUint16Slice())
+	v = &Value{data: []uint16{uint16(1)}}
+	assert.True(t, v.IsUint16Slice())
 
 }
 
 func TestEachUint16(t *testing.T) {
 
-	o := New([]uint16{uint16(1), uint16(1), uint16(1), uint16(1), uint16(1)})
+	v := &Value{data: []uint16{uint16(1), uint16(1), uint16(1), uint16(1), uint16(1)}}
 	count := 0
 	replacedVals := make([]uint16, 0)
-	assert.Equal(t, o, o.EachUint16(func(i int, val uint16) bool {
+	assert.Equal(t, v, v.EachUint16(func(i int, val uint16) bool {
 
 		count++
 		replacedVals = append(replacedVals, val)
@@ -1736,17 +1788,17 @@ func TestEachUint16(t *testing.T) {
 	}))
 
 	assert.Equal(t, count, 3)
-	assert.Equal(t, replacedVals[0], o.MustUint16Slice()[0])
-	assert.Equal(t, replacedVals[1], o.MustUint16Slice()[1])
-	assert.Equal(t, replacedVals[2], o.MustUint16Slice()[2])
+	assert.Equal(t, replacedVals[0], v.MustUint16Slice()[0])
+	assert.Equal(t, replacedVals[1], v.MustUint16Slice()[1])
+	assert.Equal(t, replacedVals[2], v.MustUint16Slice()[2])
 
 }
 
 func TestWhereUint16(t *testing.T) {
 
-	o := New([]uint16{uint16(1), uint16(1), uint16(1), uint16(1), uint16(1), uint16(1)})
+	v := &Value{data: []uint16{uint16(1), uint16(1), uint16(1), uint16(1), uint16(1), uint16(1)}}
 
-	selected := o.WhereUint16(func(i int, val uint16) bool {
+	selected := v.WhereUint16(func(i int, val uint16) bool {
 		return i%2 == 0
 	}).MustUint16Slice()
 
@@ -1756,11 +1808,11 @@ func TestWhereUint16(t *testing.T) {
 
 func TestGroupUint16(t *testing.T) {
 
-	o := New([]uint16{uint16(1), uint16(1), uint16(1), uint16(1), uint16(1), uint16(1)})
+	v := &Value{data: []uint16{uint16(1), uint16(1), uint16(1), uint16(1), uint16(1), uint16(1)}}
 
-	grouped := o.GroupUint16(func(i int, val uint16) string {
+	grouped := v.GroupUint16(func(i int, val uint16) string {
 		return fmt.Sprintf("%v", i%2 == 0)
-	}).Obj().(map[string][]uint16)
+	}).data.(map[string][]uint16)
 
 	assert.Equal(t, 2, len(grouped))
 	assert.Equal(t, 3, len(grouped["true"]))
@@ -1770,11 +1822,11 @@ func TestGroupUint16(t *testing.T) {
 
 func TestReplaceUint16(t *testing.T) {
 
-	o := New([]uint16{uint16(1), uint16(1), uint16(1), uint16(1), uint16(1), uint16(1)})
+	v := &Value{data: []uint16{uint16(1), uint16(1), uint16(1), uint16(1), uint16(1), uint16(1)}}
 
-	rawArr := o.MustUint16Slice()
+	rawArr := v.MustUint16Slice()
 
-	replaced := o.ReplaceUint16(func(index int, val uint16) uint16 {
+	replaced := v.ReplaceUint16(func(index int, val uint16) uint16 {
 		if index < len(rawArr)-1 {
 			return rawArr[index+1]
 		}
@@ -1795,9 +1847,9 @@ func TestReplaceUint16(t *testing.T) {
 
 func TestCollectUint16(t *testing.T) {
 
-	o := New([]uint16{uint16(1), uint16(1), uint16(1), uint16(1), uint16(1), uint16(1)})
+	v := &Value{data: []uint16{uint16(1), uint16(1), uint16(1), uint16(1), uint16(1), uint16(1)}}
 
-	collected := o.CollectUint16(func(index int, val uint16) interface{} {
+	collected := v.CollectUint16(func(index int, val uint16) interface{} {
 		return index
 	})
 
@@ -1812,6 +1864,10 @@ func TestCollectUint16(t *testing.T) {
 	}
 
 }
+
+// ************************************************************
+// TESTS
+// ************************************************************
 
 func TestUint32(t *testing.T) {
 
@@ -1845,22 +1901,22 @@ func TestUint32Slice(t *testing.T) {
 
 func TestIsUint32(t *testing.T) {
 
-	var o *Obj
+	var v *Value
 
-	o = New(uint32(1))
-	assert.True(t, o.IsUint32())
+	v = &Value{data: uint32(1)}
+	assert.True(t, v.IsUint32())
 
-	o = New([]uint32{uint32(1)})
-	assert.True(t, o.IsUint32Slice())
+	v = &Value{data: []uint32{uint32(1)}}
+	assert.True(t, v.IsUint32Slice())
 
 }
 
 func TestEachUint32(t *testing.T) {
 
-	o := New([]uint32{uint32(1), uint32(1), uint32(1), uint32(1), uint32(1)})
+	v := &Value{data: []uint32{uint32(1), uint32(1), uint32(1), uint32(1), uint32(1)}}
 	count := 0
 	replacedVals := make([]uint32, 0)
-	assert.Equal(t, o, o.EachUint32(func(i int, val uint32) bool {
+	assert.Equal(t, v, v.EachUint32(func(i int, val uint32) bool {
 
 		count++
 		replacedVals = append(replacedVals, val)
@@ -1875,17 +1931,17 @@ func TestEachUint32(t *testing.T) {
 	}))
 
 	assert.Equal(t, count, 3)
-	assert.Equal(t, replacedVals[0], o.MustUint32Slice()[0])
-	assert.Equal(t, replacedVals[1], o.MustUint32Slice()[1])
-	assert.Equal(t, replacedVals[2], o.MustUint32Slice()[2])
+	assert.Equal(t, replacedVals[0], v.MustUint32Slice()[0])
+	assert.Equal(t, replacedVals[1], v.MustUint32Slice()[1])
+	assert.Equal(t, replacedVals[2], v.MustUint32Slice()[2])
 
 }
 
 func TestWhereUint32(t *testing.T) {
 
-	o := New([]uint32{uint32(1), uint32(1), uint32(1), uint32(1), uint32(1), uint32(1)})
+	v := &Value{data: []uint32{uint32(1), uint32(1), uint32(1), uint32(1), uint32(1), uint32(1)}}
 
-	selected := o.WhereUint32(func(i int, val uint32) bool {
+	selected := v.WhereUint32(func(i int, val uint32) bool {
 		return i%2 == 0
 	}).MustUint32Slice()
 
@@ -1895,11 +1951,11 @@ func TestWhereUint32(t *testing.T) {
 
 func TestGroupUint32(t *testing.T) {
 
-	o := New([]uint32{uint32(1), uint32(1), uint32(1), uint32(1), uint32(1), uint32(1)})
+	v := &Value{data: []uint32{uint32(1), uint32(1), uint32(1), uint32(1), uint32(1), uint32(1)}}
 
-	grouped := o.GroupUint32(func(i int, val uint32) string {
+	grouped := v.GroupUint32(func(i int, val uint32) string {
 		return fmt.Sprintf("%v", i%2 == 0)
-	}).Obj().(map[string][]uint32)
+	}).data.(map[string][]uint32)
 
 	assert.Equal(t, 2, len(grouped))
 	assert.Equal(t, 3, len(grouped["true"]))
@@ -1909,11 +1965,11 @@ func TestGroupUint32(t *testing.T) {
 
 func TestReplaceUint32(t *testing.T) {
 
-	o := New([]uint32{uint32(1), uint32(1), uint32(1), uint32(1), uint32(1), uint32(1)})
+	v := &Value{data: []uint32{uint32(1), uint32(1), uint32(1), uint32(1), uint32(1), uint32(1)}}
 
-	rawArr := o.MustUint32Slice()
+	rawArr := v.MustUint32Slice()
 
-	replaced := o.ReplaceUint32(func(index int, val uint32) uint32 {
+	replaced := v.ReplaceUint32(func(index int, val uint32) uint32 {
 		if index < len(rawArr)-1 {
 			return rawArr[index+1]
 		}
@@ -1934,9 +1990,9 @@ func TestReplaceUint32(t *testing.T) {
 
 func TestCollectUint32(t *testing.T) {
 
-	o := New([]uint32{uint32(1), uint32(1), uint32(1), uint32(1), uint32(1), uint32(1)})
+	v := &Value{data: []uint32{uint32(1), uint32(1), uint32(1), uint32(1), uint32(1), uint32(1)}}
 
-	collected := o.CollectUint32(func(index int, val uint32) interface{} {
+	collected := v.CollectUint32(func(index int, val uint32) interface{} {
 		return index
 	})
 
@@ -1951,6 +2007,10 @@ func TestCollectUint32(t *testing.T) {
 	}
 
 }
+
+// ************************************************************
+// TESTS
+// ************************************************************
 
 func TestUint64(t *testing.T) {
 
@@ -1984,22 +2044,22 @@ func TestUint64Slice(t *testing.T) {
 
 func TestIsUint64(t *testing.T) {
 
-	var o *Obj
+	var v *Value
 
-	o = New(uint64(1))
-	assert.True(t, o.IsUint64())
+	v = &Value{data: uint64(1)}
+	assert.True(t, v.IsUint64())
 
-	o = New([]uint64{uint64(1)})
-	assert.True(t, o.IsUint64Slice())
+	v = &Value{data: []uint64{uint64(1)}}
+	assert.True(t, v.IsUint64Slice())
 
 }
 
 func TestEachUint64(t *testing.T) {
 
-	o := New([]uint64{uint64(1), uint64(1), uint64(1), uint64(1), uint64(1)})
+	v := &Value{data: []uint64{uint64(1), uint64(1), uint64(1), uint64(1), uint64(1)}}
 	count := 0
 	replacedVals := make([]uint64, 0)
-	assert.Equal(t, o, o.EachUint64(func(i int, val uint64) bool {
+	assert.Equal(t, v, v.EachUint64(func(i int, val uint64) bool {
 
 		count++
 		replacedVals = append(replacedVals, val)
@@ -2014,17 +2074,17 @@ func TestEachUint64(t *testing.T) {
 	}))
 
 	assert.Equal(t, count, 3)
-	assert.Equal(t, replacedVals[0], o.MustUint64Slice()[0])
-	assert.Equal(t, replacedVals[1], o.MustUint64Slice()[1])
-	assert.Equal(t, replacedVals[2], o.MustUint64Slice()[2])
+	assert.Equal(t, replacedVals[0], v.MustUint64Slice()[0])
+	assert.Equal(t, replacedVals[1], v.MustUint64Slice()[1])
+	assert.Equal(t, replacedVals[2], v.MustUint64Slice()[2])
 
 }
 
 func TestWhereUint64(t *testing.T) {
 
-	o := New([]uint64{uint64(1), uint64(1), uint64(1), uint64(1), uint64(1), uint64(1)})
+	v := &Value{data: []uint64{uint64(1), uint64(1), uint64(1), uint64(1), uint64(1), uint64(1)}}
 
-	selected := o.WhereUint64(func(i int, val uint64) bool {
+	selected := v.WhereUint64(func(i int, val uint64) bool {
 		return i%2 == 0
 	}).MustUint64Slice()
 
@@ -2034,11 +2094,11 @@ func TestWhereUint64(t *testing.T) {
 
 func TestGroupUint64(t *testing.T) {
 
-	o := New([]uint64{uint64(1), uint64(1), uint64(1), uint64(1), uint64(1), uint64(1)})
+	v := &Value{data: []uint64{uint64(1), uint64(1), uint64(1), uint64(1), uint64(1), uint64(1)}}
 
-	grouped := o.GroupUint64(func(i int, val uint64) string {
+	grouped := v.GroupUint64(func(i int, val uint64) string {
 		return fmt.Sprintf("%v", i%2 == 0)
-	}).Obj().(map[string][]uint64)
+	}).data.(map[string][]uint64)
 
 	assert.Equal(t, 2, len(grouped))
 	assert.Equal(t, 3, len(grouped["true"]))
@@ -2048,11 +2108,11 @@ func TestGroupUint64(t *testing.T) {
 
 func TestReplaceUint64(t *testing.T) {
 
-	o := New([]uint64{uint64(1), uint64(1), uint64(1), uint64(1), uint64(1), uint64(1)})
+	v := &Value{data: []uint64{uint64(1), uint64(1), uint64(1), uint64(1), uint64(1), uint64(1)}}
 
-	rawArr := o.MustUint64Slice()
+	rawArr := v.MustUint64Slice()
 
-	replaced := o.ReplaceUint64(func(index int, val uint64) uint64 {
+	replaced := v.ReplaceUint64(func(index int, val uint64) uint64 {
 		if index < len(rawArr)-1 {
 			return rawArr[index+1]
 		}
@@ -2073,9 +2133,9 @@ func TestReplaceUint64(t *testing.T) {
 
 func TestCollectUint64(t *testing.T) {
 
-	o := New([]uint64{uint64(1), uint64(1), uint64(1), uint64(1), uint64(1), uint64(1)})
+	v := &Value{data: []uint64{uint64(1), uint64(1), uint64(1), uint64(1), uint64(1), uint64(1)}}
 
-	collected := o.CollectUint64(func(index int, val uint64) interface{} {
+	collected := v.CollectUint64(func(index int, val uint64) interface{} {
 		return index
 	})
 
@@ -2090,6 +2150,10 @@ func TestCollectUint64(t *testing.T) {
 	}
 
 }
+
+// ************************************************************
+// TESTS
+// ************************************************************
 
 func TestUintptr(t *testing.T) {
 
@@ -2123,22 +2187,22 @@ func TestUintptrSlice(t *testing.T) {
 
 func TestIsUintptr(t *testing.T) {
 
-	var o *Obj
+	var v *Value
 
-	o = New(uintptr(1))
-	assert.True(t, o.IsUintptr())
+	v = &Value{data: uintptr(1)}
+	assert.True(t, v.IsUintptr())
 
-	o = New([]uintptr{uintptr(1)})
-	assert.True(t, o.IsUintptrSlice())
+	v = &Value{data: []uintptr{uintptr(1)}}
+	assert.True(t, v.IsUintptrSlice())
 
 }
 
 func TestEachUintptr(t *testing.T) {
 
-	o := New([]uintptr{uintptr(1), uintptr(1), uintptr(1), uintptr(1), uintptr(1)})
+	v := &Value{data: []uintptr{uintptr(1), uintptr(1), uintptr(1), uintptr(1), uintptr(1)}}
 	count := 0
 	replacedVals := make([]uintptr, 0)
-	assert.Equal(t, o, o.EachUintptr(func(i int, val uintptr) bool {
+	assert.Equal(t, v, v.EachUintptr(func(i int, val uintptr) bool {
 
 		count++
 		replacedVals = append(replacedVals, val)
@@ -2153,17 +2217,17 @@ func TestEachUintptr(t *testing.T) {
 	}))
 
 	assert.Equal(t, count, 3)
-	assert.Equal(t, replacedVals[0], o.MustUintptrSlice()[0])
-	assert.Equal(t, replacedVals[1], o.MustUintptrSlice()[1])
-	assert.Equal(t, replacedVals[2], o.MustUintptrSlice()[2])
+	assert.Equal(t, replacedVals[0], v.MustUintptrSlice()[0])
+	assert.Equal(t, replacedVals[1], v.MustUintptrSlice()[1])
+	assert.Equal(t, replacedVals[2], v.MustUintptrSlice()[2])
 
 }
 
 func TestWhereUintptr(t *testing.T) {
 
-	o := New([]uintptr{uintptr(1), uintptr(1), uintptr(1), uintptr(1), uintptr(1), uintptr(1)})
+	v := &Value{data: []uintptr{uintptr(1), uintptr(1), uintptr(1), uintptr(1), uintptr(1), uintptr(1)}}
 
-	selected := o.WhereUintptr(func(i int, val uintptr) bool {
+	selected := v.WhereUintptr(func(i int, val uintptr) bool {
 		return i%2 == 0
 	}).MustUintptrSlice()
 
@@ -2173,11 +2237,11 @@ func TestWhereUintptr(t *testing.T) {
 
 func TestGroupUintptr(t *testing.T) {
 
-	o := New([]uintptr{uintptr(1), uintptr(1), uintptr(1), uintptr(1), uintptr(1), uintptr(1)})
+	v := &Value{data: []uintptr{uintptr(1), uintptr(1), uintptr(1), uintptr(1), uintptr(1), uintptr(1)}}
 
-	grouped := o.GroupUintptr(func(i int, val uintptr) string {
+	grouped := v.GroupUintptr(func(i int, val uintptr) string {
 		return fmt.Sprintf("%v", i%2 == 0)
-	}).Obj().(map[string][]uintptr)
+	}).data.(map[string][]uintptr)
 
 	assert.Equal(t, 2, len(grouped))
 	assert.Equal(t, 3, len(grouped["true"]))
@@ -2187,11 +2251,11 @@ func TestGroupUintptr(t *testing.T) {
 
 func TestReplaceUintptr(t *testing.T) {
 
-	o := New([]uintptr{uintptr(1), uintptr(1), uintptr(1), uintptr(1), uintptr(1), uintptr(1)})
+	v := &Value{data: []uintptr{uintptr(1), uintptr(1), uintptr(1), uintptr(1), uintptr(1), uintptr(1)}}
 
-	rawArr := o.MustUintptrSlice()
+	rawArr := v.MustUintptrSlice()
 
-	replaced := o.ReplaceUintptr(func(index int, val uintptr) uintptr {
+	replaced := v.ReplaceUintptr(func(index int, val uintptr) uintptr {
 		if index < len(rawArr)-1 {
 			return rawArr[index+1]
 		}
@@ -2212,9 +2276,9 @@ func TestReplaceUintptr(t *testing.T) {
 
 func TestCollectUintptr(t *testing.T) {
 
-	o := New([]uintptr{uintptr(1), uintptr(1), uintptr(1), uintptr(1), uintptr(1), uintptr(1)})
+	v := &Value{data: []uintptr{uintptr(1), uintptr(1), uintptr(1), uintptr(1), uintptr(1), uintptr(1)}}
 
-	collected := o.CollectUintptr(func(index int, val uintptr) interface{} {
+	collected := v.CollectUintptr(func(index int, val uintptr) interface{} {
 		return index
 	})
 
@@ -2229,6 +2293,10 @@ func TestCollectUintptr(t *testing.T) {
 	}
 
 }
+
+// ************************************************************
+// TESTS
+// ************************************************************
 
 func TestFloat32(t *testing.T) {
 
@@ -2262,22 +2330,22 @@ func TestFloat32Slice(t *testing.T) {
 
 func TestIsFloat32(t *testing.T) {
 
-	var o *Obj
+	var v *Value
 
-	o = New(float32(1))
-	assert.True(t, o.IsFloat32())
+	v = &Value{data: float32(1)}
+	assert.True(t, v.IsFloat32())
 
-	o = New([]float32{float32(1)})
-	assert.True(t, o.IsFloat32Slice())
+	v = &Value{data: []float32{float32(1)}}
+	assert.True(t, v.IsFloat32Slice())
 
 }
 
 func TestEachFloat32(t *testing.T) {
 
-	o := New([]float32{float32(1), float32(1), float32(1), float32(1), float32(1)})
+	v := &Value{data: []float32{float32(1), float32(1), float32(1), float32(1), float32(1)}}
 	count := 0
 	replacedVals := make([]float32, 0)
-	assert.Equal(t, o, o.EachFloat32(func(i int, val float32) bool {
+	assert.Equal(t, v, v.EachFloat32(func(i int, val float32) bool {
 
 		count++
 		replacedVals = append(replacedVals, val)
@@ -2292,17 +2360,17 @@ func TestEachFloat32(t *testing.T) {
 	}))
 
 	assert.Equal(t, count, 3)
-	assert.Equal(t, replacedVals[0], o.MustFloat32Slice()[0])
-	assert.Equal(t, replacedVals[1], o.MustFloat32Slice()[1])
-	assert.Equal(t, replacedVals[2], o.MustFloat32Slice()[2])
+	assert.Equal(t, replacedVals[0], v.MustFloat32Slice()[0])
+	assert.Equal(t, replacedVals[1], v.MustFloat32Slice()[1])
+	assert.Equal(t, replacedVals[2], v.MustFloat32Slice()[2])
 
 }
 
 func TestWhereFloat32(t *testing.T) {
 
-	o := New([]float32{float32(1), float32(1), float32(1), float32(1), float32(1), float32(1)})
+	v := &Value{data: []float32{float32(1), float32(1), float32(1), float32(1), float32(1), float32(1)}}
 
-	selected := o.WhereFloat32(func(i int, val float32) bool {
+	selected := v.WhereFloat32(func(i int, val float32) bool {
 		return i%2 == 0
 	}).MustFloat32Slice()
 
@@ -2312,11 +2380,11 @@ func TestWhereFloat32(t *testing.T) {
 
 func TestGroupFloat32(t *testing.T) {
 
-	o := New([]float32{float32(1), float32(1), float32(1), float32(1), float32(1), float32(1)})
+	v := &Value{data: []float32{float32(1), float32(1), float32(1), float32(1), float32(1), float32(1)}}
 
-	grouped := o.GroupFloat32(func(i int, val float32) string {
+	grouped := v.GroupFloat32(func(i int, val float32) string {
 		return fmt.Sprintf("%v", i%2 == 0)
-	}).Obj().(map[string][]float32)
+	}).data.(map[string][]float32)
 
 	assert.Equal(t, 2, len(grouped))
 	assert.Equal(t, 3, len(grouped["true"]))
@@ -2326,11 +2394,11 @@ func TestGroupFloat32(t *testing.T) {
 
 func TestReplaceFloat32(t *testing.T) {
 
-	o := New([]float32{float32(1), float32(1), float32(1), float32(1), float32(1), float32(1)})
+	v := &Value{data: []float32{float32(1), float32(1), float32(1), float32(1), float32(1), float32(1)}}
 
-	rawArr := o.MustFloat32Slice()
+	rawArr := v.MustFloat32Slice()
 
-	replaced := o.ReplaceFloat32(func(index int, val float32) float32 {
+	replaced := v.ReplaceFloat32(func(index int, val float32) float32 {
 		if index < len(rawArr)-1 {
 			return rawArr[index+1]
 		}
@@ -2351,9 +2419,9 @@ func TestReplaceFloat32(t *testing.T) {
 
 func TestCollectFloat32(t *testing.T) {
 
-	o := New([]float32{float32(1), float32(1), float32(1), float32(1), float32(1), float32(1)})
+	v := &Value{data: []float32{float32(1), float32(1), float32(1), float32(1), float32(1), float32(1)}}
 
-	collected := o.CollectFloat32(func(index int, val float32) interface{} {
+	collected := v.CollectFloat32(func(index int, val float32) interface{} {
 		return index
 	})
 
@@ -2368,6 +2436,10 @@ func TestCollectFloat32(t *testing.T) {
 	}
 
 }
+
+// ************************************************************
+// TESTS
+// ************************************************************
 
 func TestFloat64(t *testing.T) {
 
@@ -2401,22 +2473,22 @@ func TestFloat64Slice(t *testing.T) {
 
 func TestIsFloat64(t *testing.T) {
 
-	var o *Obj
+	var v *Value
 
-	o = New(float64(1))
-	assert.True(t, o.IsFloat64())
+	v = &Value{data: float64(1)}
+	assert.True(t, v.IsFloat64())
 
-	o = New([]float64{float64(1)})
-	assert.True(t, o.IsFloat64Slice())
+	v = &Value{data: []float64{float64(1)}}
+	assert.True(t, v.IsFloat64Slice())
 
 }
 
 func TestEachFloat64(t *testing.T) {
 
-	o := New([]float64{float64(1), float64(1), float64(1), float64(1), float64(1)})
+	v := &Value{data: []float64{float64(1), float64(1), float64(1), float64(1), float64(1)}}
 	count := 0
 	replacedVals := make([]float64, 0)
-	assert.Equal(t, o, o.EachFloat64(func(i int, val float64) bool {
+	assert.Equal(t, v, v.EachFloat64(func(i int, val float64) bool {
 
 		count++
 		replacedVals = append(replacedVals, val)
@@ -2431,17 +2503,17 @@ func TestEachFloat64(t *testing.T) {
 	}))
 
 	assert.Equal(t, count, 3)
-	assert.Equal(t, replacedVals[0], o.MustFloat64Slice()[0])
-	assert.Equal(t, replacedVals[1], o.MustFloat64Slice()[1])
-	assert.Equal(t, replacedVals[2], o.MustFloat64Slice()[2])
+	assert.Equal(t, replacedVals[0], v.MustFloat64Slice()[0])
+	assert.Equal(t, replacedVals[1], v.MustFloat64Slice()[1])
+	assert.Equal(t, replacedVals[2], v.MustFloat64Slice()[2])
 
 }
 
 func TestWhereFloat64(t *testing.T) {
 
-	o := New([]float64{float64(1), float64(1), float64(1), float64(1), float64(1), float64(1)})
+	v := &Value{data: []float64{float64(1), float64(1), float64(1), float64(1), float64(1), float64(1)}}
 
-	selected := o.WhereFloat64(func(i int, val float64) bool {
+	selected := v.WhereFloat64(func(i int, val float64) bool {
 		return i%2 == 0
 	}).MustFloat64Slice()
 
@@ -2451,11 +2523,11 @@ func TestWhereFloat64(t *testing.T) {
 
 func TestGroupFloat64(t *testing.T) {
 
-	o := New([]float64{float64(1), float64(1), float64(1), float64(1), float64(1), float64(1)})
+	v := &Value{data: []float64{float64(1), float64(1), float64(1), float64(1), float64(1), float64(1)}}
 
-	grouped := o.GroupFloat64(func(i int, val float64) string {
+	grouped := v.GroupFloat64(func(i int, val float64) string {
 		return fmt.Sprintf("%v", i%2 == 0)
-	}).Obj().(map[string][]float64)
+	}).data.(map[string][]float64)
 
 	assert.Equal(t, 2, len(grouped))
 	assert.Equal(t, 3, len(grouped["true"]))
@@ -2465,11 +2537,11 @@ func TestGroupFloat64(t *testing.T) {
 
 func TestReplaceFloat64(t *testing.T) {
 
-	o := New([]float64{float64(1), float64(1), float64(1), float64(1), float64(1), float64(1)})
+	v := &Value{data: []float64{float64(1), float64(1), float64(1), float64(1), float64(1), float64(1)}}
 
-	rawArr := o.MustFloat64Slice()
+	rawArr := v.MustFloat64Slice()
 
-	replaced := o.ReplaceFloat64(func(index int, val float64) float64 {
+	replaced := v.ReplaceFloat64(func(index int, val float64) float64 {
 		if index < len(rawArr)-1 {
 			return rawArr[index+1]
 		}
@@ -2490,9 +2562,9 @@ func TestReplaceFloat64(t *testing.T) {
 
 func TestCollectFloat64(t *testing.T) {
 
-	o := New([]float64{float64(1), float64(1), float64(1), float64(1), float64(1), float64(1)})
+	v := &Value{data: []float64{float64(1), float64(1), float64(1), float64(1), float64(1), float64(1)}}
 
-	collected := o.CollectFloat64(func(index int, val float64) interface{} {
+	collected := v.CollectFloat64(func(index int, val float64) interface{} {
 		return index
 	})
 
@@ -2507,6 +2579,10 @@ func TestCollectFloat64(t *testing.T) {
 	}
 
 }
+
+// ************************************************************
+// TESTS
+// ************************************************************
 
 func TestComplex64(t *testing.T) {
 
@@ -2540,22 +2616,22 @@ func TestComplex64Slice(t *testing.T) {
 
 func TestIsComplex64(t *testing.T) {
 
-	var o *Obj
+	var v *Value
 
-	o = New(complex64(1))
-	assert.True(t, o.IsComplex64())
+	v = &Value{data: complex64(1)}
+	assert.True(t, v.IsComplex64())
 
-	o = New([]complex64{complex64(1)})
-	assert.True(t, o.IsComplex64Slice())
+	v = &Value{data: []complex64{complex64(1)}}
+	assert.True(t, v.IsComplex64Slice())
 
 }
 
 func TestEachComplex64(t *testing.T) {
 
-	o := New([]complex64{complex64(1), complex64(1), complex64(1), complex64(1), complex64(1)})
+	v := &Value{data: []complex64{complex64(1), complex64(1), complex64(1), complex64(1), complex64(1)}}
 	count := 0
 	replacedVals := make([]complex64, 0)
-	assert.Equal(t, o, o.EachComplex64(func(i int, val complex64) bool {
+	assert.Equal(t, v, v.EachComplex64(func(i int, val complex64) bool {
 
 		count++
 		replacedVals = append(replacedVals, val)
@@ -2570,17 +2646,17 @@ func TestEachComplex64(t *testing.T) {
 	}))
 
 	assert.Equal(t, count, 3)
-	assert.Equal(t, replacedVals[0], o.MustComplex64Slice()[0])
-	assert.Equal(t, replacedVals[1], o.MustComplex64Slice()[1])
-	assert.Equal(t, replacedVals[2], o.MustComplex64Slice()[2])
+	assert.Equal(t, replacedVals[0], v.MustComplex64Slice()[0])
+	assert.Equal(t, replacedVals[1], v.MustComplex64Slice()[1])
+	assert.Equal(t, replacedVals[2], v.MustComplex64Slice()[2])
 
 }
 
 func TestWhereComplex64(t *testing.T) {
 
-	o := New([]complex64{complex64(1), complex64(1), complex64(1), complex64(1), complex64(1), complex64(1)})
+	v := &Value{data: []complex64{complex64(1), complex64(1), complex64(1), complex64(1), complex64(1), complex64(1)}}
 
-	selected := o.WhereComplex64(func(i int, val complex64) bool {
+	selected := v.WhereComplex64(func(i int, val complex64) bool {
 		return i%2 == 0
 	}).MustComplex64Slice()
 
@@ -2590,11 +2666,11 @@ func TestWhereComplex64(t *testing.T) {
 
 func TestGroupComplex64(t *testing.T) {
 
-	o := New([]complex64{complex64(1), complex64(1), complex64(1), complex64(1), complex64(1), complex64(1)})
+	v := &Value{data: []complex64{complex64(1), complex64(1), complex64(1), complex64(1), complex64(1), complex64(1)}}
 
-	grouped := o.GroupComplex64(func(i int, val complex64) string {
+	grouped := v.GroupComplex64(func(i int, val complex64) string {
 		return fmt.Sprintf("%v", i%2 == 0)
-	}).Obj().(map[string][]complex64)
+	}).data.(map[string][]complex64)
 
 	assert.Equal(t, 2, len(grouped))
 	assert.Equal(t, 3, len(grouped["true"]))
@@ -2604,11 +2680,11 @@ func TestGroupComplex64(t *testing.T) {
 
 func TestReplaceComplex64(t *testing.T) {
 
-	o := New([]complex64{complex64(1), complex64(1), complex64(1), complex64(1), complex64(1), complex64(1)})
+	v := &Value{data: []complex64{complex64(1), complex64(1), complex64(1), complex64(1), complex64(1), complex64(1)}}
 
-	rawArr := o.MustComplex64Slice()
+	rawArr := v.MustComplex64Slice()
 
-	replaced := o.ReplaceComplex64(func(index int, val complex64) complex64 {
+	replaced := v.ReplaceComplex64(func(index int, val complex64) complex64 {
 		if index < len(rawArr)-1 {
 			return rawArr[index+1]
 		}
@@ -2629,9 +2705,9 @@ func TestReplaceComplex64(t *testing.T) {
 
 func TestCollectComplex64(t *testing.T) {
 
-	o := New([]complex64{complex64(1), complex64(1), complex64(1), complex64(1), complex64(1), complex64(1)})
+	v := &Value{data: []complex64{complex64(1), complex64(1), complex64(1), complex64(1), complex64(1), complex64(1)}}
 
-	collected := o.CollectComplex64(func(index int, val complex64) interface{} {
+	collected := v.CollectComplex64(func(index int, val complex64) interface{} {
 		return index
 	})
 
@@ -2646,6 +2722,10 @@ func TestCollectComplex64(t *testing.T) {
 	}
 
 }
+
+// ************************************************************
+// TESTS
+// ************************************************************
 
 func TestComplex128(t *testing.T) {
 
@@ -2679,22 +2759,22 @@ func TestComplex128Slice(t *testing.T) {
 
 func TestIsComplex128(t *testing.T) {
 
-	var o *Obj
+	var v *Value
 
-	o = New(complex128(1))
-	assert.True(t, o.IsComplex128())
+	v = &Value{data: complex128(1)}
+	assert.True(t, v.IsComplex128())
 
-	o = New([]complex128{complex128(1)})
-	assert.True(t, o.IsComplex128Slice())
+	v = &Value{data: []complex128{complex128(1)}}
+	assert.True(t, v.IsComplex128Slice())
 
 }
 
 func TestEachComplex128(t *testing.T) {
 
-	o := New([]complex128{complex128(1), complex128(1), complex128(1), complex128(1), complex128(1)})
+	v := &Value{data: []complex128{complex128(1), complex128(1), complex128(1), complex128(1), complex128(1)}}
 	count := 0
 	replacedVals := make([]complex128, 0)
-	assert.Equal(t, o, o.EachComplex128(func(i int, val complex128) bool {
+	assert.Equal(t, v, v.EachComplex128(func(i int, val complex128) bool {
 
 		count++
 		replacedVals = append(replacedVals, val)
@@ -2709,17 +2789,17 @@ func TestEachComplex128(t *testing.T) {
 	}))
 
 	assert.Equal(t, count, 3)
-	assert.Equal(t, replacedVals[0], o.MustComplex128Slice()[0])
-	assert.Equal(t, replacedVals[1], o.MustComplex128Slice()[1])
-	assert.Equal(t, replacedVals[2], o.MustComplex128Slice()[2])
+	assert.Equal(t, replacedVals[0], v.MustComplex128Slice()[0])
+	assert.Equal(t, replacedVals[1], v.MustComplex128Slice()[1])
+	assert.Equal(t, replacedVals[2], v.MustComplex128Slice()[2])
 
 }
 
 func TestWhereComplex128(t *testing.T) {
 
-	o := New([]complex128{complex128(1), complex128(1), complex128(1), complex128(1), complex128(1), complex128(1)})
+	v := &Value{data: []complex128{complex128(1), complex128(1), complex128(1), complex128(1), complex128(1), complex128(1)}}
 
-	selected := o.WhereComplex128(func(i int, val complex128) bool {
+	selected := v.WhereComplex128(func(i int, val complex128) bool {
 		return i%2 == 0
 	}).MustComplex128Slice()
 
@@ -2729,11 +2809,11 @@ func TestWhereComplex128(t *testing.T) {
 
 func TestGroupComplex128(t *testing.T) {
 
-	o := New([]complex128{complex128(1), complex128(1), complex128(1), complex128(1), complex128(1), complex128(1)})
+	v := &Value{data: []complex128{complex128(1), complex128(1), complex128(1), complex128(1), complex128(1), complex128(1)}}
 
-	grouped := o.GroupComplex128(func(i int, val complex128) string {
+	grouped := v.GroupComplex128(func(i int, val complex128) string {
 		return fmt.Sprintf("%v", i%2 == 0)
-	}).Obj().(map[string][]complex128)
+	}).data.(map[string][]complex128)
 
 	assert.Equal(t, 2, len(grouped))
 	assert.Equal(t, 3, len(grouped["true"]))
@@ -2743,11 +2823,11 @@ func TestGroupComplex128(t *testing.T) {
 
 func TestReplaceComplex128(t *testing.T) {
 
-	o := New([]complex128{complex128(1), complex128(1), complex128(1), complex128(1), complex128(1), complex128(1)})
+	v := &Value{data: []complex128{complex128(1), complex128(1), complex128(1), complex128(1), complex128(1), complex128(1)}}
 
-	rawArr := o.MustComplex128Slice()
+	rawArr := v.MustComplex128Slice()
 
-	replaced := o.ReplaceComplex128(func(index int, val complex128) complex128 {
+	replaced := v.ReplaceComplex128(func(index int, val complex128) complex128 {
 		if index < len(rawArr)-1 {
 			return rawArr[index+1]
 		}
@@ -2768,9 +2848,9 @@ func TestReplaceComplex128(t *testing.T) {
 
 func TestCollectComplex128(t *testing.T) {
 
-	o := New([]complex128{complex128(1), complex128(1), complex128(1), complex128(1), complex128(1), complex128(1)})
+	v := &Value{data: []complex128{complex128(1), complex128(1), complex128(1), complex128(1), complex128(1), complex128(1)}}
 
-	collected := o.CollectComplex128(func(index int, val complex128) interface{} {
+	collected := v.CollectComplex128(func(index int, val complex128) interface{} {
 		return index
 	})
 
