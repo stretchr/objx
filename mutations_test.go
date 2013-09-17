@@ -14,7 +14,7 @@ func TestCopy(t *testing.T) {
 	d1Obj := New(d1)
 	d2Obj := d1Obj.Copy()
 
-	d2Obj.value.MSI()["name"] = "Mat"
+	d2Obj["name"] = "Mat"
 
 	assert.Equal(t, d1Obj.Get("name").Str(), "Tyler")
 	assert.Equal(t, d2Obj.Get("name").Str(), "Mat")

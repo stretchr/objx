@@ -19,12 +19,7 @@ type Unconvertable struct {
 
 func TestMapCreation(t *testing.T) {
 
-	o := new(Map)
-	if assert.NotNil(t, o) {
-		assert.Nil(t, o.value)
-	}
-
-	o = New(nil)
+	o := New(nil)
 	assert.Nil(t, o)
 
 	o = New("Tyler")
@@ -37,18 +32,18 @@ func TestMapCreation(t *testing.T) {
 	convertable := &Convertable{name: "Tyler"}
 	o = New(convertable)
 	if assert.NotNil(t, convertable) {
-		assert.Equal(t, "Tyler", o.value.data.(map[string]interface{})["name"], "Tyler")
+		assert.Equal(t, "Tyler", o["name"], "Tyler")
 	}
 
 	o = MSI()
 	if assert.NotNil(t, o) {
-		assert.NotNil(t, o.value.data)
+		assert.NotNil(t, o)
 	}
 
 	o = MSI("name", "Tyler")
 	if assert.NotNil(t, o) {
-		if assert.NotNil(t, o.value.data) {
-			assert.Equal(t, o.value.data.(map[string]interface{})["name"], "Tyler")
+		if assert.NotNil(t, o) {
+			assert.Equal(t, o["name"], "Tyler")
 		}
 	}
 
@@ -66,8 +61,8 @@ func TestMapFromJSON(t *testing.T) {
 	o := MustFromJSON(`{"name":"Mat"}`)
 
 	if assert.NotNil(t, o) {
-		if assert.NotNil(t, o.value.data) {
-			assert.Equal(t, "Mat", o.value.data.(map[string]interface{})["name"])
+		if assert.NotNil(t, o) {
+			assert.Equal(t, "Mat", o["name"])
 		}
 	}
 
@@ -75,7 +70,7 @@ func TestMapFromJSON(t *testing.T) {
 
 func TestMapFromJSONWithError(t *testing.T) {
 
-	var m *Map
+	var m Map
 
 	assert.Panics(t, func() {
 		m = MustFromJSON(`"name":"Mat"}`)

@@ -23,7 +23,7 @@ func TestConversionJSON(t *testing.T) {
 func TestConversionJSONWithError(t *testing.T) {
 
 	o := MSI()
-	o.value.data = func() {}
+	o["test"] = func() {}
 
 	assert.Panics(t, func() {
 		o.MustJSON()
@@ -52,7 +52,7 @@ func TestConversionBase64(t *testing.T) {
 func TestConversionBase64WithError(t *testing.T) {
 
 	o := MSI()
-	o.value.data = func() {}
+	o["test"] = func() {}
 
 	assert.Panics(t, func() {
 		o.MustBase64()
@@ -81,7 +81,7 @@ func TestConversionSignedBase64(t *testing.T) {
 func TestConversionSignedBase64WithError(t *testing.T) {
 
 	o := MSI()
-	o.value.data = func() {}
+	o["test"] = func() {}
 
 	assert.Panics(t, func() {
 		o.MustSignedBase64("key")

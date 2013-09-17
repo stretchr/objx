@@ -11,9 +11,9 @@ import (
 
 // JSON converts the contained object to a JSON string
 // representation
-func (m *Map) JSON() (string, error) {
+func (m Map) JSON() (string, error) {
 
-	result, err := json.Marshal(m.value.data)
+	result, err := json.Marshal(m)
 
 	if err != nil {
 		err = errors.New("objx: JSON encode failed with: " + err.Error())
@@ -25,7 +25,7 @@ func (m *Map) JSON() (string, error) {
 
 // MustJSON converts the contained object to a JSON string
 // representation and panics if there is an error
-func (m *Map) MustJSON() string {
+func (m Map) MustJSON() string {
 	result, err := m.JSON()
 	if err != nil {
 		panic(err.Error())
@@ -35,7 +35,7 @@ func (m *Map) MustJSON() string {
 
 // Base64 converts the contained object to a Base64 string
 // representation of the JSON string representation
-func (m *Map) Base64() (string, error) {
+func (m Map) Base64() (string, error) {
 
 	var buf bytes.Buffer
 
@@ -55,7 +55,7 @@ func (m *Map) Base64() (string, error) {
 // MustBase64 converts the contained object to a Base64 string
 // representation of the JSON string representation and panics
 // if there is an error
-func (m *Map) MustBase64() string {
+func (m Map) MustBase64() string {
 	result, err := m.Base64()
 	if err != nil {
 		panic(err.Error())
@@ -66,7 +66,7 @@ func (m *Map) MustBase64() string {
 // SignedBase64 converts the contained object to a Base64 string
 // representation of the JSON string representation and signs it
 // using the provided key.
-func (m *Map) SignedBase64(key string) (string, error) {
+func (m Map) SignedBase64(key string) (string, error) {
 
 	base64, err := m.Base64()
 	if err != nil {
@@ -82,7 +82,7 @@ func (m *Map) SignedBase64(key string) (string, error) {
 // MustSignedBase64 converts the contained object to a Base64 string
 // representation of the JSON string representation and signs it
 // using the provided key and panics if there is an error
-func (m *Map) MustSignedBase64(key string) string {
+func (m Map) MustSignedBase64(key string) string {
 	result, err := m.SignedBase64(key)
 	if err != nil {
 		panic(err.Error())
@@ -97,11 +97,11 @@ func (m *Map) MustSignedBase64(key string) string {
 
 // URLValues creates a url.Values object from an Obj. This
 // function requires that the wrapped object be a map[string]interface{}
-func (m *Map) URLValues() url.Values {
+func (m Map) URLValues() url.Values {
 
 	vals := make(url.Values)
 
-	for k, v := range m.value.MSI() {
+	for k, v := range m {
 		//TODO: can this be done without sprintf?
 		vals.Set(k, fmt.Sprintf("%v", v))
 	}
@@ -112,6 +112,6 @@ func (m *Map) URLValues() url.Values {
 // URLQuery gets an encoded URL query representing the given
 // Obj. This function requires that the wrapped object be a
 // map[string]interface{}
-func (m *Map) URLQuery() (string, error) {
+func (m Map) URLQuery() (string, error) {
 	return m.URLValues().Encode(), nil
 }

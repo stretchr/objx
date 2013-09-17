@@ -289,14 +289,14 @@ func (v *Value) CollectMSI(collector func(int, map[string]interface{}) interface
 }
 
 /*
-	ObjxMap ((*Map) and [](*Map))
+	ObjxMap ((Map) and [](Map))
 	--------------------------------------------------
 */
 
-// ObjxMap gets the value as a (*Map), returns the optionalDefault
+// ObjxMap gets the value as a (Map), returns the optionalDefault
 // value or a system default object if the value is the wrong type.
-func (v *Value) ObjxMap(optionalDefault ...(*Map)) *Map {
-	if s, ok := v.data.((*Map)); ok {
+func (v *Value) ObjxMap(optionalDefault ...(Map)) Map {
+	if s, ok := v.data.((Map)); ok {
 		return s
 	}
 	if len(optionalDefault) == 1 {
@@ -305,17 +305,17 @@ func (v *Value) ObjxMap(optionalDefault ...(*Map)) *Map {
 	return New(nil)
 }
 
-// MustObjxMap gets the value as a (*Map).
+// MustObjxMap gets the value as a (Map).
 //
-// Panics if the object is not a (*Map).
-func (v *Value) MustObjxMap() *Map {
-	return v.data.((*Map))
+// Panics if the object is not a (Map).
+func (v *Value) MustObjxMap() Map {
+	return v.data.((Map))
 }
 
-// ObjxMapSlice gets the value as a [](*Map), returns the optionalDefault
-// value or nil if the value is not a [](*Map).
-func (v *Value) ObjxMapSlice(optionalDefault ...[](*Map)) [](*Map) {
-	if s, ok := v.data.([](*Map)); ok {
+// ObjxMapSlice gets the value as a [](Map), returns the optionalDefault
+// value or nil if the value is not a [](Map).
+func (v *Value) ObjxMapSlice(optionalDefault ...[](Map)) [](Map) {
+	if s, ok := v.data.([](Map)); ok {
 		return s
 	}
 	if len(optionalDefault) == 1 {
@@ -324,30 +324,30 @@ func (v *Value) ObjxMapSlice(optionalDefault ...[](*Map)) [](*Map) {
 	return nil
 }
 
-// MustObjxMapSlice gets the value as a [](*Map).
+// MustObjxMapSlice gets the value as a [](Map).
 //
-// Panics if the object is not a [](*Map).
-func (v *Value) MustObjxMapSlice() [](*Map) {
-	return v.data.([](*Map))
+// Panics if the object is not a [](Map).
+func (v *Value) MustObjxMapSlice() [](Map) {
+	return v.data.([](Map))
 }
 
-// IsObjxMap gets whether the object contained is a (*Map) or not.
+// IsObjxMap gets whether the object contained is a (Map) or not.
 func (v *Value) IsObjxMap() bool {
-	_, ok := v.data.((*Map))
+	_, ok := v.data.((Map))
 	return ok
 }
 
-// IsObjxMapSlice gets whether the object contained is a [](*Map) or not.
+// IsObjxMapSlice gets whether the object contained is a [](Map) or not.
 func (v *Value) IsObjxMapSlice() bool {
-	_, ok := v.data.([](*Map))
+	_, ok := v.data.([](Map))
 	return ok
 }
 
 // EachObjxMap calls the specified callback for each object
-// in the [](*Map).
+// in the [](Map).
 //
 // Panics if the object is the wrong type.
-func (v *Value) EachObjxMap(callback func(int, *Map) bool) *Value {
+func (v *Value) EachObjxMap(callback func(int, Map) bool) *Value {
 
 	for index, val := range v.MustObjxMapSlice() {
 		carryon := callback(index, val)
@@ -361,13 +361,13 @@ func (v *Value) EachObjxMap(callback func(int, *Map) bool) *Value {
 }
 
 // WhereObjxMap uses the specified decider function to select items
-// from the [](*Map).  The object contained in the result will contain
+// from the [](Map).  The object contained in the result will contain
 // only the selected items.
-func (v *Value) WhereObjxMap(decider func(int, *Map) bool) *Value {
+func (v *Value) WhereObjxMap(decider func(int, Map) bool) *Value {
 
-	var selected [](*Map)
+	var selected [](Map)
 
-	v.EachObjxMap(func(index int, val *Map) bool {
+	v.EachObjxMap(func(index int, val Map) bool {
 		shouldSelect := decider(index, val)
 		if shouldSelect == false {
 			selected = append(selected, val)
@@ -381,15 +381,15 @@ func (v *Value) WhereObjxMap(decider func(int, *Map) bool) *Value {
 
 // GroupObjxMap uses the specified grouper function to group the items
 // keyed by the return of the grouper.  The object contained in the
-// result will contain a map[string][](*Map).
-func (v *Value) GroupObjxMap(grouper func(int, *Map) string) *Value {
+// result will contain a map[string][](Map).
+func (v *Value) GroupObjxMap(grouper func(int, Map) string) *Value {
 
-	groups := make(map[string][](*Map))
+	groups := make(map[string][](Map))
 
-	v.EachObjxMap(func(index int, val *Map) bool {
+	v.EachObjxMap(func(index int, val Map) bool {
 		group := grouper(index, val)
 		if _, ok := groups[group]; !ok {
-			groups[group] = make([](*Map), 0)
+			groups[group] = make([](Map), 0)
 		}
 		groups[group] = append(groups[group], val)
 		return true
@@ -399,15 +399,15 @@ func (v *Value) GroupObjxMap(grouper func(int, *Map) string) *Value {
 
 }
 
-// ReplaceObjxMap uses the specified function to replace each (*Map)s
+// ReplaceObjxMap uses the specified function to replace each (Map)s
 // by iterating each item.  The data in the returned result will be a
-// [](*Map) containing the replaced items.
-func (v *Value) ReplaceObjxMap(replacer func(int, *Map) *Map) *Value {
+// [](Map) containing the replaced items.
+func (v *Value) ReplaceObjxMap(replacer func(int, Map) Map) *Value {
 
 	arr := v.MustObjxMapSlice()
-	replaced := make([](*Map), len(arr))
+	replaced := make([](Map), len(arr))
 
-	v.EachObjxMap(func(index int, val *Map) bool {
+	v.EachObjxMap(func(index int, val Map) bool {
 		replaced[index] = replacer(index, val)
 		return true
 	})
@@ -417,14 +417,14 @@ func (v *Value) ReplaceObjxMap(replacer func(int, *Map) *Map) *Value {
 }
 
 // CollectObjxMap uses the specified collector function to collect a value
-// for each of the (*Map)s in the slice.  The data returned will be a
+// for each of the (Map)s in the slice.  The data returned will be a
 // []interface{}.
-func (v *Value) CollectObjxMap(collector func(int, *Map) interface{}) *Value {
+func (v *Value) CollectObjxMap(collector func(int, Map) interface{}) *Value {
 
 	arr := v.MustObjxMapSlice()
 	collected := make([]interface{}, len(arr))
 
-	v.EachObjxMap(func(index int, val *Map) bool {
+	v.EachObjxMap(func(index int, val Map) bool {
 		collected[index] = collector(index, val)
 		return true
 	})

@@ -1,9 +1,9 @@
 package objx
 
 // Copy creates a shallow copy of the Obj.
-func (m *Map) Copy() *Map {
+func (m Map) Copy() Map {
 	copied := make(map[string]interface{})
-	for k, v := range m.value.MSI() {
+	for k, v := range m {
 		copied[k] = v
 	}
 	return New(copied)
@@ -13,7 +13,7 @@ func (m *Map) Copy() *Map {
 //
 // Keys that appear in both will be selected from the specified map.
 // This method requires that the wrapped object be a map[string]interface{}
-func (m *Map) Merge(merge *Map) *Map {
+func (m Map) Merge(merge Map) Map {
 	return m.Copy().MergeHere(merge)
 }
 
@@ -22,23 +22,22 @@ func (m *Map) Merge(merge *Map) *Map {
 // Keys that appear in both will be selected from the specified map.  The original map
 // will be modified. This method requires that
 // the wrapped object be a map[string]interface{}
-func (m *Map) MergeHere(merge *Map) *Map {
+func (m Map) MergeHere(merge Map) Map {
 
-	oMSI := m.value.MSI()
-	for k, v := range merge.value.MSI() {
-		oMSI[k] = v
+	for k, v := range merge {
+		m[k] = v
 	}
 
-	return New(oMSI)
+	return m
 
 }
 
 // Transform builds a new Obj giving the transformer a chance
 // to change the keys and values as it goes. This method requires that
 // the wrapped object be a map[string]interface{}
-func (m *Map) Transform(transformer func(key string, value interface{}) (string, interface{})) *Map {
+func (m Map) Transform(transformer func(key string, value interface{}) (string, interface{})) Map {
 	newMap := make(map[string]interface{})
-	for k, v := range m.value.MSI() {
+	for k, v := range m {
 		modifiedKey, modifiedVal := transformer(k, v)
 		newMap[modifiedKey] = modifiedVal
 	}
@@ -49,7 +48,7 @@ func (m *Map) Transform(transformer func(key string, value interface{}) (string,
 //
 // Unspecified keys will be unaltered.
 // This method requires that the wrapped object be a map[string]interface{}
-func (m *Map) TransformKeys(mapping map[string]string) *Map {
+func (m Map) TransformKeys(mapping map[string]string) Map {
 	return m.Transform(func(key string, value interface{}) (string, interface{}) {
 
 		if newKey, ok := mapping[key]; ok {

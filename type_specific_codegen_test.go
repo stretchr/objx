@@ -298,11 +298,11 @@ func TestCollectMSI(t *testing.T) {
 
 func TestObjxMap(t *testing.T) {
 
-	val := (*Map)(New(1))
+	val := (Map)(New(1))
 	m := map[string]interface{}{"value": val, "nothing": nil}
 	assert.Equal(t, val, New(m).Get("value").ObjxMap())
 	assert.Equal(t, val, New(m).Get("value").MustObjxMap())
-	assert.Equal(t, (*Map)(New(nil)), New(m).Get("nothing").ObjxMap())
+	assert.Equal(t, (Map)(New(nil)), New(m).Get("nothing").ObjxMap())
 	assert.Equal(t, val, New(m).Get("nothing").ObjxMap(New(1)))
 
 	assert.Panics(t, func() {
@@ -313,12 +313,12 @@ func TestObjxMap(t *testing.T) {
 
 func TestObjxMapSlice(t *testing.T) {
 
-	val := (*Map)(New(1))
-	m := map[string]interface{}{"value": [](*Map){val}, "nothing": nil}
+	val := (Map)(New(1))
+	m := map[string]interface{}{"value": [](Map){val}, "nothing": nil}
 	assert.Equal(t, val, New(m).Get("value").ObjxMapSlice()[0])
 	assert.Equal(t, val, New(m).Get("value").MustObjxMapSlice()[0])
-	assert.Equal(t, [](*Map)(nil), New(m).Get("nothing").ObjxMapSlice())
-	assert.Equal(t, val, New(m).Get("nothing").ObjxMapSlice([](*Map){(*Map)(New(1))})[0])
+	assert.Equal(t, [](Map)(nil), New(m).Get("nothing").ObjxMapSlice())
+	assert.Equal(t, val, New(m).Get("nothing").ObjxMapSlice([](Map){(Map)(New(1))})[0])
 
 	assert.Panics(t, func() {
 		New(m).Get("nothing").MustObjxMapSlice()
@@ -330,20 +330,20 @@ func TestIsObjxMap(t *testing.T) {
 
 	var v *Value
 
-	v = &Value{data: (*Map)(New(1))}
+	v = &Value{data: (Map)(New(1))}
 	assert.True(t, v.IsObjxMap())
 
-	v = &Value{data: [](*Map){(*Map)(New(1))}}
+	v = &Value{data: [](Map){(Map)(New(1))}}
 	assert.True(t, v.IsObjxMapSlice())
 
 }
 
 func TestEachObjxMap(t *testing.T) {
 
-	v := &Value{data: [](*Map){(*Map)(New(1)), (*Map)(New(1)), (*Map)(New(1)), (*Map)(New(1)), (*Map)(New(1))}}
+	v := &Value{data: [](Map){(Map)(New(1)), (Map)(New(1)), (Map)(New(1)), (Map)(New(1)), (Map)(New(1))}}
 	count := 0
-	replacedVals := make([](*Map), 0)
-	assert.Equal(t, v, v.EachObjxMap(func(i int, val *Map) bool {
+	replacedVals := make([](Map), 0)
+	assert.Equal(t, v, v.EachObjxMap(func(i int, val Map) bool {
 
 		count++
 		replacedVals = append(replacedVals, val)
@@ -366,9 +366,9 @@ func TestEachObjxMap(t *testing.T) {
 
 func TestWhereObjxMap(t *testing.T) {
 
-	v := &Value{data: [](*Map){(*Map)(New(1)), (*Map)(New(1)), (*Map)(New(1)), (*Map)(New(1)), (*Map)(New(1)), (*Map)(New(1))}}
+	v := &Value{data: [](Map){(Map)(New(1)), (Map)(New(1)), (Map)(New(1)), (Map)(New(1)), (Map)(New(1)), (Map)(New(1))}}
 
-	selected := v.WhereObjxMap(func(i int, val *Map) bool {
+	selected := v.WhereObjxMap(func(i int, val Map) bool {
 		return i%2 == 0
 	}).MustObjxMapSlice()
 
@@ -378,11 +378,11 @@ func TestWhereObjxMap(t *testing.T) {
 
 func TestGroupObjxMap(t *testing.T) {
 
-	v := &Value{data: [](*Map){(*Map)(New(1)), (*Map)(New(1)), (*Map)(New(1)), (*Map)(New(1)), (*Map)(New(1)), (*Map)(New(1))}}
+	v := &Value{data: [](Map){(Map)(New(1)), (Map)(New(1)), (Map)(New(1)), (Map)(New(1)), (Map)(New(1)), (Map)(New(1))}}
 
-	grouped := v.GroupObjxMap(func(i int, val *Map) string {
+	grouped := v.GroupObjxMap(func(i int, val Map) string {
 		return fmt.Sprintf("%v", i%2 == 0)
-	}).data.(map[string][](*Map))
+	}).data.(map[string][](Map))
 
 	assert.Equal(t, 2, len(grouped))
 	assert.Equal(t, 3, len(grouped["true"]))
@@ -392,11 +392,11 @@ func TestGroupObjxMap(t *testing.T) {
 
 func TestReplaceObjxMap(t *testing.T) {
 
-	v := &Value{data: [](*Map){(*Map)(New(1)), (*Map)(New(1)), (*Map)(New(1)), (*Map)(New(1)), (*Map)(New(1)), (*Map)(New(1))}}
+	v := &Value{data: [](Map){(Map)(New(1)), (Map)(New(1)), (Map)(New(1)), (Map)(New(1)), (Map)(New(1)), (Map)(New(1))}}
 
 	rawArr := v.MustObjxMapSlice()
 
-	replaced := v.ReplaceObjxMap(func(index int, val *Map) *Map {
+	replaced := v.ReplaceObjxMap(func(index int, val Map) Map {
 		if index < len(rawArr)-1 {
 			return rawArr[index+1]
 		}
@@ -417,9 +417,9 @@ func TestReplaceObjxMap(t *testing.T) {
 
 func TestCollectObjxMap(t *testing.T) {
 
-	v := &Value{data: [](*Map){(*Map)(New(1)), (*Map)(New(1)), (*Map)(New(1)), (*Map)(New(1)), (*Map)(New(1)), (*Map)(New(1))}}
+	v := &Value{data: [](Map){(Map)(New(1)), (Map)(New(1)), (Map)(New(1)), (Map)(New(1)), (Map)(New(1)), (Map)(New(1))}}
 
-	collected := v.CollectObjxMap(func(index int, val *Map) interface{} {
+	collected := v.CollectObjxMap(func(index int, val Map) interface{} {
 		return index
 	})
 

@@ -4,7 +4,7 @@ package objx
 // or not.
 //
 // If m is nil, Has will always return false.
-func (m *Map) Has(selector string) bool {
+func (m Map) Has(selector string) bool {
 	if m == nil {
 		return false
 	}

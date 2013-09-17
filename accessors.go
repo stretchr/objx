@@ -27,8 +27,8 @@ var arrayAccesRegex = regexp.MustCompile(arrayAccesRegexString)
 // To access the title of the third chapter of the second book, do:
 //
 //    o.Get("books[1].chapters[2].title")
-func (m *Map) Get(selector string) *Value {
-	rawObj := access(m.value.data, selector, nil, false, false)
+func (m Map) Get(selector string) *Value {
+	rawObj := access(m, selector, nil, false, false)
 	return &Value{data: rawObj}
 }
 
@@ -42,8 +42,8 @@ func (m *Map) Get(selector string) *Value {
 // To set the title of the third chapter of the second book, do:
 //
 //    o.Set("books[1].chapters[2].title","Time to Go")
-func (m *Map) Set(selector string, value interface{}) *Map {
-	access(m.value.data, selector, value, true, false)
+func (m Map) Set(selector string, value interface{}) Map {
+	access(m, selector, value, true, false)
 	return m
 }
 
@@ -93,6 +93,10 @@ func access(current, selector, value interface{}, isSet, panics bool) interface{
 				panic("objx: Array index is not an integer.  Must use array[int].")
 			}
 
+		}
+
+		if curMap, ok := current.(Map); ok {
+			current = map[string]interface{}(curMap)
 		}
 
 		// get the object in question
