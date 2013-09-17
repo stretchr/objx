@@ -9,6 +9,14 @@ import (
 	"strings"
 )
 
+// MSIConvertable is an interface that defines methods for converting your
+// custom types to a map[string]interface{} representation.
+type MSIConvertable interface {
+	// ConvertToMap is called by objx.New when it is given a
+	// non map[string]interface{} argument.
+	MSI() map[string]interface{}
+}
+
 // Map provides extended functionality for working with
 // untyped data, particularly map[string]interface{},
 // []interface{} and interface{}.
@@ -24,7 +32,11 @@ var Nil *Map = New(nil)
 // The data argument must be a map[string]interface{}
 func New(data interface{}) *Map {
 	if _, ok := data.(map[string]interface{}); !ok {
-		return nil
+		if converter, ok := data.(MSIConvertable); ok {
+			data = converter.MSI()
+		} else {
+			return nil
+		}
 	}
 	return &Map{value: &Value{data: data}}
 }

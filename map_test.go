@@ -5,6 +5,18 @@ import (
 	"testing"
 )
 
+type Convertable struct {
+	name string
+}
+
+func (c *Convertable) MSI() map[string]interface{} {
+	return map[string]interface{}{"name": c.name}
+}
+
+type Unconvertable struct {
+	name string
+}
+
 func TestMapCreation(t *testing.T) {
 
 	o := new(Map)
@@ -17,6 +29,16 @@ func TestMapCreation(t *testing.T) {
 
 	o = New("Tyler")
 	assert.Nil(t, o)
+
+	unconvertable := &Unconvertable{name: "Tyler"}
+	o = New(unconvertable)
+	assert.Nil(t, o)
+
+	convertable := &Convertable{name: "Tyler"}
+	o = New(convertable)
+	if assert.NotNil(t, convertable) {
+		assert.Equal(t, "Tyler", o.value.data.(map[string]interface{})["name"], "Tyler")
+	}
 
 	o = MSI()
 	if assert.NotNil(t, o) {
