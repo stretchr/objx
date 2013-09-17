@@ -6,5 +6,5 @@ var TestMap map[string]interface{} = map[string]interface{}{
 		"city":  "Salt Lake City",
 		"state": "UT",
 	},
-	"numbers": []string{"one", "two", "three", "four", "five"},
+	"numbers": []interface{}{"one", "two", "three", "four", "five"},
 }

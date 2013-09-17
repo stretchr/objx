@@ -4,18 +4,49 @@ import (
 	"encoding/base64"
 	"encoding/json"
 	"errors"
-	"fmt"
 	"io/ioutil"
 	"net/url"
 	"strings"
 )
 
-// New creates a new Obj containing the specified object.
-func New(object interface{}) *Obj {
-	return &Obj{obj: object}
+// MSIConvertable is an interface that defines methods for converting your
+// custom types to a map[string]interface{} representation.
+type MSIConvertable interface {
+	// ConvertToMap is called by objx.New when it is given a
+	// non map[string]interface{} argument.
+	MSI() map[string]interface{}
 }
 
-// MSI creates a map[string]interface{} and puts it inside a new Obj.
+// Map provides extended functionality for working with
+// untyped data, particularly map[string]interface{},
+// []interface{} and interface{}.
+type Map struct {
+	// value is an object containing the raw data managed by this Map
+	value *Value
+}
+
+// Value returns the internal value instance
+func (m *Map) Value() *Value {
+	return m.value
+}
+
+// Nil represents a nil Map.
+var Nil *Map = New(nil)
+
+// New creates a new *Map containing the map[string]interface{} in the data argument.
+// The data argument must be a map[string]interface{}
+func New(data interface{}) *Map {
+	if _, ok := data.(map[string]interface{}); !ok {
+		if converter, ok := data.(MSIConvertable); ok {
+			data = converter.MSI()
+		} else {
+			return nil
+		}
+	}
+	return &Map{value: &Value{data: data}}
+}
+
+// MSI creates a map[string]interface{} and puts it inside a new Map.
 //
 // The arguments follow a key, value pattern.
 //
@@ -29,15 +60,15 @@ func New(object interface{}) *Obj {
 //
 //     m := objx.MSI("name", "Mat", "age", 29, "subobj", objx.MSI("active", true))
 //
-//     // creates an Obj equivalent to
+//     // creates an Map equivalent to
 //     m := objx.New(map[string]interface{}{"name": "Mat", "age": 29, "subobj": map[string]interface{}{"active": true}})
-func MSI(keyAndValuePairs ...interface{}) *Obj {
+func MSI(keyAndValuePairs ...interface{}) *Map {
 
 	newMap := make(map[string]interface{})
 	keyAndValuePairsLen := len(keyAndValuePairs)
 
 	if keyAndValuePairsLen%2 != 0 {
-		panic("MSI must have an even number of arguments following the 'key, value' pattern.")
+		panic("objx: MSI must have an even number of arguments following the 'key, value' pattern.")
 	}
 
 	for i := 0; i < keyAndValuePairsLen; i = i + 2 {
@@ -48,7 +79,7 @@ func MSI(keyAndValuePairs ...interface{}) *Obj {
 		// make sure the key is a string
 		keyString, keyStringOK := key.(string)
 		if !keyStringOK {
-			panic(fmt.Sprintf("MSI must follow 'string, interface{}' pattern.  %s is not a valid key.", keyString))
+			panic("objx: MSI must follow 'string, interface{}' pattern.  " + keyString + " is not a valid key.")
 		}
 
 		newMap[keyString] = value
@@ -58,34 +89,36 @@ func MSI(keyAndValuePairs ...interface{}) *Obj {
 	return New(newMap)
 }
 
-// MustFromJSON creates a new Obj containing the data specified in the
+// ****** Conversion Constructors
+
+// MustFromJSON creates a new Map containing the data specified in the
 // jsonString.
 //
 // Panics if the JSON is invalid.
-func MustFromJSON(jsonString string) *Obj {
+func MustFromJSON(jsonString string) *Map {
 	o, err := FromJSON(jsonString)
 
-	if err != NoError {
-		panic("objx: " + err.Error())
+	if err != nil {
+		panic("objx: MustFromJSON failed with error: " + err.Error())
 	}
 
 	return o
 }
 
-// FromJSON creates a new Obj containing the data specified in the
+// FromJSON creates a new Map containing the data specified in the
 // jsonString.
 //
 // Returns an error if the JSON is invalid.
-func FromJSON(jsonString string) (*Obj, error) {
+func FromJSON(jsonString string) (*Map, error) {
 
 	var data interface{}
 	err := json.Unmarshal([]byte(jsonString), &data)
 
-	if err != NoError {
+	if err != nil {
 		return Nil, err
 	}
 
-	return New(data), NoError
+	return New(data), nil
 
 }
 
@@ -93,7 +126,7 @@ func FromJSON(jsonString string) (*Obj, error) {
 // in the Base64 string.
 //
 // The string is an encoded JSON string returned by Base64
-func FromBase64(base64String string) (*Obj, error) {
+func FromBase64(base64String string) (*Map, error) {
 
 	decoder := base64.NewDecoder(base64.StdEncoding, strings.NewReader(base64String))
 
@@ -109,12 +142,12 @@ func FromBase64(base64String string) (*Obj, error) {
 // in the Base64 string and panics if there is an error.
 //
 // The string is an encoded JSON string returned by Base64
-func MustFromBase64(base64String string) *Obj {
+func MustFromBase64(base64String string) *Map {
 
 	result, err := FromBase64(base64String)
 
 	if err != nil {
-		panic(err.Error())
+		panic("objx: MustFromBase64 failed with error: " + err.Error())
 	}
 
 	return result
@@ -124,7 +157,7 @@ func MustFromBase64(base64String string) *Obj {
 // in the Base64 string.
 //
 // The string is an encoded JSON string returned by SignedBase64
-func FromSignedBase64(base64String, key string) (*Obj, error) {
+func FromSignedBase64(base64String, key string) (*Map, error) {
 	parts := strings.Split(base64String, SignatureSeparator)
 	if len(parts) != 2 {
 		return nil, errors.New("objx: Signed base64 string is malformed.")
@@ -142,12 +175,12 @@ func FromSignedBase64(base64String, key string) (*Obj, error) {
 // in the Base64 string and panics if there is an error.
 //
 // The string is an encoded JSON string returned by Base64
-func MustFromSignedBase64(base64String, key string) *Obj {
+func MustFromSignedBase64(base64String, key string) *Map {
 
 	result, err := FromSignedBase64(base64String, key)
 
 	if err != nil {
-		panic(err.Error())
+		panic("objx: MustFromSignedBase64 failed with error: " + err.Error())
 	}
 
 	return result
@@ -157,7 +190,7 @@ func MustFromSignedBase64(base64String, key string) *Obj {
 // query.
 //
 // For queries with multiple values, the first value is selected.
-func FromURLQuery(query string) (*Obj, error) {
+func FromURLQuery(query string) (*Map, error) {
 
 	vals, err := url.ParseQuery(query)
 
@@ -171,4 +204,22 @@ func FromURLQuery(query string) (*Obj, error) {
 	}
 
 	return New(m), nil
+}
+
+// MustFromURLQuery generates a new Obj by parsing the specified
+// query.
+//
+// For queries with multiple values, the first value is selected.
+//
+// Panics if it encounters an error
+func MustFromURLQuery(query string) *Map {
+
+	o, err := FromURLQuery(query)
+
+	if err != nil {
+		panic("objx: MustFromURLQuery failed with error: " + err.Error())
+	}
+
+	return o
+
 }
