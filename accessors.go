@@ -100,14 +100,8 @@ func access(current, selector, value interface{}, isSet, panics bool) interface{
 		case map[string]interface{}:
 			curMSI := current.(map[string]interface{})
 			if len(selSegs) <= 1 && isSet {
-				if _, ok := curMSI[thisSel]; ok {
-					curMSI[thisSel] = value
-					return nil
-				} else {
-					if panics {
-						panic(fmt.Sprintf("objx: '%v' invalid on object.", selector))
-					}
-				}
+				curMSI[thisSel] = value
+				return nil
 			} else {
 				current = curMSI[thisSel]
 			}

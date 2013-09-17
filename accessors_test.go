@@ -65,11 +65,19 @@ func TestAccessorsAccessSetSingleField(t *testing.T) {
 	access(current, "name", "Mat", true, false)
 	assert.Equal(t, current["name"], "Mat")
 
-	assert.Panics(t, func() {
-		access(current, "age", "Mat", true, true)
-	})
+	access(current, "age", 29, true, true)
+	assert.Equal(t, current["age"], 29)
 
 }
+
+func TestAccessorsAccessSetSingleFieldNotExisting(t *testing.T) {
+
+	current := map[string]interface{}{}
+	access(current, "name", "Mat", true, false)
+	assert.Equal(t, current["name"], "Mat")
+
+}
+
 func TestAccessorsAccessSetDeep(t *testing.T) {
 
 	current := map[string]interface{}{"name": map[string]interface{}{"first": "Tyler", "last": "Bunnell"}}
