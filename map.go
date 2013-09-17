@@ -25,6 +25,11 @@ type Map struct {
 	value *Value
 }
 
+// Value returns the internal value instance
+func (m *Map) Value() *Value {
+	return m.value
+}
+
 // Nil represents a nil Map.
 var Nil *Map = New(nil)
 
