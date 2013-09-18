@@ -43,7 +43,7 @@
 // methods for iterating, manipulating and selecting that data.  You can find out more
 // by exploring the index below.
 //
-// Example
+// Reading data
 //
 // A simple example of how to use Objx:
 //
@@ -57,4 +57,16 @@
 //     // get their nickname (or use their name if they
 //     // don't have one)
 //     nickname := m.Get("nickname").Str(name)
+//
+// objx.Map as MSI
+//
+// Since `objx.Map` is a `map[string]interface{}` you can treat it as such.  For
+// example, to `range` the data, do what you would expect:
+//
+//     m := objx.MustFromJSON(json)
+//     for key, value := range m {
+//
+//       /* ... do your magic ... */
+//
+//     }
 package objx
