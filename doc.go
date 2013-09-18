@@ -58,7 +58,7 @@
 //     // don't have one)
 //     nickname := m.Get("nickname").Str(name)
 //
-// objx.Map as MSI
+// Ranging
 //
 // Since `objx.Map` is a `map[string]interface{}` you can treat it as such.  For
 // example, to `range` the data, do what you would expect:
