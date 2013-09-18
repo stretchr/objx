@@ -5,18 +5,25 @@
 // Objx uses a preditable pattern to make access data from within `map[string]interface{}'s
 // easy.
 //
-//     1. Use `Get` to access the value you're interested in.  You can use dot and array
-//        notation too, like this: `Get("places[0].latlng")`
+// Use `Get` to access the value you're interested in.  You can use dot and array
+// notation too:
 //
-//     2. Once you have saught the `Value` you're interested in, you can use the `Is*` methods
-//        to determine its type.  Like this: `if Get("code").IsStr()`
+//     Get("places[0].latlng")
 //
-//     3. Or you can just assume the type, and use one of the strong type methods to
-//        extract the real value.  Like this: `Get("code").Int()`
+// Once you have saught the `Value` you're interested in, you can use the `Is*` methods
+// to determine its type.
 //
-//     4. If there's no value there (or if it's the wrong type) then a default value
-//        will be returned, or you can be explicit about the default value.
-//        Like this: `Get("code").Int(-1)`
+//     if Get("code").IsStr() { /* ... */ }
+//
+// Or you can just assume the type, and use one of the strong type methods to
+// extract the real value:
+//
+//     Get("code").Int()
+//
+// If there's no value there (or if it's the wrong type) then a default value
+// will be returned, or you can be explicit about the default value.
+//
+//     Get("code").Int(-1)
 //
 // Example
 //
