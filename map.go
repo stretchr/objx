@@ -12,14 +12,13 @@ import (
 // MSIConvertable is an interface that defines methods for converting your
 // custom types to a map[string]interface{} representation.
 type MSIConvertable interface {
-	// ConvertToMap is called by objx.New when it is given a
-	// non map[string]interface{} argument.
+	// MSI gets a map[string]interface{} (msi) representing the
+	// object.
 	MSI() map[string]interface{}
 }
 
 // Map provides extended functionality for working with
-// untyped data, particularly map[string]interface{},
-// []interface{} and interface{}.
+// untyped data, in particular map[string]interface (msi).
 type Map map[string]interface{}
 
 // Value returns the internal value instance
