@@ -60,3 +60,18 @@ func TestMergeHere(t *testing.T) {
 	assert.Equal(t, merged.Get("location").Str(), d1Obj.Get("location").Str())
 	assert.Equal(t, merged.Get("location").Str(), dObj.Get("location").Str())
 }
+
+func TestExclude(t *testing.T) {
+
+	d := make(Map)
+	d["name"] = "Mat"
+	d["age"] = 29
+	d["secret"] = "ABC"
+
+	excluded := d.Exclude([]string{"secret"})
+
+	assert.Equal(t, d["name"], excluded["name"])
+	assert.Equal(t, d["age"], excluded["age"])
+	assert.False(t, excluded.Has("secret"), "secret should be excluded")
+
+}
