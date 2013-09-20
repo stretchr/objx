@@ -1,5 +1,26 @@
 package objx
 
+// Exclude returns a new Map with the keys in the specified []string
+// excluded.
+func (d Map) Exclude(exclude []string) Map {
+
+	excluded := make(Map)
+	for k, v := range d {
+		var shouldInclude bool = true
+		for _, toExclude := range exclude {
+			if k == toExclude {
+				shouldInclude = false
+				break
+			}
+		}
+		if shouldInclude {
+			excluded[k] = v
+		}
+	}
+
+	return excluded
+}
+
 // Copy creates a shallow copy of the Obj.
 func (m Map) Copy() Map {
 	copied := make(map[string]interface{})

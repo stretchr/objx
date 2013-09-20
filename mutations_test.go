@@ -5,6 +5,21 @@ import (
 	"testing"
 )
 
+func TestExclude(t *testing.T) {
+
+	d := make(Map)
+	d["name"] = "Mat"
+	d["age"] = 29
+	d["secret"] = "ABC"
+
+	excluded := d.Exclude([]string{"secret"})
+
+	assert.Equal(t, d["name"], excluded["name"])
+	assert.Equal(t, d["age"], excluded["age"])
+	assert.False(t, excluded.Has("secret"), "secret should be excluded")
+
+}
+
 func TestCopy(t *testing.T) {
 
 	d1 := make(map[string]interface{})
