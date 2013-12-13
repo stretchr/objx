@@ -77,22 +77,26 @@ func access(current, selector, value interface{}, isSet, panics bool) interface{
 		index := -1
 		var err error
 
-		arrayMatches := arrayAccesRegex.FindStringSubmatch(thisSel)
+		// https://github.com/stretchr/objx/issues/12
+		if strings.Contains(thisSel, "[") {
 
-		if len(arrayMatches) > 0 {
+			arrayMatches := arrayAccesRegex.FindStringSubmatch(thisSel)
 
-			// Get the key into the map
-			thisSel = arrayMatches[1]
+			if len(arrayMatches) > 0 {
 
-			// Get the index into the array at the key
-			index, err = strconv.Atoi(arrayMatches[2])
+				// Get the key into the map
+				thisSel = arrayMatches[1]
 
-			if err != nil {
-				// This should never happen. If it does, something has gone
-				// seriously wrong. Panic.
-				panic("objx: Array index is not an integer.  Must use array[int].")
+				// Get the index into the array at the key
+				index, err = strconv.Atoi(arrayMatches[2])
+
+				if err != nil {
+					// This should never happen. If it does, something has gone
+					// seriously wrong. Panic.
+					panic("objx: Array index is not an integer.  Must use array[int].")
+				}
+
 			}
-
 		}
 
 		if curMap, ok := current.(Map); ok {
