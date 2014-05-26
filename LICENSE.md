@@ -1,6 +1,7 @@
+objx - by Mat Ryer and Tyler Bunnell
+
 The MIT License (MIT)
 
-by Mat Ryer and Tyler Bunnell
 Copyright (c) 2014 Stretchr, Inc.
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
