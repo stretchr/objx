@@ -1,6 +1,6 @@
 package objx
 
-const (
+var (
 	// PathSeparator is the character used to separate the elements
 	// of the keypath.
 	//
