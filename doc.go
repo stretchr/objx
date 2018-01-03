@@ -52,7 +52,7 @@
 //
 //     // get the details
 //     name := m.Get("name").Str()
-//     age := m.Get("age").Int()
+//     age := m.Get("age").Float64()
 //
 //     // get their nickname (or use their name if they
 //     // don't have one)
