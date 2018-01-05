@@ -14,4 +14,4 @@ update-deps:
 test:
   desc: Run all the go tests.
   cmds:
-    - go test -race  -v .
+    - go test -race  .
