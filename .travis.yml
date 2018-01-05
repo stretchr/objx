@@ -5,5 +5,8 @@ go:
   - 1.9
   - tip
 
+install:
+- go get github.com/go-task/task/cmd/task
+
 script:
-- go test -race $(go list ./... | grep -v /vendor/)
+- task test

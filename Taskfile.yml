@@ -1,0 +1,4 @@
+test:
+  desc: Run all the go tests.
+  cmds:
+    - go test -race $(go list ./... | grep -v /vendor/)
