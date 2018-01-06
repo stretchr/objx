@@ -1,3 +1,6 @@
+default:
+  deps: [test]
+
 dl-deps:
   desc: Downloads cli dependencies
   cmds:
@@ -11,7 +14,13 @@ update-deps:
     - dep ensure -update
     - dep prune
 
+lint:
+  desc: Runs golint
+  cmds:
+    - golint $(ls *.go | grep -v "doc.go")
+  silent: true
+
 test:
-  desc: Run all the go tests.
+  desc: Runs go tests
   cmds:
     - go test -race  .
