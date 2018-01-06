@@ -61,7 +61,7 @@ func (v *Value) Each{4}(callback func(int, {1}) bool) *Value {
 
 	for index, val := range v.Must{4}Slice() {
 		carryon := callback(index, val)
-		if carryon == false {
+		if !carryon {
 			break
 		}
 	}
@@ -79,7 +79,7 @@ func (v *Value) Where{4}(decider func(int, {1}) bool) *Value {
 
 	v.Each{4}(func(index int, val {1}) bool {
 		shouldSelect := decider(index, val)
-		if shouldSelect == false {
+		if !shouldSelect {
 			selected = append(selected, val)
 		}
 		return true
