@@ -30,8 +30,6 @@ func (v *Value) String() string {
 		return strconv.FormatFloat(v.Float64(), 'f', -1, 64)
 	case v.IsInt():
 		return strconv.FormatInt(int64(v.Int()), 10)
-	case v.IsInt():
-		return strconv.FormatInt(int64(v.Int()), 10)
 	case v.IsInt8():
 		return strconv.FormatInt(int64(v.Int8()), 10)
 	case v.IsInt16():
