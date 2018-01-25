@@ -8,3 +8,8 @@ engines:
         enabled: false
   govet:
     enabled: true
+
+exclude_patterns:
+- ".github/"
+- "vendor/"
+- "codegen/"
