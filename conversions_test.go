@@ -1,25 +1,26 @@
-package objx
+package objx_test
 
 import (
 	"testing"
 
+	"github.com/stretchr/objx"
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 )
 
 func TestConversionJSON(t *testing.T) {
 	jsonString := `{"name":"Mat"}`
-	o := MustFromJSON(jsonString)
+	o := objx.MustFromJSON(jsonString)
 
 	result, err := o.JSON()
 
-	if assert.NoError(t, err) {
-		assert.Equal(t, jsonString, result)
-	}
+	require.NoError(t, err)
+	assert.Equal(t, jsonString, result)
 	assert.Equal(t, jsonString, o.MustJSON())
 }
 
 func TestConversionJSONWithError(t *testing.T) {
-	o := MSI()
+	o := objx.MSI()
 	o["test"] = func() {}
 
 	assert.Panics(t, func() {
@@ -32,18 +33,17 @@ func TestConversionJSONWithError(t *testing.T) {
 }
 
 func TestConversionBase64(t *testing.T) {
-	o := New(map[string]interface{}{"name": "Mat"})
+	o := objx.Map{"name": "Mat"}
 
 	result, err := o.Base64()
 
-	if assert.NoError(t, err) {
-		assert.Equal(t, "eyJuYW1lIjoiTWF0In0=", result)
-	}
+	require.NoError(t, err)
+	assert.Equal(t, "eyJuYW1lIjoiTWF0In0=", result)
 	assert.Equal(t, "eyJuYW1lIjoiTWF0In0=", o.MustBase64())
 }
 
 func TestConversionBase64WithError(t *testing.T) {
-	o := MSI()
+	o := objx.MSI()
 	o["test"] = func() {}
 
 	assert.Panics(t, func() {
@@ -56,18 +56,17 @@ func TestConversionBase64WithError(t *testing.T) {
 }
 
 func TestConversionSignedBase64(t *testing.T) {
-	o := New(map[string]interface{}{"name": "Mat"})
+	o := objx.Map{"name": "Mat"}
 
 	result, err := o.SignedBase64("key")
 
-	if assert.NoError(t, err) {
-		assert.Equal(t, "eyJuYW1lIjoiTWF0In0=_67ee82916f90b2c0d68c903266e8998c9ef0c3d6", result)
-	}
+	require.NoError(t, err)
+	assert.Equal(t, "eyJuYW1lIjoiTWF0In0=_67ee82916f90b2c0d68c903266e8998c9ef0c3d6", result)
 	assert.Equal(t, "eyJuYW1lIjoiTWF0In0=_67ee82916f90b2c0d68c903266e8998c9ef0c3d6", o.MustSignedBase64("key"))
 }
 
 func TestConversionSignedBase64WithError(t *testing.T) {
-	o := MSI()
+	o := objx.MSI()
 	o["test"] = func() {}
 
 	assert.Panics(t, func() {
