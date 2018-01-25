@@ -8,9 +8,9 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-var TestMap = map[string]interface{}{
+var TestMap = objx.Map{
 	"name": "Tyler",
-	"address": map[string]interface{}{
+	"address": objx.Map{
 		"city":  "Salt Lake City",
 		"state": "UT",
 	},
@@ -26,7 +26,7 @@ type Unconvertable struct {
 }
 
 func (c *Convertable) MSI() map[string]interface{} {
-	return map[string]interface{}{"name": c.name}
+	return objx.Map{"name": c.name}
 }
 
 func TestMapCreation(t *testing.T) {
@@ -43,7 +43,7 @@ func TestMapCreation(t *testing.T) {
 	convertable := &Convertable{name: "Tyler"}
 	o = objx.New(convertable)
 	require.NotNil(t, convertable)
-	assert.Equal(t, "Tyler", o["name"], "Tyler")
+	assert.Equal(t, "Tyler", o["name"])
 
 	o = objx.MSI()
 	assert.NotNil(t, o)

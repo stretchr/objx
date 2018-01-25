@@ -7,26 +7,50 @@ import (
 )
 
 func TestAccessorsAccessGetSingleField(t *testing.T) {
-	current := map[string]interface{}{"name": "Tyler"}
+	current := Map{"name": "Tyler"}
 
 	assert.Equal(t, "Tyler", access(current, "name", nil, false, true))
 }
 
 func TestAccessorsAccessGetDeep(t *testing.T) {
-	current := map[string]interface{}{"name": map[string]interface{}{"first": "Tyler", "last": "Bunnell"}}
+	current := Map{
+		"name": Map{
+			"first": "Tyler",
+			"last":  "Bunnell",
+		},
+	}
 
 	assert.Equal(t, "Tyler", access(current, "name.first", nil, false, true))
 	assert.Equal(t, "Bunnell", access(current, "name.last", nil, false, true))
 }
 
 func TestAccessorsAccessGetDeepDeep(t *testing.T) {
-	current := map[string]interface{}{"one": map[string]interface{}{"two": map[string]interface{}{"three": map[string]interface{}{"four": 4}}}}
+	current := Map{
+		"one": Map{
+			"two": Map{
+				"three": Map{
+					"four": 4,
+				},
+			},
+		},
+	}
 
 	assert.Equal(t, 4, access(current, "one.two.three.four", nil, false, true))
 }
 
 func TestAccessorsAccessGetInsideArray(t *testing.T) {
-	current := map[string]interface{}{"names": []interface{}{map[string]interface{}{"first": "Tyler", "last": "Bunnell"}, map[string]interface{}{"first": "Capitol", "last": "Bollocks"}}}
+	current := Map{
+		"names": []interface{}{
+			Map{
+				"first": "Tyler",
+				"last":  "Bunnell",
+			},
+			Map{
+				"first": "Capitol",
+				"last":  "Bollocks",
+			},
+		},
+	}
 
 	assert.Equal(t, "Tyler", access(current, "names[0].first", nil, false, true))
 	assert.Equal(t, "Bunnell", access(current, "names[0].last", nil, false, true))
@@ -39,7 +63,16 @@ func TestAccessorsAccessGetInsideArray(t *testing.T) {
 }
 
 func TestAccessorsAccessGetFromArrayWithInt(t *testing.T) {
-	current := []interface{}{map[string]interface{}{"first": "Tyler", "last": "Bunnell"}, map[string]interface{}{"first": "Capitol", "last": "Bollocks"}}
+	current := []interface{}{
+		map[string]interface{}{
+			"first": "Tyler",
+			"last":  "Bunnell",
+		},
+		map[string]interface{}{
+			"first": "Capitol",
+			"last":  "Bollocks",
+		},
+	}
 	one := access(current, 0, nil, false, false)
 	two := access(current, 1, nil, false, false)
 	three := access(current, 2, nil, false, false)
@@ -50,13 +83,13 @@ func TestAccessorsAccessGetFromArrayWithInt(t *testing.T) {
 }
 
 func TestAccessorsGet(t *testing.T) {
-	current := New(map[string]interface{}{"name": "Tyler"})
+	current := Map{"name": "Tyler"}
 
 	assert.Equal(t, "Tyler", current.Get("name").data)
 }
 
 func TestAccessorsAccessSetSingleField(t *testing.T) {
-	current := map[string]interface{}{"name": "Tyler"}
+	current := Map{"name": "Tyler"}
 
 	access(current, "name", "Mat", true, false)
 	access(current, "age", 29, true, true)
@@ -66,7 +99,7 @@ func TestAccessorsAccessSetSingleField(t *testing.T) {
 }
 
 func TestAccessorsAccessSetSingleFieldNotExisting(t *testing.T) {
-	current := map[string]interface{}{}
+	current := Map{}
 
 	access(current, "name", "Mat", true, false)
 
@@ -74,7 +107,12 @@ func TestAccessorsAccessSetSingleFieldNotExisting(t *testing.T) {
 }
 
 func TestAccessorsAccessSetDeep(t *testing.T) {
-	current := map[string]interface{}{"name": map[string]interface{}{"first": "Tyler", "last": "Bunnell"}}
+	current := Map{
+		"name": Map{
+			"first": "Tyler",
+			"last":  "Bunnell",
+		},
+	}
 
 	access(current, "name.first", "Mat", true, true)
 	access(current, "name.last", "Ryer", true, true)
@@ -84,7 +122,14 @@ func TestAccessorsAccessSetDeep(t *testing.T) {
 }
 
 func TestAccessorsAccessSetDeepDeep(t *testing.T) {
-	current := map[string]interface{}{"one": map[string]interface{}{"two": map[string]interface{}{"three": map[string]interface{}{"four": 4}}}}
+	current := Map{
+		"one": Map{
+			"two": Map{
+				"three": Map{
+					"four": 4},
+			},
+		},
+	}
 
 	access(current, "one.two.three.four", 5, true, true)
 
@@ -92,7 +137,9 @@ func TestAccessorsAccessSetDeepDeep(t *testing.T) {
 }
 
 func TestAccessorsAccessSetArray(t *testing.T) {
-	current := map[string]interface{}{"names": []interface{}{"Tyler"}}
+	current := Map{
+		"names": []interface{}{"Tyler"},
+	}
 
 	access(current, "names[0]", "Mat", true, true)
 
@@ -100,7 +147,18 @@ func TestAccessorsAccessSetArray(t *testing.T) {
 }
 
 func TestAccessorsAccessSetInsideArray(t *testing.T) {
-	current := map[string]interface{}{"names": []interface{}{map[string]interface{}{"first": "Tyler", "last": "Bunnell"}, map[string]interface{}{"first": "Capitol", "last": "Bollocks"}}}
+	current := Map{
+		"names": []interface{}{
+			Map{
+				"first": "Tyler",
+				"last":  "Bunnell",
+			},
+			Map{
+				"first": "Capitol",
+				"last":  "Bollocks",
+			},
+		},
+	}
 
 	access(current, "names[0].first", "Mat", true, true)
 	access(current, "names[0].last", "Ryer", true, true)
@@ -114,7 +172,7 @@ func TestAccessorsAccessSetInsideArray(t *testing.T) {
 }
 
 func TestAccessorsSet(t *testing.T) {
-	current := New(map[string]interface{}{"name": "Tyler"})
+	current := Map{"name": "Tyler"}
 
 	current.Set("name", "Mat")
 
