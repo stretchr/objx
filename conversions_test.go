@@ -1,6 +1,7 @@
 package objx_test
 
 import (
+	"net/url"
 	"testing"
 
 	"github.com/stretchr/objx"
@@ -76,4 +77,20 @@ func TestConversionSignedBase64WithError(t *testing.T) {
 	_, err := o.SignedBase64("key")
 
 	assert.Error(t, err)
+}
+
+func TestConversionURLValues(t *testing.T) {
+	m := objx.Map{"abc": 123, "name": "Mat"}
+	u := m.URLValues()
+
+	assert.Equal(t, url.Values{"abc": []string{"123"}, "name": []string{"Mat"}}, u)
+}
+
+func TestConversionURLQuery(t *testing.T) {
+	m := objx.Map{"abc": 123, "name": "Mat"}
+	u, err := m.URLQuery()
+
+	assert.Nil(t, err)
+	require.NotNil(t, u)
+	assert.Equal(t, "abc=123&name=Mat", u)
 }
