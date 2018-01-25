@@ -25,3 +25,8 @@ test:
   desc: Runs go tests
   cmds:
     - go test -race  .
+
+test-coverage:
+  desc: Runs go tests and calucates test coverage
+  cmds:
+    - go test -race -coverprofile=coverage.out -covermode=atomic ./...
