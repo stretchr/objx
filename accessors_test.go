@@ -113,17 +113,6 @@ func TestAccessorsAccessSetInsideArray(t *testing.T) {
 	assert.Equal(t, "Underpants", access(current, "names[1].last", nil, false, true))
 }
 
-func TestAccessorsAccessSetFromArrayWithInt(t *testing.T) {
-	current := []interface{}{map[string]interface{}{"first": "Tyler", "last": "Bunnell"}, map[string]interface{}{"first": "Capitol", "last": "Bollocks"}}
-	one := access(current, 0, nil, false, false)
-	two := access(current, 1, nil, false, false)
-	three := access(current, 2, nil, false, false)
-
-	assert.Equal(t, "Tyler", one.(map[string]interface{})["first"])
-	assert.Equal(t, "Capitol", two.(map[string]interface{})["first"])
-	assert.Nil(t, three)
-}
-
 func TestAccessorsSet(t *testing.T) {
 	current := New(map[string]interface{}{"name": "Tyler"})
 
