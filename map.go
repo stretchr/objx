@@ -63,7 +63,7 @@ func MSI(keyAndValuePairs ...interface{}) Map {
 	newMap := make(map[string]interface{})
 	keyAndValuePairsLen := len(keyAndValuePairs)
 	if keyAndValuePairsLen%2 != 0 {
-		panic("objx: MSI must have an even number of arguments following the 'key, value' pattern.")
+		return nil
 	}
 
 	for i := 0; i < keyAndValuePairsLen; i = i + 2 {
@@ -73,7 +73,7 @@ func MSI(keyAndValuePairs ...interface{}) Map {
 		// make sure the key is a string
 		keyString, keyStringOK := key.(string)
 		if !keyStringOK {
-			panic("objx: MSI must follow 'string, interface{}' pattern.  " + keyString + " is not a valid key.")
+			return nil
 		}
 		newMap[keyString] = value
 	}
