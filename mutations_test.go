@@ -6,6 +6,7 @@ import (
 
 	"github.com/stretchr/objx"
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 )
 
 func TestExclude(t *testing.T) {
@@ -29,6 +30,7 @@ func TestCopy(t *testing.T) {
 	}
 
 	m2 := m1.Copy()
+	require.NotNil(t, m2)
 	m2["name"] = "Mat"
 
 	assert.Equal(t, m1.Get("name").Str(), "Tyler")
