@@ -50,27 +50,21 @@ func (m Map) Set(selector string, value interface{}) Map {
 // access accesses the object using the selector and performs the
 // appropriate action.
 func access(current, selector, value interface{}, isSet, panics bool) interface{} {
-
 	switch selector.(type) {
 	case int, int8, int16, int32, int64, uint, uint8, uint16, uint32, uint64:
-
 		if array, ok := current.([]interface{}); ok {
 			index := intFromInterface(selector)
-
 			if index >= len(array) {
 				if panics {
 					panic(fmt.Sprintf("objx: Index %d is out of range. Slice only contains %d items.", index, len(array)))
 				}
 				return nil
 			}
-
 			return array[index]
 		}
-
 		return nil
 
 	case string:
-
 		selStr := selector.(string)
 		selSegs := strings.SplitN(selStr, PathSeparator, 2)
 		thisSel := selSegs[0]
@@ -79,7 +73,6 @@ func access(current, selector, value interface{}, isSet, panics bool) interface{
 
 		if strings.Contains(thisSel, "[") {
 			arrayMatches := arrayAccesRegex.FindStringSubmatch(thisSel)
-
 			if len(arrayMatches) > 0 {
 				// Get the key into the map
 				thisSel = arrayMatches[1]
@@ -133,7 +126,6 @@ func access(current, selector, value interface{}, isSet, panics bool) interface{
 		if len(selSegs) > 1 {
 			current = access(current, selSegs[1], value, isSet, panics)
 		}
-
 	}
 	return current
 }

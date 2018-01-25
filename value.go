@@ -49,6 +49,5 @@ func (v *Value) String() string {
 	case v.IsUint64():
 		return strconv.FormatUint(v.Uint64(), 10)
 	}
-
 	return fmt.Sprintf("%#v", v.Data())
 }
