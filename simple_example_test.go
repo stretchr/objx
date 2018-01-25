@@ -1,21 +1,23 @@
-package objx
+package objx_test
 
 import (
 	"testing"
 
+	"github.com/stretchr/objx"
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 )
 
 func TestSimpleExample(t *testing.T) {
 	// build a map from a JSON object
-	o := MustFromJSON(`{"name":"Mat","foods":["indian","chinese"], "location":{"county":"hobbiton","city":"the shire"}}`)
+	o := objx.MustFromJSON(`{"name":"Mat","foods":["indian","chinese"], "location":{"county":"hobbiton","city":"the shire"}}`)
 
 	// Map can be used as a straight map[string]interface{}
 	assert.Equal(t, o["name"], "Mat")
 
 	// Get an Value object
 	v := o.Get("name")
-	assert.Equal(t, v, &Value{data: "Mat"})
+	require.NotNil(t, v)
 
 	// Test the contained value
 	assert.False(t, v.IsInt())

@@ -3,9 +3,6 @@ engines:
     enabled: true
   golint:
     enabled: true
-    checks:
-      GoLint/Comments/PackageComments:
-        enabled: false
   govet:
     enabled: true
 
@@ -13,3 +10,4 @@ exclude_patterns:
 - ".github/"
 - "vendor/"
 - "codegen/"
+- "doc.go"
