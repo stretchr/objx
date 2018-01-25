@@ -1,0 +1,10 @@
+engines:
+  gofmt:
+    enabled: true
+  golint:
+    enabled: true
+    checks:
+      GoLint/Comments/PackageComments:
+        enabled: false
+  govet:
+    enabled: true
