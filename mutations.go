@@ -5,14 +5,7 @@ package objx
 func (m Map) Exclude(exclude []string) Map {
 	excluded := make(Map)
 	for k, v := range m {
-		var shouldInclude = true
-		for _, toExclude := range exclude {
-			if k == toExclude {
-				shouldInclude = false
-				break
-			}
-		}
-		if shouldInclude {
+		if !contains(exclude, k) {
 			excluded[k] = v
 		}
 	}
@@ -71,4 +64,14 @@ func (m Map) TransformKeys(mapping map[string]string) Map {
 		}
 		return key, value
 	})
+}
+
+// Checks if a string slice contains a string
+func contains(s []string, e string) bool {
+	for _, a := range s {
+		if a == e {
+			return true
+		}
+	}
+	return false
 }
