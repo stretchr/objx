@@ -29,4 +29,4 @@ test:
 test-coverage:
   desc: Runs go tests and calucates test coverage
   cmds:
-    - go test -race -coverprofile=coverage.out -covermode=atomic ./...
+    - go test -race -coverprofile=coverage.out -covermode=atomic .
