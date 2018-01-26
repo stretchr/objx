@@ -65,6 +65,12 @@ func TestAccessorsAccessGetInsideArray(t *testing.T) {
 	assert.Equal(t, "Bollocks", m.Get("names[1].last").Data())
 
 	assert.Nil(t, m.Get("names[2]").Data())
+	assert.Nil(t, m.Get("names[]").Data())
+	assert.Nil(t, m.Get("names1]]").Data())
+	assert.Nil(t, m.Get("names[1]]").Data())
+	assert.Nil(t, m.Get("names[[1]]").Data())
+	assert.Nil(t, m.Get("names[[1]").Data())
+	assert.Nil(t, m.Get("names[[1").Data())
 }
 
 func TestAccessorsGet(t *testing.T) {
@@ -79,8 +85,8 @@ func TestAccessorsAccessSetSingleField(t *testing.T) {
 	m.Set("name", "Mat")
 	m.Set("age", 29)
 
-	assert.Equal(t, m["name"], "Mat")
-	assert.Equal(t, m["age"], 29)
+	assert.Equal(t, m.Get("name").Data(), "Mat")
+	assert.Equal(t, m.Get("age").Data(), 29)
 }
 
 func TestAccessorsAccessSetSingleFieldNotExisting(t *testing.T) {
@@ -91,7 +97,7 @@ func TestAccessorsAccessSetSingleFieldNotExisting(t *testing.T) {
 
 	m.Set("name", "Mat")
 
-	assert.Equal(t, m["name"], "Mat")
+	assert.Equal(t, m.Get("name").Data(), "Mat")
 }
 
 func TestAccessorsAccessSetDeep(t *testing.T) {
