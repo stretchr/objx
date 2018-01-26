@@ -46,30 +46,33 @@ func (m Map) Set(selector string, value interface{}) Map {
 	return m
 }
 
+// getIndex returns the index, which is hold in s by two braches.
+// It also returns s withour the index part, e.g. name[1] will return (1, name).
+// If no index is found, -1 is returned
+func getIndex(s string) (int, string) {
+	arrayMatches := arrayAccesRegex.FindStringSubmatch(s)
+	if len(arrayMatches) > 0 {
+		// Get the key into the map
+		selector := arrayMatches[1]
+		// Get the index into the array at the key
+		// We know this cannt fail because arrayMatches[2] is an int for sure
+		index, _ := strconv.Atoi(arrayMatches[2])
+		return index, selector
+	}
+	return -1, s
+}
+
 // access accesses the object using the selector and performs the
 // appropriate action.
 func access(current interface{}, selector string, value interface{}, isSet bool) interface{} {
 	selSegs := strings.SplitN(selector, PathSeparator, 2)
 	thisSel := selSegs[0]
 	index := -1
-	var err error
 
 	if strings.Contains(thisSel, "[") {
-		arrayMatches := arrayAccesRegex.FindStringSubmatch(thisSel)
-		if len(arrayMatches) > 0 {
-			// Get the key into the map
-			thisSel = arrayMatches[1]
-
-			// Get the index into the array at the key
-			index, err = strconv.Atoi(arrayMatches[2])
-
-			if err != nil {
-				// This should never happen. If it does, something has gone
-				// seriously wrong. Panic.
-				panic("objx: Array index is not an integer.  Must use array[int].")
-			}
-		}
+		index, thisSel = getIndex(thisSel)
 	}
+
 	if curMap, ok := current.(Map); ok {
 		current = map[string]interface{}(curMap)
 	}
