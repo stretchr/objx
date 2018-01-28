@@ -6,9 +6,17 @@ import (
 	"strings"
 )
 
-// arrayAccesRegexString is the regex used to extract the array number
-// from the access path
-const arrayAccesRegexString = `^(.+)\[([0-9]+)\]$`
+const (
+	// PathSeparator is the character used to separate the elements
+	// of the keypath.
+	//
+	// For example, `location.address.city`
+	PathSeparator string = "."
+
+	// arrayAccesRegexString is the regex used to extract the array number
+	// from the access path
+	arrayAccesRegexString = `^(.+)\[([0-9]+)\]$`
+)
 
 // arrayAccesRegex is the compiled arrayAccesRegexString
 var arrayAccesRegex = regexp.MustCompile(arrayAccesRegexString)
