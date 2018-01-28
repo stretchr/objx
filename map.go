@@ -97,12 +97,12 @@ func MustFromJSON(jsonString string) Map {
 //
 // Returns an error if the JSON is invalid.
 func FromJSON(jsonString string) (Map, error) {
-	var data interface{}
+	var data Map
 	err := json.Unmarshal([]byte(jsonString), &data)
 	if err != nil {
 		return Nil, err
 	}
-	return New(data), nil
+	return data, nil
 }
 
 // FromBase64 creates a new Obj containing the data specified

@@ -40,10 +40,7 @@ func (m Map) Base64() (string, error) {
 	}
 
 	encoder := base64.NewEncoder(base64.StdEncoding, &buf)
-	_, err = encoder.Write([]byte(jsonData))
-	if err != nil {
-		return "", err
-	}
+	_, _ = encoder.Write([]byte(jsonData))
 	_ = encoder.Close()
 
 	return buf.String(), nil
