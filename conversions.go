@@ -9,6 +9,10 @@ import (
 	"net/url"
 )
 
+// SignatureSeparator is the character that is used to
+// separate the Base64 string from the security signature.
+const SignatureSeparator = "_"
+
 // JSON converts the contained object to a JSON string
 // representation
 func (m Map) JSON() (string, error) {
