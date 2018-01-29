@@ -15,5 +15,7 @@ exclude_patterns:
 - "*.md"
 - "Gopkg.*"
 - "doc.go"
+- "type_specific_codegen_test.go"
+- "type_specific_codegen.go"
 - ".gitignore"
 - "LICENSE"
