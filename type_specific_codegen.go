@@ -3,7 +3,6 @@ package objx
 /*
 	Inter (interface{} and []interface{})
 */
-
 // Inter gets the value as a interface{}, returns the optionalDefault
 // value or a system default object if the value is the wrong type.
 func (v *Value) Inter(optionalDefault ...interface{}) interface{} {
@@ -32,7 +31,29 @@ func (v *Value) InterSlice(optionalDefault ...[]interface{}) []interface{} {
 	if len(optionalDefault) == 1 {
 		return optionalDefault[0]
 	}
-	return nil
+	s, ok := v.data.([]interface{})
+	if !ok {
+		if len(optionalDefault) == 1 {
+			return optionalDefault[0]
+		} else {
+			return nil
+		}
+	}
+
+	result := make([]interface{}, len(s))
+	for i := range s {
+		switch s[i].(type) {
+		case interface{}:
+			result[i] = s[i].(interface{})
+		default:
+			if len(optionalDefault) == 1 {
+				return optionalDefault[0]
+			} else {
+				return nil
+			}
+		}
+	}
+	return result
 }
 
 // MustInterSlice gets the value as a []interface{}.
@@ -128,7 +149,6 @@ func (v *Value) CollectInter(collector func(int, interface{}) interface{}) *Valu
 /*
 	MSI (map[string]interface{} and []map[string]interface{})
 */
-
 // MSI gets the value as a map[string]interface{}, returns the optionalDefault
 // value or a system default object if the value is the wrong type.
 func (v *Value) MSI(optionalDefault ...map[string]interface{}) map[string]interface{} {
@@ -157,7 +177,29 @@ func (v *Value) MSISlice(optionalDefault ...[]map[string]interface{}) []map[stri
 	if len(optionalDefault) == 1 {
 		return optionalDefault[0]
 	}
-	return nil
+	s, ok := v.data.([]interface{})
+	if !ok {
+		if len(optionalDefault) == 1 {
+			return optionalDefault[0]
+		} else {
+			return nil
+		}
+	}
+
+	result := make([]map[string]interface{}, len(s))
+	for i := range s {
+		switch s[i].(type) {
+		case map[string]interface{}:
+			result[i] = s[i].(map[string]interface{})
+		default:
+			if len(optionalDefault) == 1 {
+				return optionalDefault[0]
+			} else {
+				return nil
+			}
+		}
+	}
+	return result
 }
 
 // MustMSISlice gets the value as a []map[string]interface{}.
@@ -251,13 +293,12 @@ func (v *Value) CollectMSI(collector func(int, map[string]interface{}) interface
 }
 
 /*
-	ObjxMap ((Map) and [](Map))
+	ObjxMap (Map and []Map)
 */
-
-// ObjxMap gets the value as a (Map), returns the optionalDefault
+// ObjxMap gets the value as a Map, returns the optionalDefault
 // value or a system default object if the value is the wrong type.
-func (v *Value) ObjxMap(optionalDefault ...(Map)) Map {
-	if s, ok := v.data.((Map)); ok {
+func (v *Value) ObjxMap(optionalDefault ...Map) Map {
+	if s, ok := v.data.(Map); ok {
 		return s
 	}
 	if len(optionalDefault) == 1 {
@@ -266,18 +307,21 @@ func (v *Value) ObjxMap(optionalDefault ...(Map)) Map {
 	return New(nil)
 }
 
-// MustObjxMap gets the value as a (Map).
+// MustObjxMap gets the value as a Map.
 //
-// Panics if the object is not a (Map).
+// Panics if the object is not a Map.
 func (v *Value) MustObjxMap() Map {
-	return v.data.((Map))
+	return v.data.(Map)
 }
 
-// ObjxMapSlice gets the value as a [](Map), returns the optionalDefault
-// value or nil if the value is not a [](Map).
-func (v *Value) ObjxMapSlice(optionalDefault ...[](Map)) [](Map) {
+// ObjxMapSlice gets the value as a []Map, returns the optionalDefault
+// value or nil if the value is not a []Map.
+func (v *Value) ObjxMapSlice(optionalDefault ...[]Map) []Map {
 	if s, ok := v.data.([]Map); ok {
 		return s
+	}
+	if len(optionalDefault) == 1 {
+		return optionalDefault[0]
 	}
 	s, ok := v.data.([]interface{})
 	if !ok {
@@ -294,33 +338,37 @@ func (v *Value) ObjxMapSlice(optionalDefault ...[](Map)) [](Map) {
 		case Map:
 			result[i] = s[i].(Map)
 		default:
-			return nil
+			if len(optionalDefault) == 1 {
+				return optionalDefault[0]
+			} else {
+				return nil
+			}
 		}
 	}
 	return result
 }
 
-// MustObjxMapSlice gets the value as a [](Map).
+// MustObjxMapSlice gets the value as a []Map.
 //
-// Panics if the object is not a [](Map).
-func (v *Value) MustObjxMapSlice() [](Map) {
-	return v.data.([](Map))
+// Panics if the object is not a []Map.
+func (v *Value) MustObjxMapSlice() []Map {
+	return v.data.([]Map)
 }
 
-// IsObjxMap gets whether the object contained is a (Map) or not.
+// IsObjxMap gets whether the object contained is a Map or not.
 func (v *Value) IsObjxMap() bool {
-	_, ok := v.data.((Map))
+	_, ok := v.data.(Map)
 	return ok
 }
 
-// IsObjxMapSlice gets whether the object contained is a [](Map) or not.
+// IsObjxMapSlice gets whether the object contained is a []Map or not.
 func (v *Value) IsObjxMapSlice() bool {
-	_, ok := v.data.([](Map))
+	_, ok := v.data.([]Map)
 	return ok
 }
 
 // EachObjxMap calls the specified callback for each object
-// in the [](Map).
+// in the []Map.
 //
 // Panics if the object is the wrong type.
 func (v *Value) EachObjxMap(callback func(int, Map) bool) *Value {
@@ -334,10 +382,10 @@ func (v *Value) EachObjxMap(callback func(int, Map) bool) *Value {
 }
 
 // WhereObjxMap uses the specified decider function to select items
-// from the [](Map).  The object contained in the result will contain
+// from the []Map.  The object contained in the result will contain
 // only the selected items.
 func (v *Value) WhereObjxMap(decider func(int, Map) bool) *Value {
-	var selected [](Map)
+	var selected []Map
 	v.EachObjxMap(func(index int, val Map) bool {
 		shouldSelect := decider(index, val)
 		if !shouldSelect {
@@ -350,13 +398,13 @@ func (v *Value) WhereObjxMap(decider func(int, Map) bool) *Value {
 
 // GroupObjxMap uses the specified grouper function to group the items
 // keyed by the return of the grouper.  The object contained in the
-// result will contain a map[string][](Map).
+// result will contain a map[string][]Map.
 func (v *Value) GroupObjxMap(grouper func(int, Map) string) *Value {
-	groups := make(map[string][](Map))
+	groups := make(map[string][]Map)
 	v.EachObjxMap(func(index int, val Map) bool {
 		group := grouper(index, val)
 		if _, ok := groups[group]; !ok {
-			groups[group] = make([](Map), 0)
+			groups[group] = make([]Map, 0)
 		}
 		groups[group] = append(groups[group], val)
 		return true
@@ -364,12 +412,12 @@ func (v *Value) GroupObjxMap(grouper func(int, Map) string) *Value {
 	return &Value{data: groups}
 }
 
-// ReplaceObjxMap uses the specified function to replace each (Map)s
+// ReplaceObjxMap uses the specified function to replace each Maps
 // by iterating each item.  The data in the returned result will be a
-// [](Map) containing the replaced items.
+// []Map containing the replaced items.
 func (v *Value) ReplaceObjxMap(replacer func(int, Map) Map) *Value {
 	arr := v.MustObjxMapSlice()
-	replaced := make([](Map), len(arr))
+	replaced := make([]Map, len(arr))
 	v.EachObjxMap(func(index int, val Map) bool {
 		replaced[index] = replacer(index, val)
 		return true
@@ -378,7 +426,7 @@ func (v *Value) ReplaceObjxMap(replacer func(int, Map) Map) *Value {
 }
 
 // CollectObjxMap uses the specified collector function to collect a value
-// for each of the (Map)s in the slice.  The data returned will be a
+// for each of the Maps in the slice.  The data returned will be a
 // []interface{}.
 func (v *Value) CollectObjxMap(collector func(int, Map) interface{}) *Value {
 	arr := v.MustObjxMapSlice()
@@ -393,7 +441,6 @@ func (v *Value) CollectObjxMap(collector func(int, Map) interface{}) *Value {
 /*
 	Bool (bool and []bool)
 */
-
 // Bool gets the value as a bool, returns the optionalDefault
 // value or a system default object if the value is the wrong type.
 func (v *Value) Bool(optionalDefault ...bool) bool {
@@ -422,7 +469,29 @@ func (v *Value) BoolSlice(optionalDefault ...[]bool) []bool {
 	if len(optionalDefault) == 1 {
 		return optionalDefault[0]
 	}
-	return nil
+	s, ok := v.data.([]interface{})
+	if !ok {
+		if len(optionalDefault) == 1 {
+			return optionalDefault[0]
+		} else {
+			return nil
+		}
+	}
+
+	result := make([]bool, len(s))
+	for i := range s {
+		switch s[i].(type) {
+		case bool:
+			result[i] = s[i].(bool)
+		default:
+			if len(optionalDefault) == 1 {
+				return optionalDefault[0]
+			} else {
+				return nil
+			}
+		}
+	}
+	return result
 }
 
 // MustBoolSlice gets the value as a []bool.
@@ -518,7 +587,6 @@ func (v *Value) CollectBool(collector func(int, bool) interface{}) *Value {
 /*
 	Str (string and []string)
 */
-
 // Str gets the value as a string, returns the optionalDefault
 // value or a system default object if the value is the wrong type.
 func (v *Value) Str(optionalDefault ...string) string {
@@ -547,7 +615,29 @@ func (v *Value) StrSlice(optionalDefault ...[]string) []string {
 	if len(optionalDefault) == 1 {
 		return optionalDefault[0]
 	}
-	return nil
+	s, ok := v.data.([]interface{})
+	if !ok {
+		if len(optionalDefault) == 1 {
+			return optionalDefault[0]
+		} else {
+			return nil
+		}
+	}
+
+	result := make([]string, len(s))
+	for i := range s {
+		switch s[i].(type) {
+		case string:
+			result[i] = s[i].(string)
+		default:
+			if len(optionalDefault) == 1 {
+				return optionalDefault[0]
+			} else {
+				return nil
+			}
+		}
+	}
+	return result
 }
 
 // MustStrSlice gets the value as a []string.
@@ -643,7 +733,6 @@ func (v *Value) CollectStr(collector func(int, string) interface{}) *Value {
 /*
 	Int (int and []int)
 */
-
 // Int gets the value as a int, returns the optionalDefault
 // value or a system default object if the value is the wrong type.
 func (v *Value) Int(optionalDefault ...int) int {
@@ -672,7 +761,29 @@ func (v *Value) IntSlice(optionalDefault ...[]int) []int {
 	if len(optionalDefault) == 1 {
 		return optionalDefault[0]
 	}
-	return nil
+	s, ok := v.data.([]interface{})
+	if !ok {
+		if len(optionalDefault) == 1 {
+			return optionalDefault[0]
+		} else {
+			return nil
+		}
+	}
+
+	result := make([]int, len(s))
+	for i := range s {
+		switch s[i].(type) {
+		case int:
+			result[i] = s[i].(int)
+		default:
+			if len(optionalDefault) == 1 {
+				return optionalDefault[0]
+			} else {
+				return nil
+			}
+		}
+	}
+	return result
 }
 
 // MustIntSlice gets the value as a []int.
@@ -768,7 +879,6 @@ func (v *Value) CollectInt(collector func(int, int) interface{}) *Value {
 /*
 	Int8 (int8 and []int8)
 */
-
 // Int8 gets the value as a int8, returns the optionalDefault
 // value or a system default object if the value is the wrong type.
 func (v *Value) Int8(optionalDefault ...int8) int8 {
@@ -797,7 +907,29 @@ func (v *Value) Int8Slice(optionalDefault ...[]int8) []int8 {
 	if len(optionalDefault) == 1 {
 		return optionalDefault[0]
 	}
-	return nil
+	s, ok := v.data.([]interface{})
+	if !ok {
+		if len(optionalDefault) == 1 {
+			return optionalDefault[0]
+		} else {
+			return nil
+		}
+	}
+
+	result := make([]int8, len(s))
+	for i := range s {
+		switch s[i].(type) {
+		case int8:
+			result[i] = s[i].(int8)
+		default:
+			if len(optionalDefault) == 1 {
+				return optionalDefault[0]
+			} else {
+				return nil
+			}
+		}
+	}
+	return result
 }
 
 // MustInt8Slice gets the value as a []int8.
@@ -893,7 +1025,6 @@ func (v *Value) CollectInt8(collector func(int, int8) interface{}) *Value {
 /*
 	Int16 (int16 and []int16)
 */
-
 // Int16 gets the value as a int16, returns the optionalDefault
 // value or a system default object if the value is the wrong type.
 func (v *Value) Int16(optionalDefault ...int16) int16 {
@@ -922,7 +1053,29 @@ func (v *Value) Int16Slice(optionalDefault ...[]int16) []int16 {
 	if len(optionalDefault) == 1 {
 		return optionalDefault[0]
 	}
-	return nil
+	s, ok := v.data.([]interface{})
+	if !ok {
+		if len(optionalDefault) == 1 {
+			return optionalDefault[0]
+		} else {
+			return nil
+		}
+	}
+
+	result := make([]int16, len(s))
+	for i := range s {
+		switch s[i].(type) {
+		case int16:
+			result[i] = s[i].(int16)
+		default:
+			if len(optionalDefault) == 1 {
+				return optionalDefault[0]
+			} else {
+				return nil
+			}
+		}
+	}
+	return result
 }
 
 // MustInt16Slice gets the value as a []int16.
@@ -1018,7 +1171,6 @@ func (v *Value) CollectInt16(collector func(int, int16) interface{}) *Value {
 /*
 	Int32 (int32 and []int32)
 */
-
 // Int32 gets the value as a int32, returns the optionalDefault
 // value or a system default object if the value is the wrong type.
 func (v *Value) Int32(optionalDefault ...int32) int32 {
@@ -1047,7 +1199,29 @@ func (v *Value) Int32Slice(optionalDefault ...[]int32) []int32 {
 	if len(optionalDefault) == 1 {
 		return optionalDefault[0]
 	}
-	return nil
+	s, ok := v.data.([]interface{})
+	if !ok {
+		if len(optionalDefault) == 1 {
+			return optionalDefault[0]
+		} else {
+			return nil
+		}
+	}
+
+	result := make([]int32, len(s))
+	for i := range s {
+		switch s[i].(type) {
+		case int32:
+			result[i] = s[i].(int32)
+		default:
+			if len(optionalDefault) == 1 {
+				return optionalDefault[0]
+			} else {
+				return nil
+			}
+		}
+	}
+	return result
 }
 
 // MustInt32Slice gets the value as a []int32.
@@ -1143,7 +1317,6 @@ func (v *Value) CollectInt32(collector func(int, int32) interface{}) *Value {
 /*
 	Int64 (int64 and []int64)
 */
-
 // Int64 gets the value as a int64, returns the optionalDefault
 // value or a system default object if the value is the wrong type.
 func (v *Value) Int64(optionalDefault ...int64) int64 {
@@ -1172,7 +1345,29 @@ func (v *Value) Int64Slice(optionalDefault ...[]int64) []int64 {
 	if len(optionalDefault) == 1 {
 		return optionalDefault[0]
 	}
-	return nil
+	s, ok := v.data.([]interface{})
+	if !ok {
+		if len(optionalDefault) == 1 {
+			return optionalDefault[0]
+		} else {
+			return nil
+		}
+	}
+
+	result := make([]int64, len(s))
+	for i := range s {
+		switch s[i].(type) {
+		case int64:
+			result[i] = s[i].(int64)
+		default:
+			if len(optionalDefault) == 1 {
+				return optionalDefault[0]
+			} else {
+				return nil
+			}
+		}
+	}
+	return result
 }
 
 // MustInt64Slice gets the value as a []int64.
@@ -1268,7 +1463,6 @@ func (v *Value) CollectInt64(collector func(int, int64) interface{}) *Value {
 /*
 	Uint (uint and []uint)
 */
-
 // Uint gets the value as a uint, returns the optionalDefault
 // value or a system default object if the value is the wrong type.
 func (v *Value) Uint(optionalDefault ...uint) uint {
@@ -1297,7 +1491,29 @@ func (v *Value) UintSlice(optionalDefault ...[]uint) []uint {
 	if len(optionalDefault) == 1 {
 		return optionalDefault[0]
 	}
-	return nil
+	s, ok := v.data.([]interface{})
+	if !ok {
+		if len(optionalDefault) == 1 {
+			return optionalDefault[0]
+		} else {
+			return nil
+		}
+	}
+
+	result := make([]uint, len(s))
+	for i := range s {
+		switch s[i].(type) {
+		case uint:
+			result[i] = s[i].(uint)
+		default:
+			if len(optionalDefault) == 1 {
+				return optionalDefault[0]
+			} else {
+				return nil
+			}
+		}
+	}
+	return result
 }
 
 // MustUintSlice gets the value as a []uint.
@@ -1393,7 +1609,6 @@ func (v *Value) CollectUint(collector func(int, uint) interface{}) *Value {
 /*
 	Uint8 (uint8 and []uint8)
 */
-
 // Uint8 gets the value as a uint8, returns the optionalDefault
 // value or a system default object if the value is the wrong type.
 func (v *Value) Uint8(optionalDefault ...uint8) uint8 {
@@ -1422,7 +1637,29 @@ func (v *Value) Uint8Slice(optionalDefault ...[]uint8) []uint8 {
 	if len(optionalDefault) == 1 {
 		return optionalDefault[0]
 	}
-	return nil
+	s, ok := v.data.([]interface{})
+	if !ok {
+		if len(optionalDefault) == 1 {
+			return optionalDefault[0]
+		} else {
+			return nil
+		}
+	}
+
+	result := make([]uint8, len(s))
+	for i := range s {
+		switch s[i].(type) {
+		case uint8:
+			result[i] = s[i].(uint8)
+		default:
+			if len(optionalDefault) == 1 {
+				return optionalDefault[0]
+			} else {
+				return nil
+			}
+		}
+	}
+	return result
 }
 
 // MustUint8Slice gets the value as a []uint8.
@@ -1518,7 +1755,6 @@ func (v *Value) CollectUint8(collector func(int, uint8) interface{}) *Value {
 /*
 	Uint16 (uint16 and []uint16)
 */
-
 // Uint16 gets the value as a uint16, returns the optionalDefault
 // value or a system default object if the value is the wrong type.
 func (v *Value) Uint16(optionalDefault ...uint16) uint16 {
@@ -1547,7 +1783,29 @@ func (v *Value) Uint16Slice(optionalDefault ...[]uint16) []uint16 {
 	if len(optionalDefault) == 1 {
 		return optionalDefault[0]
 	}
-	return nil
+	s, ok := v.data.([]interface{})
+	if !ok {
+		if len(optionalDefault) == 1 {
+			return optionalDefault[0]
+		} else {
+			return nil
+		}
+	}
+
+	result := make([]uint16, len(s))
+	for i := range s {
+		switch s[i].(type) {
+		case uint16:
+			result[i] = s[i].(uint16)
+		default:
+			if len(optionalDefault) == 1 {
+				return optionalDefault[0]
+			} else {
+				return nil
+			}
+		}
+	}
+	return result
 }
 
 // MustUint16Slice gets the value as a []uint16.
@@ -1643,7 +1901,6 @@ func (v *Value) CollectUint16(collector func(int, uint16) interface{}) *Value {
 /*
 	Uint32 (uint32 and []uint32)
 */
-
 // Uint32 gets the value as a uint32, returns the optionalDefault
 // value or a system default object if the value is the wrong type.
 func (v *Value) Uint32(optionalDefault ...uint32) uint32 {
@@ -1672,7 +1929,29 @@ func (v *Value) Uint32Slice(optionalDefault ...[]uint32) []uint32 {
 	if len(optionalDefault) == 1 {
 		return optionalDefault[0]
 	}
-	return nil
+	s, ok := v.data.([]interface{})
+	if !ok {
+		if len(optionalDefault) == 1 {
+			return optionalDefault[0]
+		} else {
+			return nil
+		}
+	}
+
+	result := make([]uint32, len(s))
+	for i := range s {
+		switch s[i].(type) {
+		case uint32:
+			result[i] = s[i].(uint32)
+		default:
+			if len(optionalDefault) == 1 {
+				return optionalDefault[0]
+			} else {
+				return nil
+			}
+		}
+	}
+	return result
 }
 
 // MustUint32Slice gets the value as a []uint32.
@@ -1768,7 +2047,6 @@ func (v *Value) CollectUint32(collector func(int, uint32) interface{}) *Value {
 /*
 	Uint64 (uint64 and []uint64)
 */
-
 // Uint64 gets the value as a uint64, returns the optionalDefault
 // value or a system default object if the value is the wrong type.
 func (v *Value) Uint64(optionalDefault ...uint64) uint64 {
@@ -1797,7 +2075,29 @@ func (v *Value) Uint64Slice(optionalDefault ...[]uint64) []uint64 {
 	if len(optionalDefault) == 1 {
 		return optionalDefault[0]
 	}
-	return nil
+	s, ok := v.data.([]interface{})
+	if !ok {
+		if len(optionalDefault) == 1 {
+			return optionalDefault[0]
+		} else {
+			return nil
+		}
+	}
+
+	result := make([]uint64, len(s))
+	for i := range s {
+		switch s[i].(type) {
+		case uint64:
+			result[i] = s[i].(uint64)
+		default:
+			if len(optionalDefault) == 1 {
+				return optionalDefault[0]
+			} else {
+				return nil
+			}
+		}
+	}
+	return result
 }
 
 // MustUint64Slice gets the value as a []uint64.
@@ -1893,7 +2193,6 @@ func (v *Value) CollectUint64(collector func(int, uint64) interface{}) *Value {
 /*
 	Uintptr (uintptr and []uintptr)
 */
-
 // Uintptr gets the value as a uintptr, returns the optionalDefault
 // value or a system default object if the value is the wrong type.
 func (v *Value) Uintptr(optionalDefault ...uintptr) uintptr {
@@ -1922,7 +2221,29 @@ func (v *Value) UintptrSlice(optionalDefault ...[]uintptr) []uintptr {
 	if len(optionalDefault) == 1 {
 		return optionalDefault[0]
 	}
-	return nil
+	s, ok := v.data.([]interface{})
+	if !ok {
+		if len(optionalDefault) == 1 {
+			return optionalDefault[0]
+		} else {
+			return nil
+		}
+	}
+
+	result := make([]uintptr, len(s))
+	for i := range s {
+		switch s[i].(type) {
+		case uintptr:
+			result[i] = s[i].(uintptr)
+		default:
+			if len(optionalDefault) == 1 {
+				return optionalDefault[0]
+			} else {
+				return nil
+			}
+		}
+	}
+	return result
 }
 
 // MustUintptrSlice gets the value as a []uintptr.
@@ -2018,7 +2339,6 @@ func (v *Value) CollectUintptr(collector func(int, uintptr) interface{}) *Value 
 /*
 	Float32 (float32 and []float32)
 */
-
 // Float32 gets the value as a float32, returns the optionalDefault
 // value or a system default object if the value is the wrong type.
 func (v *Value) Float32(optionalDefault ...float32) float32 {
@@ -2047,7 +2367,29 @@ func (v *Value) Float32Slice(optionalDefault ...[]float32) []float32 {
 	if len(optionalDefault) == 1 {
 		return optionalDefault[0]
 	}
-	return nil
+	s, ok := v.data.([]interface{})
+	if !ok {
+		if len(optionalDefault) == 1 {
+			return optionalDefault[0]
+		} else {
+			return nil
+		}
+	}
+
+	result := make([]float32, len(s))
+	for i := range s {
+		switch s[i].(type) {
+		case float32:
+			result[i] = s[i].(float32)
+		default:
+			if len(optionalDefault) == 1 {
+				return optionalDefault[0]
+			} else {
+				return nil
+			}
+		}
+	}
+	return result
 }
 
 // MustFloat32Slice gets the value as a []float32.
@@ -2143,7 +2485,6 @@ func (v *Value) CollectFloat32(collector func(int, float32) interface{}) *Value 
 /*
 	Float64 (float64 and []float64)
 */
-
 // Float64 gets the value as a float64, returns the optionalDefault
 // value or a system default object if the value is the wrong type.
 func (v *Value) Float64(optionalDefault ...float64) float64 {
@@ -2172,7 +2513,29 @@ func (v *Value) Float64Slice(optionalDefault ...[]float64) []float64 {
 	if len(optionalDefault) == 1 {
 		return optionalDefault[0]
 	}
-	return nil
+	s, ok := v.data.([]interface{})
+	if !ok {
+		if len(optionalDefault) == 1 {
+			return optionalDefault[0]
+		} else {
+			return nil
+		}
+	}
+
+	result := make([]float64, len(s))
+	for i := range s {
+		switch s[i].(type) {
+		case float64:
+			result[i] = s[i].(float64)
+		default:
+			if len(optionalDefault) == 1 {
+				return optionalDefault[0]
+			} else {
+				return nil
+			}
+		}
+	}
+	return result
 }
 
 // MustFloat64Slice gets the value as a []float64.
@@ -2268,7 +2631,6 @@ func (v *Value) CollectFloat64(collector func(int, float64) interface{}) *Value 
 /*
 	Complex64 (complex64 and []complex64)
 */
-
 // Complex64 gets the value as a complex64, returns the optionalDefault
 // value or a system default object if the value is the wrong type.
 func (v *Value) Complex64(optionalDefault ...complex64) complex64 {
@@ -2297,7 +2659,29 @@ func (v *Value) Complex64Slice(optionalDefault ...[]complex64) []complex64 {
 	if len(optionalDefault) == 1 {
 		return optionalDefault[0]
 	}
-	return nil
+	s, ok := v.data.([]interface{})
+	if !ok {
+		if len(optionalDefault) == 1 {
+			return optionalDefault[0]
+		} else {
+			return nil
+		}
+	}
+
+	result := make([]complex64, len(s))
+	for i := range s {
+		switch s[i].(type) {
+		case complex64:
+			result[i] = s[i].(complex64)
+		default:
+			if len(optionalDefault) == 1 {
+				return optionalDefault[0]
+			} else {
+				return nil
+			}
+		}
+	}
+	return result
 }
 
 // MustComplex64Slice gets the value as a []complex64.
@@ -2393,7 +2777,6 @@ func (v *Value) CollectComplex64(collector func(int, complex64) interface{}) *Va
 /*
 	Complex128 (complex128 and []complex128)
 */
-
 // Complex128 gets the value as a complex128, returns the optionalDefault
 // value or a system default object if the value is the wrong type.
 func (v *Value) Complex128(optionalDefault ...complex128) complex128 {
@@ -2422,7 +2805,29 @@ func (v *Value) Complex128Slice(optionalDefault ...[]complex128) []complex128 {
 	if len(optionalDefault) == 1 {
 		return optionalDefault[0]
 	}
-	return nil
+	s, ok := v.data.([]interface{})
+	if !ok {
+		if len(optionalDefault) == 1 {
+			return optionalDefault[0]
+		} else {
+			return nil
+		}
+	}
+
+	result := make([]complex128, len(s))
+	for i := range s {
+		switch s[i].(type) {
+		case complex128:
+			result[i] = s[i].(complex128)
+		default:
+			if len(optionalDefault) == 1 {
+				return optionalDefault[0]
+			} else {
+				return nil
+			}
+		}
+	}
+	return result
 }
 
 // MustComplex128Slice gets the value as a []complex128.
