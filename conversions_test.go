@@ -80,7 +80,7 @@ func TestConversionSignedBase64WithError(t *testing.T) {
 }
 
 func TestConversionURLValues(t *testing.T) {
-	m := getUrlQueryMap()
+	m := getURLQueryMap()
 	u := m.URLValues()
 
 	assert.Equal(t, url.Values{
@@ -97,7 +97,7 @@ func TestConversionURLValues(t *testing.T) {
 }
 
 func TestConversionURLQuery(t *testing.T) {
-	m := getUrlQueryMap()
+	m := getURLQueryMap()
 	u, err := m.URLQuery()
 
 	assert.Nil(t, err)
@@ -111,7 +111,7 @@ func TestConversionURLQuery(t *testing.T) {
 }
 
 func TestConversionURLQueryNoSliceKeySuffix(t *testing.T) {
-	m := getUrlQueryMap()
+	m := getURLQueryMap()
 	objx.URLValuesSliceKeySuffix = ""
 	u, err := m.URLQuery()
 
