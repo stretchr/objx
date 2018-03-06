@@ -125,7 +125,7 @@ func TestConversionURLQueryNoSliceKeySuffix(t *testing.T) {
 	assert.Equal(t, "abc=123&bools=true&bools=false&data[age]=30&data[arr]=1&data[arr]=2&data[height]=162&mapSlice[age]=40&mapSlice[height]=152&name=Mat&stats=1&stats=2", ue)
 }
 
-func getUrlQueryMap() objx.Map {
+func getURLQueryMap() objx.Map {
 	return objx.Map{
 		"abc":      123,
 		"name":     "Mat",
