@@ -5,13 +5,14 @@ import (
 	"encoding/base64"
 	"encoding/json"
 	"errors"
-	"fmt"
 	"net/url"
 )
 
 // SignatureSeparator is the character that is used to
 // separate the Base64 string from the security signature.
 const SignatureSeparator = "_"
+
+var QuerySliceKeySuffix = "[]"
 
 // JSON converts the contained object to a JSON string
 // representation
@@ -94,12 +95,68 @@ func (m Map) MustSignedBase64(key string) string {
 // function requires that the wrapped object be a map[string]interface{}
 func (m Map) URLValues() url.Values {
 	vals := make(url.Values)
-	for k, v := range m {
-		//TODO: can this be done without sprintf?
-		vals.Set(k, fmt.Sprintf("%v", v))
-	}
+
+	m.parseUrlQuery(m, vals, "")
+
 	return vals
 }
+
+func (m Map) parseUrlQuery(queryMap Map, vals url.Values, key string) {
+	for k, v := range queryMap {
+		val := &Value{data: v}
+		switch {
+        case val.IsObjxMap():
+        	if key == "" {
+	        	m.parseUrlQuery(v.(Map), vals, k)
+	        } else {
+	        	m.parseUrlQuery(v.(Map), vals, key + "[" + k + "]")
+        	}
+        case val.IsObjxMapSlice():
+            sliceKey := k + QuerySliceKeySuffix
+        	if key != "" {
+        		sliceKey = key + "[" + k + "]" + QuerySliceKeySuffix
+        	}
+
+			for _, sv := range val.MustObjxMapSlice() {
+	        	m.parseUrlQuery(sv, vals, sliceKey)
+			}
+        case val.IsMSI():
+        	if key == "" {
+	        	m.parseUrlQuery(New(v), vals, k)
+	        } else {
+	        	m.parseUrlQuery(New(v), vals, key + "[" + k + "]")
+        	}
+		case val.IsMSISlice():
+            sliceKey := k + QuerySliceKeySuffix
+        	if key != "" {
+        		sliceKey = key + "[" + k + "]" + QuerySliceKeySuffix
+        	}
+
+			for _, sv := range val.MustMSISlice() {
+	        	m.parseUrlQuery(New(sv), vals, sliceKey)
+			}
+        case val.IsStrSlice(), val.IsBoolSlice(),
+            val.IsFloat32Slice(), val.IsFloat64Slice(),
+            val.IsIntSlice(), val.IsInt8Slice(), val.IsInt16Slice(), val.IsInt32Slice(), val.IsInt64Slice(),
+            val.IsUintSlice(), val.IsUint8Slice(), val.IsUint16Slice(), val.IsUint32Slice(), val.IsUint64Slice():
+
+            sliceKey := k + QuerySliceKeySuffix
+        	if key != "" {
+        		sliceKey = key + "[" + k + "]" + QuerySliceKeySuffix
+        	}
+
+			vals[sliceKey] = val.StringSlice()
+        default:
+        	if key == "" {
+				vals.Set(k, val.String())
+	        } else {
+				vals.Set(key + "[" + k + "]", val.String())
+			}
+		}
+	}
+}
+
+
 
 // URLQuery gets an encoded URL query representing the given
 // Obj. This function requires that the wrapped object be a

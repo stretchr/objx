@@ -80,17 +80,68 @@ func TestConversionSignedBase64WithError(t *testing.T) {
 }
 
 func TestConversionURLValues(t *testing.T) {
-	m := objx.Map{"abc": 123, "name": "Mat"}
+	m := objx.Map{
+		"abc": 123,
+		"name": "Mat",
+		"data": objx.Map {"age": 30, "height": 162, "arr": []int {1, 2}},
+		"mapSlice": []objx.Map {objx.Map{"age": 40}, objx.Map{"height": 152}},
+		"stats": []string {"1", "2"},
+		"bools": []bool {true, false},
+	}
 	u := m.URLValues()
 
-	assert.Equal(t, url.Values{"abc": []string{"123"}, "name": []string{"Mat"}}, u)
+	assert.Equal(t, url.Values{
+		"abc": []string{"123"},
+		"name": []string{"Mat"},
+		"data[age]": []string{"30"},
+		"data[height]": []string{"162"},
+		"data[arr][]": []string{"1", "2"},
+		"stats[]": []string{"1", "2"},
+		"bools[]": []string{"true", "false"},
+		"mapSlice[][age]": []string{"40"},
+		"mapSlice[][height]": []string{"152"},
+	}, u)
 }
 
 func TestConversionURLQuery(t *testing.T) {
-	m := objx.Map{"abc": 123, "name": "Mat"}
+	m := objx.Map{
+		"abc": 123,
+		"name": "Mat",
+		"data": objx.Map {"age": 30, "height": 162, "arr": []int {1, 2}},
+		"mapSlice": []objx.Map {objx.Map{"age": 40}, objx.Map{"height": 152}},
+		"stats": []string {"1", "2"},
+		"bools": []bool {true, false},
+	}
 	u, err := m.URLQuery()
 
 	assert.Nil(t, err)
 	require.NotNil(t, u)
-	assert.Equal(t, "abc=123&name=Mat", u)
+
+	ue, err := url.QueryUnescape(u)
+	assert.Nil(t, err)
+	require.NotNil(t, ue)
+
+	assert.Equal(t, "abc=123&bools[]=true&bools[]=false&data[age]=30&data[arr][]=1&data[arr][]=2&data[height]=162&mapSlice[][age]=40&mapSlice[][height]=152&name=Mat&stats[]=1&stats[]=2", ue)
+}
+
+func TestConversionURLQueryNoSliceKeySuffix(t *testing.T) {
+	m := objx.Map{
+		"abc": 123,
+		"name": "Mat",
+		"data": objx.Map {"age": 30, "height": 162, "arr": []int {1, 2}},
+		"mapSlice": []objx.Map {objx.Map{"age": 40}, objx.Map{"height": 152}},
+		"stats": []string {"1", "2"},
+		"bools": []bool {true, false},
+	}
+	objx.QuerySliceKeySuffix = ""
+	u, err := m.URLQuery()
+
+	assert.Nil(t, err)
+	require.NotNil(t, u)
+
+	ue, err := url.QueryUnescape(u)
+	assert.Nil(t, err)
+	require.NotNil(t, ue)
+
+	assert.Equal(t, "abc=123&bools=true&bools=false&data[age]=30&data[arr]=1&data[arr]=2&data[height]=162&mapSlice[age]=40&mapSlice[height]=152&name=Mat&stats=1&stats=2", ue)
 }
