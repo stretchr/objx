@@ -75,15 +75,15 @@ func TestStringTypeOther(t *testing.T) {
 
 func TestStringSliceTypeString(t *testing.T) {
 	m := objx.Map{
-		"string": []string {"foo", "bar"},
+		"string": []string{"foo", "bar"},
 	}
 
-	assert.Equal(t, []string {"foo", "bar"}, m.Get("string").StringSlice())
+	assert.Equal(t, []string{"foo", "bar"}, m.Get("string").StringSlice())
 }
 
 func TestStringSliceTypeBool(t *testing.T) {
 	m := objx.Map{
-		"bool": []bool {true, false},
+		"bool": []bool{true, false},
 	}
 
 	assert.Equal(t, []string{"true", "false"}, m.Get("bool").StringSlice())
@@ -91,22 +91,22 @@ func TestStringSliceTypeBool(t *testing.T) {
 
 func TestStringSliceTypeInt(t *testing.T) {
 	m := objx.Map{
-        "int":   []int{1, 2},
-        "int8":  []int8{8, 9},
-        "int16": []int16{16, 17},
-        "int32": []int32{32, 33},
-        "int64": []int64{64, 65},
+		"int":   []int{1, 2},
+		"int8":  []int8{8, 9},
+		"int16": []int16{16, 17},
+		"int32": []int32{32, 33},
+		"int64": []int64{64, 65},
 	}
 
-	assert.Equal(t, []string {"1", "2"}, m.Get("int").StringSlice())
-	assert.Equal(t, []string {"8", "9"}, m.Get("int8").StringSlice())
-	assert.Equal(t, []string {"16", "17"}, m.Get("int16").StringSlice())
-	assert.Equal(t, []string {"32", "33"}, m.Get("int32").StringSlice())
-	assert.Equal(t, []string {"64", "65"}, m.Get("int64").StringSlice())
+	assert.Equal(t, []string{"1", "2"}, m.Get("int").StringSlice())
+	assert.Equal(t, []string{"8", "9"}, m.Get("int8").StringSlice())
+	assert.Equal(t, []string{"16", "17"}, m.Get("int16").StringSlice())
+	assert.Equal(t, []string{"32", "33"}, m.Get("int32").StringSlice())
+	assert.Equal(t, []string{"64", "65"}, m.Get("int64").StringSlice())
 }
 
 func TestStringSliceTypeUint(t *testing.T) {
-	m := objx.Map {
+	m := objx.Map{
 		"uint":   []uint{1, 2},
 		"uint8":  []uint8{8, 9},
 		"uint16": []uint16{16, 17},
@@ -114,11 +114,11 @@ func TestStringSliceTypeUint(t *testing.T) {
 		"uint64": []uint64{64, 65},
 	}
 
-	assert.Equal(t, []string {"1", "2"}, m.Get("uint").StringSlice())
-	assert.Equal(t, []string {"8", "9"}, m.Get("uint8").StringSlice())
-	assert.Equal(t, []string {"16", "17"}, m.Get("uint16").StringSlice())
-	assert.Equal(t, []string {"32", "33"}, m.Get("uint32").StringSlice())
-	assert.Equal(t, []string {"64", "65"}, m.Get("uint64").StringSlice())
+	assert.Equal(t, []string{"1", "2"}, m.Get("uint").StringSlice())
+	assert.Equal(t, []string{"8", "9"}, m.Get("uint8").StringSlice())
+	assert.Equal(t, []string{"16", "17"}, m.Get("uint16").StringSlice())
+	assert.Equal(t, []string{"32", "33"}, m.Get("uint32").StringSlice())
+	assert.Equal(t, []string{"64", "65"}, m.Get("uint64").StringSlice())
 }
 
 func TestStringSliceTypeFloat(t *testing.T) {
@@ -127,8 +127,8 @@ func TestStringSliceTypeFloat(t *testing.T) {
 		"float64": []float64{64.64, 65.65},
 	}
 
-	assert.Equal(t, []string {"32.32", "33.33"}, m.Get("float32").StringSlice())
-	assert.Equal(t, []string {"64.64", "65.65"}, m.Get("float64").StringSlice())
+	assert.Equal(t, []string{"32.32", "33.33"}, m.Get("float32").StringSlice())
+	assert.Equal(t, []string{"64.64", "65.65"}, m.Get("float64").StringSlice())
 }
 
 func TestStringSliceTypeOther(t *testing.T) {
@@ -139,4 +139,3 @@ func TestStringSliceTypeOther(t *testing.T) {
 	assert.Equal(t, []string{}, m.Get("other").StringSlice())
 	assert.Equal(t, []string{"bar"}, m.Get("other").StringSlice([]string{"bar"}))
 }
-
