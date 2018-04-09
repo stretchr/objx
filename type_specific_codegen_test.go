@@ -132,6 +132,7 @@ func TestMSI(t *testing.T) {
 	val := map[string]interface{}(map[string]interface{}{"name": "Tyler"})
 	m := objx.Map{"value": val, "nothing": nil}
 
+	assert.Equal(t, map[string]interface{}{"value": val, "nothing": nil}, m.Value().MSI())
 	assert.Equal(t, val, m.Get("value").MSI())
 	assert.Equal(t, val, m.Get("value").MustMSI())
 	assert.Equal(t, map[string]interface{}(nil), m.Get("nothing").MSI())

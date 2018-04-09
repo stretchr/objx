@@ -135,6 +135,9 @@ func (v *Value) MSI(optionalDefault ...map[string]interface{}) map[string]interf
 	if s, ok := v.data.(map[string]interface{}); ok {
 		return s
 	}
+	if s, ok := v.data.(Map); ok {
+		return map[string]interface{}(s)
+	}
 	if len(optionalDefault) == 1 {
 		return optionalDefault[0]
 	}
