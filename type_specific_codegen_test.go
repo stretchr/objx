@@ -140,9 +140,9 @@ func TestMSI(t *testing.T) {
 	assert.Equal(t, val, m.Get("value").MSI())
 	assert.Equal(t, val, m.Get("value").MustMSI())
 	assert.Equal(t, map[string]interface{}(nil), m.Get("nothing").MSI())
-	assert.Equal(t, val, m.Get("nothing").MSI(map[string]interface{}{"name":"Tyler"}))
+	assert.Equal(t, val, m.Get("nothing").MSI(map[string]interface{}{"name": "Tyler"}))
 	assert.Panics(t, func() {
-        	m.Get("age").MustMSI()
+		m.Get("age").MustMSI()
 	})
 }
 
