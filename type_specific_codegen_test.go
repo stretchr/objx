@@ -9,7 +9,7 @@ import (
 )
 
 /*
-  Tests for Inter (interface{} and []interface{})
+   Tests for Inter (interface{} and []interface{})
 */
 func TestInter(t *testing.T) {
 	val := interface{}("something")
@@ -69,6 +69,7 @@ func TestEachInter(t *testing.T) {
 
 func TestWhereInter(t *testing.T) {
 	m := objx.Map{"data": []interface{}{interface{}("something"), interface{}("something"), interface{}("something"), interface{}("something"), interface{}("something"), interface{}("something")}}
+
 	selected := m.Get("data").WhereInter(func(i int, val interface{}) bool {
 		return i%2 == 0
 	}).MustInterSlice()
@@ -78,6 +79,7 @@ func TestWhereInter(t *testing.T) {
 
 func TestGroupInter(t *testing.T) {
 	m := objx.Map{"data": []interface{}{interface{}("something"), interface{}("something"), interface{}("something"), interface{}("something"), interface{}("something"), interface{}("something")}}
+
 	grouped := m.Get("data").GroupInter(func(i int, val interface{}) string {
 		return fmt.Sprintf("%v", i%2 == 0)
 	}).Data().(map[string][]interface{})
@@ -90,6 +92,7 @@ func TestGroupInter(t *testing.T) {
 func TestReplaceInter(t *testing.T) {
 	m := objx.Map{"data": []interface{}{interface{}("something"), interface{}("something"), interface{}("something"), interface{}("something"), interface{}("something"), interface{}("something")}}
 	rawArr := m.Get("data").MustInterSlice()
+
 	replaced := m.Get("data").ReplaceInter(func(index int, val interface{}) interface{} {
 		if index < len(rawArr)-1 {
 			return rawArr[index+1]
@@ -110,6 +113,7 @@ func TestReplaceInter(t *testing.T) {
 
 func TestCollectInter(t *testing.T) {
 	m := objx.Map{"data": []interface{}{interface{}("something"), interface{}("something"), interface{}("something"), interface{}("something"), interface{}("something"), interface{}("something")}}
+
 	collected := m.Get("data").CollectInter(func(index int, val interface{}) interface{} {
 		return index
 	})
@@ -126,12 +130,13 @@ func TestCollectInter(t *testing.T) {
 }
 
 /*
-  Tests for MSI (map[string]interface{} and []map[string]interface{})
+   Tests for MSI (map[string]interface{} and []map[string]interface{})
 */
 func TestMSI(t *testing.T) {
 	val := map[string]interface{}(map[string]interface{}{"name": "Tyler"})
 	m := objx.Map{"value": val, "nothing": nil}
 
+	assert.Equal(t, map[string]interface{}{"value": val, "nothing": nil}, m.Value().MSI())
 	assert.Equal(t, val, m.Get("value").MSI())
 	assert.Equal(t, val, m.Get("value").MustMSI())
 	assert.Equal(t, map[string]interface{}(nil), m.Get("nothing").MSI())
@@ -186,6 +191,7 @@ func TestEachMSI(t *testing.T) {
 
 func TestWhereMSI(t *testing.T) {
 	m := objx.Map{"data": []map[string]interface{}{map[string]interface{}(map[string]interface{}{"name": "Tyler"}), map[string]interface{}(map[string]interface{}{"name": "Tyler"}), map[string]interface{}(map[string]interface{}{"name": "Tyler"}), map[string]interface{}(map[string]interface{}{"name": "Tyler"}), map[string]interface{}(map[string]interface{}{"name": "Tyler"}), map[string]interface{}(map[string]interface{}{"name": "Tyler"})}}
+
 	selected := m.Get("data").WhereMSI(func(i int, val map[string]interface{}) bool {
 		return i%2 == 0
 	}).MustMSISlice()
@@ -195,6 +201,7 @@ func TestWhereMSI(t *testing.T) {
 
 func TestGroupMSI(t *testing.T) {
 	m := objx.Map{"data": []map[string]interface{}{map[string]interface{}(map[string]interface{}{"name": "Tyler"}), map[string]interface{}(map[string]interface{}{"name": "Tyler"}), map[string]interface{}(map[string]interface{}{"name": "Tyler"}), map[string]interface{}(map[string]interface{}{"name": "Tyler"}), map[string]interface{}(map[string]interface{}{"name": "Tyler"}), map[string]interface{}(map[string]interface{}{"name": "Tyler"})}}
+
 	grouped := m.Get("data").GroupMSI(func(i int, val map[string]interface{}) string {
 		return fmt.Sprintf("%v", i%2 == 0)
 	}).Data().(map[string][]map[string]interface{})
@@ -207,6 +214,7 @@ func TestGroupMSI(t *testing.T) {
 func TestReplaceMSI(t *testing.T) {
 	m := objx.Map{"data": []map[string]interface{}{map[string]interface{}(map[string]interface{}{"name": "Tyler"}), map[string]interface{}(map[string]interface{}{"name": "Tyler"}), map[string]interface{}(map[string]interface{}{"name": "Tyler"}), map[string]interface{}(map[string]interface{}{"name": "Tyler"}), map[string]interface{}(map[string]interface{}{"name": "Tyler"}), map[string]interface{}(map[string]interface{}{"name": "Tyler"})}}
 	rawArr := m.Get("data").MustMSISlice()
+
 	replaced := m.Get("data").ReplaceMSI(func(index int, val map[string]interface{}) map[string]interface{} {
 		if index < len(rawArr)-1 {
 			return rawArr[index+1]
@@ -227,6 +235,7 @@ func TestReplaceMSI(t *testing.T) {
 
 func TestCollectMSI(t *testing.T) {
 	m := objx.Map{"data": []map[string]interface{}{map[string]interface{}(map[string]interface{}{"name": "Tyler"}), map[string]interface{}(map[string]interface{}{"name": "Tyler"}), map[string]interface{}(map[string]interface{}{"name": "Tyler"}), map[string]interface{}(map[string]interface{}{"name": "Tyler"}), map[string]interface{}(map[string]interface{}{"name": "Tyler"}), map[string]interface{}(map[string]interface{}{"name": "Tyler"})}}
+
 	collected := m.Get("data").CollectMSI(func(index int, val map[string]interface{}) interface{} {
 		return index
 	})
@@ -243,7 +252,7 @@ func TestCollectMSI(t *testing.T) {
 }
 
 /*
-  Tests for ObjxMap ((objx.Map) and [](objx.Map))
+   Tests for ObjxMap ((objx.Map) and [](objx.Map))
 */
 func TestObjxMap(t *testing.T) {
 	val := (objx.Map)(objx.New(1))
@@ -303,6 +312,7 @@ func TestEachObjxMap(t *testing.T) {
 
 func TestWhereObjxMap(t *testing.T) {
 	m := objx.Map{"data": [](objx.Map){(objx.Map)(objx.New(1)), (objx.Map)(objx.New(1)), (objx.Map)(objx.New(1)), (objx.Map)(objx.New(1)), (objx.Map)(objx.New(1)), (objx.Map)(objx.New(1))}}
+
 	selected := m.Get("data").WhereObjxMap(func(i int, val objx.Map) bool {
 		return i%2 == 0
 	}).MustObjxMapSlice()
@@ -312,6 +322,7 @@ func TestWhereObjxMap(t *testing.T) {
 
 func TestGroupObjxMap(t *testing.T) {
 	m := objx.Map{"data": [](objx.Map){(objx.Map)(objx.New(1)), (objx.Map)(objx.New(1)), (objx.Map)(objx.New(1)), (objx.Map)(objx.New(1)), (objx.Map)(objx.New(1)), (objx.Map)(objx.New(1))}}
+
 	grouped := m.Get("data").GroupObjxMap(func(i int, val objx.Map) string {
 		return fmt.Sprintf("%v", i%2 == 0)
 	}).Data().(map[string][](objx.Map))
@@ -324,6 +335,7 @@ func TestGroupObjxMap(t *testing.T) {
 func TestReplaceObjxMap(t *testing.T) {
 	m := objx.Map{"data": [](objx.Map){(objx.Map)(objx.New(1)), (objx.Map)(objx.New(1)), (objx.Map)(objx.New(1)), (objx.Map)(objx.New(1)), (objx.Map)(objx.New(1)), (objx.Map)(objx.New(1))}}
 	rawArr := m.Get("data").MustObjxMapSlice()
+
 	replaced := m.Get("data").ReplaceObjxMap(func(index int, val objx.Map) objx.Map {
 		if index < len(rawArr)-1 {
 			return rawArr[index+1]
@@ -344,6 +356,7 @@ func TestReplaceObjxMap(t *testing.T) {
 
 func TestCollectObjxMap(t *testing.T) {
 	m := objx.Map{"data": [](objx.Map){(objx.Map)(objx.New(1)), (objx.Map)(objx.New(1)), (objx.Map)(objx.New(1)), (objx.Map)(objx.New(1)), (objx.Map)(objx.New(1)), (objx.Map)(objx.New(1))}}
+
 	collected := m.Get("data").CollectObjxMap(func(index int, val objx.Map) interface{} {
 		return index
 	})
@@ -360,7 +373,7 @@ func TestCollectObjxMap(t *testing.T) {
 }
 
 /*
-  Tests for Bool (bool and []bool)
+   Tests for Bool (bool and []bool)
 */
 func TestBool(t *testing.T) {
 	val := bool(true)
@@ -420,6 +433,7 @@ func TestEachBool(t *testing.T) {
 
 func TestWhereBool(t *testing.T) {
 	m := objx.Map{"data": []bool{bool(true), bool(true), bool(true), bool(true), bool(true), bool(true)}}
+
 	selected := m.Get("data").WhereBool(func(i int, val bool) bool {
 		return i%2 == 0
 	}).MustBoolSlice()
@@ -429,6 +443,7 @@ func TestWhereBool(t *testing.T) {
 
 func TestGroupBool(t *testing.T) {
 	m := objx.Map{"data": []bool{bool(true), bool(true), bool(true), bool(true), bool(true), bool(true)}}
+
 	grouped := m.Get("data").GroupBool(func(i int, val bool) string {
 		return fmt.Sprintf("%v", i%2 == 0)
 	}).Data().(map[string][]bool)
@@ -441,6 +456,7 @@ func TestGroupBool(t *testing.T) {
 func TestReplaceBool(t *testing.T) {
 	m := objx.Map{"data": []bool{bool(true), bool(true), bool(true), bool(true), bool(true), bool(true)}}
 	rawArr := m.Get("data").MustBoolSlice()
+
 	replaced := m.Get("data").ReplaceBool(func(index int, val bool) bool {
 		if index < len(rawArr)-1 {
 			return rawArr[index+1]
@@ -461,6 +477,7 @@ func TestReplaceBool(t *testing.T) {
 
 func TestCollectBool(t *testing.T) {
 	m := objx.Map{"data": []bool{bool(true), bool(true), bool(true), bool(true), bool(true), bool(true)}}
+
 	collected := m.Get("data").CollectBool(func(index int, val bool) interface{} {
 		return index
 	})
@@ -477,7 +494,7 @@ func TestCollectBool(t *testing.T) {
 }
 
 /*
-  Tests for Str (string and []string)
+   Tests for Str (string and []string)
 */
 func TestStr(t *testing.T) {
 	val := string("hello")
@@ -537,6 +554,7 @@ func TestEachStr(t *testing.T) {
 
 func TestWhereStr(t *testing.T) {
 	m := objx.Map{"data": []string{string("hello"), string("hello"), string("hello"), string("hello"), string("hello"), string("hello")}}
+
 	selected := m.Get("data").WhereStr(func(i int, val string) bool {
 		return i%2 == 0
 	}).MustStrSlice()
@@ -546,6 +564,7 @@ func TestWhereStr(t *testing.T) {
 
 func TestGroupStr(t *testing.T) {
 	m := objx.Map{"data": []string{string("hello"), string("hello"), string("hello"), string("hello"), string("hello"), string("hello")}}
+
 	grouped := m.Get("data").GroupStr(func(i int, val string) string {
 		return fmt.Sprintf("%v", i%2 == 0)
 	}).Data().(map[string][]string)
@@ -558,6 +577,7 @@ func TestGroupStr(t *testing.T) {
 func TestReplaceStr(t *testing.T) {
 	m := objx.Map{"data": []string{string("hello"), string("hello"), string("hello"), string("hello"), string("hello"), string("hello")}}
 	rawArr := m.Get("data").MustStrSlice()
+
 	replaced := m.Get("data").ReplaceStr(func(index int, val string) string {
 		if index < len(rawArr)-1 {
 			return rawArr[index+1]
@@ -578,6 +598,7 @@ func TestReplaceStr(t *testing.T) {
 
 func TestCollectStr(t *testing.T) {
 	m := objx.Map{"data": []string{string("hello"), string("hello"), string("hello"), string("hello"), string("hello"), string("hello")}}
+
 	collected := m.Get("data").CollectStr(func(index int, val string) interface{} {
 		return index
 	})
@@ -594,7 +615,7 @@ func TestCollectStr(t *testing.T) {
 }
 
 /*
-  Tests for Int (int and []int)
+   Tests for Int (int and []int)
 */
 func TestInt(t *testing.T) {
 	val := int(1)
@@ -654,6 +675,7 @@ func TestEachInt(t *testing.T) {
 
 func TestWhereInt(t *testing.T) {
 	m := objx.Map{"data": []int{int(1), int(1), int(1), int(1), int(1), int(1)}}
+
 	selected := m.Get("data").WhereInt(func(i int, val int) bool {
 		return i%2 == 0
 	}).MustIntSlice()
@@ -663,6 +685,7 @@ func TestWhereInt(t *testing.T) {
 
 func TestGroupInt(t *testing.T) {
 	m := objx.Map{"data": []int{int(1), int(1), int(1), int(1), int(1), int(1)}}
+
 	grouped := m.Get("data").GroupInt(func(i int, val int) string {
 		return fmt.Sprintf("%v", i%2 == 0)
 	}).Data().(map[string][]int)
@@ -675,6 +698,7 @@ func TestGroupInt(t *testing.T) {
 func TestReplaceInt(t *testing.T) {
 	m := objx.Map{"data": []int{int(1), int(1), int(1), int(1), int(1), int(1)}}
 	rawArr := m.Get("data").MustIntSlice()
+
 	replaced := m.Get("data").ReplaceInt(func(index int, val int) int {
 		if index < len(rawArr)-1 {
 			return rawArr[index+1]
@@ -695,6 +719,7 @@ func TestReplaceInt(t *testing.T) {
 
 func TestCollectInt(t *testing.T) {
 	m := objx.Map{"data": []int{int(1), int(1), int(1), int(1), int(1), int(1)}}
+
 	collected := m.Get("data").CollectInt(func(index int, val int) interface{} {
 		return index
 	})
@@ -711,7 +736,7 @@ func TestCollectInt(t *testing.T) {
 }
 
 /*
-  Tests for Int8 (int8 and []int8)
+   Tests for Int8 (int8 and []int8)
 */
 func TestInt8(t *testing.T) {
 	val := int8(1)
@@ -771,6 +796,7 @@ func TestEachInt8(t *testing.T) {
 
 func TestWhereInt8(t *testing.T) {
 	m := objx.Map{"data": []int8{int8(1), int8(1), int8(1), int8(1), int8(1), int8(1)}}
+
 	selected := m.Get("data").WhereInt8(func(i int, val int8) bool {
 		return i%2 == 0
 	}).MustInt8Slice()
@@ -780,6 +806,7 @@ func TestWhereInt8(t *testing.T) {
 
 func TestGroupInt8(t *testing.T) {
 	m := objx.Map{"data": []int8{int8(1), int8(1), int8(1), int8(1), int8(1), int8(1)}}
+
 	grouped := m.Get("data").GroupInt8(func(i int, val int8) string {
 		return fmt.Sprintf("%v", i%2 == 0)
 	}).Data().(map[string][]int8)
@@ -792,6 +819,7 @@ func TestGroupInt8(t *testing.T) {
 func TestReplaceInt8(t *testing.T) {
 	m := objx.Map{"data": []int8{int8(1), int8(1), int8(1), int8(1), int8(1), int8(1)}}
 	rawArr := m.Get("data").MustInt8Slice()
+
 	replaced := m.Get("data").ReplaceInt8(func(index int, val int8) int8 {
 		if index < len(rawArr)-1 {
 			return rawArr[index+1]
@@ -812,6 +840,7 @@ func TestReplaceInt8(t *testing.T) {
 
 func TestCollectInt8(t *testing.T) {
 	m := objx.Map{"data": []int8{int8(1), int8(1), int8(1), int8(1), int8(1), int8(1)}}
+
 	collected := m.Get("data").CollectInt8(func(index int, val int8) interface{} {
 		return index
 	})
@@ -828,7 +857,7 @@ func TestCollectInt8(t *testing.T) {
 }
 
 /*
-  Tests for Int16 (int16 and []int16)
+   Tests for Int16 (int16 and []int16)
 */
 func TestInt16(t *testing.T) {
 	val := int16(1)
@@ -888,6 +917,7 @@ func TestEachInt16(t *testing.T) {
 
 func TestWhereInt16(t *testing.T) {
 	m := objx.Map{"data": []int16{int16(1), int16(1), int16(1), int16(1), int16(1), int16(1)}}
+
 	selected := m.Get("data").WhereInt16(func(i int, val int16) bool {
 		return i%2 == 0
 	}).MustInt16Slice()
@@ -897,6 +927,7 @@ func TestWhereInt16(t *testing.T) {
 
 func TestGroupInt16(t *testing.T) {
 	m := objx.Map{"data": []int16{int16(1), int16(1), int16(1), int16(1), int16(1), int16(1)}}
+
 	grouped := m.Get("data").GroupInt16(func(i int, val int16) string {
 		return fmt.Sprintf("%v", i%2 == 0)
 	}).Data().(map[string][]int16)
@@ -909,6 +940,7 @@ func TestGroupInt16(t *testing.T) {
 func TestReplaceInt16(t *testing.T) {
 	m := objx.Map{"data": []int16{int16(1), int16(1), int16(1), int16(1), int16(1), int16(1)}}
 	rawArr := m.Get("data").MustInt16Slice()
+
 	replaced := m.Get("data").ReplaceInt16(func(index int, val int16) int16 {
 		if index < len(rawArr)-1 {
 			return rawArr[index+1]
@@ -929,6 +961,7 @@ func TestReplaceInt16(t *testing.T) {
 
 func TestCollectInt16(t *testing.T) {
 	m := objx.Map{"data": []int16{int16(1), int16(1), int16(1), int16(1), int16(1), int16(1)}}
+
 	collected := m.Get("data").CollectInt16(func(index int, val int16) interface{} {
 		return index
 	})
@@ -945,7 +978,7 @@ func TestCollectInt16(t *testing.T) {
 }
 
 /*
-  Tests for Int32 (int32 and []int32)
+   Tests for Int32 (int32 and []int32)
 */
 func TestInt32(t *testing.T) {
 	val := int32(1)
@@ -1005,6 +1038,7 @@ func TestEachInt32(t *testing.T) {
 
 func TestWhereInt32(t *testing.T) {
 	m := objx.Map{"data": []int32{int32(1), int32(1), int32(1), int32(1), int32(1), int32(1)}}
+
 	selected := m.Get("data").WhereInt32(func(i int, val int32) bool {
 		return i%2 == 0
 	}).MustInt32Slice()
@@ -1014,6 +1048,7 @@ func TestWhereInt32(t *testing.T) {
 
 func TestGroupInt32(t *testing.T) {
 	m := objx.Map{"data": []int32{int32(1), int32(1), int32(1), int32(1), int32(1), int32(1)}}
+
 	grouped := m.Get("data").GroupInt32(func(i int, val int32) string {
 		return fmt.Sprintf("%v", i%2 == 0)
 	}).Data().(map[string][]int32)
@@ -1026,6 +1061,7 @@ func TestGroupInt32(t *testing.T) {
 func TestReplaceInt32(t *testing.T) {
 	m := objx.Map{"data": []int32{int32(1), int32(1), int32(1), int32(1), int32(1), int32(1)}}
 	rawArr := m.Get("data").MustInt32Slice()
+
 	replaced := m.Get("data").ReplaceInt32(func(index int, val int32) int32 {
 		if index < len(rawArr)-1 {
 			return rawArr[index+1]
@@ -1046,6 +1082,7 @@ func TestReplaceInt32(t *testing.T) {
 
 func TestCollectInt32(t *testing.T) {
 	m := objx.Map{"data": []int32{int32(1), int32(1), int32(1), int32(1), int32(1), int32(1)}}
+
 	collected := m.Get("data").CollectInt32(func(index int, val int32) interface{} {
 		return index
 	})
@@ -1062,7 +1099,7 @@ func TestCollectInt32(t *testing.T) {
 }
 
 /*
-  Tests for Int64 (int64 and []int64)
+   Tests for Int64 (int64 and []int64)
 */
 func TestInt64(t *testing.T) {
 	val := int64(1)
@@ -1122,6 +1159,7 @@ func TestEachInt64(t *testing.T) {
 
 func TestWhereInt64(t *testing.T) {
 	m := objx.Map{"data": []int64{int64(1), int64(1), int64(1), int64(1), int64(1), int64(1)}}
+
 	selected := m.Get("data").WhereInt64(func(i int, val int64) bool {
 		return i%2 == 0
 	}).MustInt64Slice()
@@ -1131,6 +1169,7 @@ func TestWhereInt64(t *testing.T) {
 
 func TestGroupInt64(t *testing.T) {
 	m := objx.Map{"data": []int64{int64(1), int64(1), int64(1), int64(1), int64(1), int64(1)}}
+
 	grouped := m.Get("data").GroupInt64(func(i int, val int64) string {
 		return fmt.Sprintf("%v", i%2 == 0)
 	}).Data().(map[string][]int64)
@@ -1143,6 +1182,7 @@ func TestGroupInt64(t *testing.T) {
 func TestReplaceInt64(t *testing.T) {
 	m := objx.Map{"data": []int64{int64(1), int64(1), int64(1), int64(1), int64(1), int64(1)}}
 	rawArr := m.Get("data").MustInt64Slice()
+
 	replaced := m.Get("data").ReplaceInt64(func(index int, val int64) int64 {
 		if index < len(rawArr)-1 {
 			return rawArr[index+1]
@@ -1163,6 +1203,7 @@ func TestReplaceInt64(t *testing.T) {
 
 func TestCollectInt64(t *testing.T) {
 	m := objx.Map{"data": []int64{int64(1), int64(1), int64(1), int64(1), int64(1), int64(1)}}
+
 	collected := m.Get("data").CollectInt64(func(index int, val int64) interface{} {
 		return index
 	})
@@ -1179,7 +1220,7 @@ func TestCollectInt64(t *testing.T) {
 }
 
 /*
-  Tests for Uint (uint and []uint)
+   Tests for Uint (uint and []uint)
 */
 func TestUint(t *testing.T) {
 	val := uint(1)
@@ -1239,6 +1280,7 @@ func TestEachUint(t *testing.T) {
 
 func TestWhereUint(t *testing.T) {
 	m := objx.Map{"data": []uint{uint(1), uint(1), uint(1), uint(1), uint(1), uint(1)}}
+
 	selected := m.Get("data").WhereUint(func(i int, val uint) bool {
 		return i%2 == 0
 	}).MustUintSlice()
@@ -1248,6 +1290,7 @@ func TestWhereUint(t *testing.T) {
 
 func TestGroupUint(t *testing.T) {
 	m := objx.Map{"data": []uint{uint(1), uint(1), uint(1), uint(1), uint(1), uint(1)}}
+
 	grouped := m.Get("data").GroupUint(func(i int, val uint) string {
 		return fmt.Sprintf("%v", i%2 == 0)
 	}).Data().(map[string][]uint)
@@ -1260,6 +1303,7 @@ func TestGroupUint(t *testing.T) {
 func TestReplaceUint(t *testing.T) {
 	m := objx.Map{"data": []uint{uint(1), uint(1), uint(1), uint(1), uint(1), uint(1)}}
 	rawArr := m.Get("data").MustUintSlice()
+
 	replaced := m.Get("data").ReplaceUint(func(index int, val uint) uint {
 		if index < len(rawArr)-1 {
 			return rawArr[index+1]
@@ -1280,6 +1324,7 @@ func TestReplaceUint(t *testing.T) {
 
 func TestCollectUint(t *testing.T) {
 	m := objx.Map{"data": []uint{uint(1), uint(1), uint(1), uint(1), uint(1), uint(1)}}
+
 	collected := m.Get("data").CollectUint(func(index int, val uint) interface{} {
 		return index
 	})
@@ -1296,7 +1341,7 @@ func TestCollectUint(t *testing.T) {
 }
 
 /*
-  Tests for Uint8 (uint8 and []uint8)
+   Tests for Uint8 (uint8 and []uint8)
 */
 func TestUint8(t *testing.T) {
 	val := uint8(1)
@@ -1356,6 +1401,7 @@ func TestEachUint8(t *testing.T) {
 
 func TestWhereUint8(t *testing.T) {
 	m := objx.Map{"data": []uint8{uint8(1), uint8(1), uint8(1), uint8(1), uint8(1), uint8(1)}}
+
 	selected := m.Get("data").WhereUint8(func(i int, val uint8) bool {
 		return i%2 == 0
 	}).MustUint8Slice()
@@ -1365,6 +1411,7 @@ func TestWhereUint8(t *testing.T) {
 
 func TestGroupUint8(t *testing.T) {
 	m := objx.Map{"data": []uint8{uint8(1), uint8(1), uint8(1), uint8(1), uint8(1), uint8(1)}}
+
 	grouped := m.Get("data").GroupUint8(func(i int, val uint8) string {
 		return fmt.Sprintf("%v", i%2 == 0)
 	}).Data().(map[string][]uint8)
@@ -1377,6 +1424,7 @@ func TestGroupUint8(t *testing.T) {
 func TestReplaceUint8(t *testing.T) {
 	m := objx.Map{"data": []uint8{uint8(1), uint8(1), uint8(1), uint8(1), uint8(1), uint8(1)}}
 	rawArr := m.Get("data").MustUint8Slice()
+
 	replaced := m.Get("data").ReplaceUint8(func(index int, val uint8) uint8 {
 		if index < len(rawArr)-1 {
 			return rawArr[index+1]
@@ -1397,6 +1445,7 @@ func TestReplaceUint8(t *testing.T) {
 
 func TestCollectUint8(t *testing.T) {
 	m := objx.Map{"data": []uint8{uint8(1), uint8(1), uint8(1), uint8(1), uint8(1), uint8(1)}}
+
 	collected := m.Get("data").CollectUint8(func(index int, val uint8) interface{} {
 		return index
 	})
@@ -1413,7 +1462,7 @@ func TestCollectUint8(t *testing.T) {
 }
 
 /*
-  Tests for Uint16 (uint16 and []uint16)
+   Tests for Uint16 (uint16 and []uint16)
 */
 func TestUint16(t *testing.T) {
 	val := uint16(1)
@@ -1473,6 +1522,7 @@ func TestEachUint16(t *testing.T) {
 
 func TestWhereUint16(t *testing.T) {
 	m := objx.Map{"data": []uint16{uint16(1), uint16(1), uint16(1), uint16(1), uint16(1), uint16(1)}}
+
 	selected := m.Get("data").WhereUint16(func(i int, val uint16) bool {
 		return i%2 == 0
 	}).MustUint16Slice()
@@ -1482,6 +1532,7 @@ func TestWhereUint16(t *testing.T) {
 
 func TestGroupUint16(t *testing.T) {
 	m := objx.Map{"data": []uint16{uint16(1), uint16(1), uint16(1), uint16(1), uint16(1), uint16(1)}}
+
 	grouped := m.Get("data").GroupUint16(func(i int, val uint16) string {
 		return fmt.Sprintf("%v", i%2 == 0)
 	}).Data().(map[string][]uint16)
@@ -1494,6 +1545,7 @@ func TestGroupUint16(t *testing.T) {
 func TestReplaceUint16(t *testing.T) {
 	m := objx.Map{"data": []uint16{uint16(1), uint16(1), uint16(1), uint16(1), uint16(1), uint16(1)}}
 	rawArr := m.Get("data").MustUint16Slice()
+
 	replaced := m.Get("data").ReplaceUint16(func(index int, val uint16) uint16 {
 		if index < len(rawArr)-1 {
 			return rawArr[index+1]
@@ -1514,6 +1566,7 @@ func TestReplaceUint16(t *testing.T) {
 
 func TestCollectUint16(t *testing.T) {
 	m := objx.Map{"data": []uint16{uint16(1), uint16(1), uint16(1), uint16(1), uint16(1), uint16(1)}}
+
 	collected := m.Get("data").CollectUint16(func(index int, val uint16) interface{} {
 		return index
 	})
@@ -1530,7 +1583,7 @@ func TestCollectUint16(t *testing.T) {
 }
 
 /*
-  Tests for Uint32 (uint32 and []uint32)
+   Tests for Uint32 (uint32 and []uint32)
 */
 func TestUint32(t *testing.T) {
 	val := uint32(1)
@@ -1590,6 +1643,7 @@ func TestEachUint32(t *testing.T) {
 
 func TestWhereUint32(t *testing.T) {
 	m := objx.Map{"data": []uint32{uint32(1), uint32(1), uint32(1), uint32(1), uint32(1), uint32(1)}}
+
 	selected := m.Get("data").WhereUint32(func(i int, val uint32) bool {
 		return i%2 == 0
 	}).MustUint32Slice()
@@ -1599,6 +1653,7 @@ func TestWhereUint32(t *testing.T) {
 
 func TestGroupUint32(t *testing.T) {
 	m := objx.Map{"data": []uint32{uint32(1), uint32(1), uint32(1), uint32(1), uint32(1), uint32(1)}}
+
 	grouped := m.Get("data").GroupUint32(func(i int, val uint32) string {
 		return fmt.Sprintf("%v", i%2 == 0)
 	}).Data().(map[string][]uint32)
@@ -1611,6 +1666,7 @@ func TestGroupUint32(t *testing.T) {
 func TestReplaceUint32(t *testing.T) {
 	m := objx.Map{"data": []uint32{uint32(1), uint32(1), uint32(1), uint32(1), uint32(1), uint32(1)}}
 	rawArr := m.Get("data").MustUint32Slice()
+
 	replaced := m.Get("data").ReplaceUint32(func(index int, val uint32) uint32 {
 		if index < len(rawArr)-1 {
 			return rawArr[index+1]
@@ -1631,6 +1687,7 @@ func TestReplaceUint32(t *testing.T) {
 
 func TestCollectUint32(t *testing.T) {
 	m := objx.Map{"data": []uint32{uint32(1), uint32(1), uint32(1), uint32(1), uint32(1), uint32(1)}}
+
 	collected := m.Get("data").CollectUint32(func(index int, val uint32) interface{} {
 		return index
 	})
@@ -1647,7 +1704,7 @@ func TestCollectUint32(t *testing.T) {
 }
 
 /*
-  Tests for Uint64 (uint64 and []uint64)
+   Tests for Uint64 (uint64 and []uint64)
 */
 func TestUint64(t *testing.T) {
 	val := uint64(1)
@@ -1707,6 +1764,7 @@ func TestEachUint64(t *testing.T) {
 
 func TestWhereUint64(t *testing.T) {
 	m := objx.Map{"data": []uint64{uint64(1), uint64(1), uint64(1), uint64(1), uint64(1), uint64(1)}}
+
 	selected := m.Get("data").WhereUint64(func(i int, val uint64) bool {
 		return i%2 == 0
 	}).MustUint64Slice()
@@ -1716,6 +1774,7 @@ func TestWhereUint64(t *testing.T) {
 
 func TestGroupUint64(t *testing.T) {
 	m := objx.Map{"data": []uint64{uint64(1), uint64(1), uint64(1), uint64(1), uint64(1), uint64(1)}}
+
 	grouped := m.Get("data").GroupUint64(func(i int, val uint64) string {
 		return fmt.Sprintf("%v", i%2 == 0)
 	}).Data().(map[string][]uint64)
@@ -1728,6 +1787,7 @@ func TestGroupUint64(t *testing.T) {
 func TestReplaceUint64(t *testing.T) {
 	m := objx.Map{"data": []uint64{uint64(1), uint64(1), uint64(1), uint64(1), uint64(1), uint64(1)}}
 	rawArr := m.Get("data").MustUint64Slice()
+
 	replaced := m.Get("data").ReplaceUint64(func(index int, val uint64) uint64 {
 		if index < len(rawArr)-1 {
 			return rawArr[index+1]
@@ -1748,6 +1808,7 @@ func TestReplaceUint64(t *testing.T) {
 
 func TestCollectUint64(t *testing.T) {
 	m := objx.Map{"data": []uint64{uint64(1), uint64(1), uint64(1), uint64(1), uint64(1), uint64(1)}}
+
 	collected := m.Get("data").CollectUint64(func(index int, val uint64) interface{} {
 		return index
 	})
@@ -1764,7 +1825,7 @@ func TestCollectUint64(t *testing.T) {
 }
 
 /*
-  Tests for Uintptr (uintptr and []uintptr)
+   Tests for Uintptr (uintptr and []uintptr)
 */
 func TestUintptr(t *testing.T) {
 	val := uintptr(1)
@@ -1824,6 +1885,7 @@ func TestEachUintptr(t *testing.T) {
 
 func TestWhereUintptr(t *testing.T) {
 	m := objx.Map{"data": []uintptr{uintptr(1), uintptr(1), uintptr(1), uintptr(1), uintptr(1), uintptr(1)}}
+
 	selected := m.Get("data").WhereUintptr(func(i int, val uintptr) bool {
 		return i%2 == 0
 	}).MustUintptrSlice()
@@ -1833,6 +1895,7 @@ func TestWhereUintptr(t *testing.T) {
 
 func TestGroupUintptr(t *testing.T) {
 	m := objx.Map{"data": []uintptr{uintptr(1), uintptr(1), uintptr(1), uintptr(1), uintptr(1), uintptr(1)}}
+
 	grouped := m.Get("data").GroupUintptr(func(i int, val uintptr) string {
 		return fmt.Sprintf("%v", i%2 == 0)
 	}).Data().(map[string][]uintptr)
@@ -1845,6 +1908,7 @@ func TestGroupUintptr(t *testing.T) {
 func TestReplaceUintptr(t *testing.T) {
 	m := objx.Map{"data": []uintptr{uintptr(1), uintptr(1), uintptr(1), uintptr(1), uintptr(1), uintptr(1)}}
 	rawArr := m.Get("data").MustUintptrSlice()
+
 	replaced := m.Get("data").ReplaceUintptr(func(index int, val uintptr) uintptr {
 		if index < len(rawArr)-1 {
 			return rawArr[index+1]
@@ -1865,6 +1929,7 @@ func TestReplaceUintptr(t *testing.T) {
 
 func TestCollectUintptr(t *testing.T) {
 	m := objx.Map{"data": []uintptr{uintptr(1), uintptr(1), uintptr(1), uintptr(1), uintptr(1), uintptr(1)}}
+
 	collected := m.Get("data").CollectUintptr(func(index int, val uintptr) interface{} {
 		return index
 	})
@@ -1881,7 +1946,7 @@ func TestCollectUintptr(t *testing.T) {
 }
 
 /*
-  Tests for Float32 (float32 and []float32)
+   Tests for Float32 (float32 and []float32)
 */
 func TestFloat32(t *testing.T) {
 	val := float32(1)
@@ -1941,6 +2006,7 @@ func TestEachFloat32(t *testing.T) {
 
 func TestWhereFloat32(t *testing.T) {
 	m := objx.Map{"data": []float32{float32(1), float32(1), float32(1), float32(1), float32(1), float32(1)}}
+
 	selected := m.Get("data").WhereFloat32(func(i int, val float32) bool {
 		return i%2 == 0
 	}).MustFloat32Slice()
@@ -1950,6 +2016,7 @@ func TestWhereFloat32(t *testing.T) {
 
 func TestGroupFloat32(t *testing.T) {
 	m := objx.Map{"data": []float32{float32(1), float32(1), float32(1), float32(1), float32(1), float32(1)}}
+
 	grouped := m.Get("data").GroupFloat32(func(i int, val float32) string {
 		return fmt.Sprintf("%v", i%2 == 0)
 	}).Data().(map[string][]float32)
@@ -1962,6 +2029,7 @@ func TestGroupFloat32(t *testing.T) {
 func TestReplaceFloat32(t *testing.T) {
 	m := objx.Map{"data": []float32{float32(1), float32(1), float32(1), float32(1), float32(1), float32(1)}}
 	rawArr := m.Get("data").MustFloat32Slice()
+
 	replaced := m.Get("data").ReplaceFloat32(func(index int, val float32) float32 {
 		if index < len(rawArr)-1 {
 			return rawArr[index+1]
@@ -1982,6 +2050,7 @@ func TestReplaceFloat32(t *testing.T) {
 
 func TestCollectFloat32(t *testing.T) {
 	m := objx.Map{"data": []float32{float32(1), float32(1), float32(1), float32(1), float32(1), float32(1)}}
+
 	collected := m.Get("data").CollectFloat32(func(index int, val float32) interface{} {
 		return index
 	})
@@ -1998,7 +2067,7 @@ func TestCollectFloat32(t *testing.T) {
 }
 
 /*
-  Tests for Float64 (float64 and []float64)
+   Tests for Float64 (float64 and []float64)
 */
 func TestFloat64(t *testing.T) {
 	val := float64(1)
@@ -2058,6 +2127,7 @@ func TestEachFloat64(t *testing.T) {
 
 func TestWhereFloat64(t *testing.T) {
 	m := objx.Map{"data": []float64{float64(1), float64(1), float64(1), float64(1), float64(1), float64(1)}}
+
 	selected := m.Get("data").WhereFloat64(func(i int, val float64) bool {
 		return i%2 == 0
 	}).MustFloat64Slice()
@@ -2067,6 +2137,7 @@ func TestWhereFloat64(t *testing.T) {
 
 func TestGroupFloat64(t *testing.T) {
 	m := objx.Map{"data": []float64{float64(1), float64(1), float64(1), float64(1), float64(1), float64(1)}}
+
 	grouped := m.Get("data").GroupFloat64(func(i int, val float64) string {
 		return fmt.Sprintf("%v", i%2 == 0)
 	}).Data().(map[string][]float64)
@@ -2079,6 +2150,7 @@ func TestGroupFloat64(t *testing.T) {
 func TestReplaceFloat64(t *testing.T) {
 	m := objx.Map{"data": []float64{float64(1), float64(1), float64(1), float64(1), float64(1), float64(1)}}
 	rawArr := m.Get("data").MustFloat64Slice()
+
 	replaced := m.Get("data").ReplaceFloat64(func(index int, val float64) float64 {
 		if index < len(rawArr)-1 {
 			return rawArr[index+1]
@@ -2099,6 +2171,7 @@ func TestReplaceFloat64(t *testing.T) {
 
 func TestCollectFloat64(t *testing.T) {
 	m := objx.Map{"data": []float64{float64(1), float64(1), float64(1), float64(1), float64(1), float64(1)}}
+
 	collected := m.Get("data").CollectFloat64(func(index int, val float64) interface{} {
 		return index
 	})
@@ -2115,7 +2188,7 @@ func TestCollectFloat64(t *testing.T) {
 }
 
 /*
-  Tests for Complex64 (complex64 and []complex64)
+   Tests for Complex64 (complex64 and []complex64)
 */
 func TestComplex64(t *testing.T) {
 	val := complex64(1)
@@ -2175,6 +2248,7 @@ func TestEachComplex64(t *testing.T) {
 
 func TestWhereComplex64(t *testing.T) {
 	m := objx.Map{"data": []complex64{complex64(1), complex64(1), complex64(1), complex64(1), complex64(1), complex64(1)}}
+
 	selected := m.Get("data").WhereComplex64(func(i int, val complex64) bool {
 		return i%2 == 0
 	}).MustComplex64Slice()
@@ -2184,6 +2258,7 @@ func TestWhereComplex64(t *testing.T) {
 
 func TestGroupComplex64(t *testing.T) {
 	m := objx.Map{"data": []complex64{complex64(1), complex64(1), complex64(1), complex64(1), complex64(1), complex64(1)}}
+
 	grouped := m.Get("data").GroupComplex64(func(i int, val complex64) string {
 		return fmt.Sprintf("%v", i%2 == 0)
 	}).Data().(map[string][]complex64)
@@ -2196,6 +2271,7 @@ func TestGroupComplex64(t *testing.T) {
 func TestReplaceComplex64(t *testing.T) {
 	m := objx.Map{"data": []complex64{complex64(1), complex64(1), complex64(1), complex64(1), complex64(1), complex64(1)}}
 	rawArr := m.Get("data").MustComplex64Slice()
+
 	replaced := m.Get("data").ReplaceComplex64(func(index int, val complex64) complex64 {
 		if index < len(rawArr)-1 {
 			return rawArr[index+1]
@@ -2216,6 +2292,7 @@ func TestReplaceComplex64(t *testing.T) {
 
 func TestCollectComplex64(t *testing.T) {
 	m := objx.Map{"data": []complex64{complex64(1), complex64(1), complex64(1), complex64(1), complex64(1), complex64(1)}}
+
 	collected := m.Get("data").CollectComplex64(func(index int, val complex64) interface{} {
 		return index
 	})
@@ -2232,7 +2309,7 @@ func TestCollectComplex64(t *testing.T) {
 }
 
 /*
-  Tests for Complex128 (complex128 and []complex128)
+   Tests for Complex128 (complex128 and []complex128)
 */
 func TestComplex128(t *testing.T) {
 	val := complex128(1)
@@ -2292,6 +2369,7 @@ func TestEachComplex128(t *testing.T) {
 
 func TestWhereComplex128(t *testing.T) {
 	m := objx.Map{"data": []complex128{complex128(1), complex128(1), complex128(1), complex128(1), complex128(1), complex128(1)}}
+
 	selected := m.Get("data").WhereComplex128(func(i int, val complex128) bool {
 		return i%2 == 0
 	}).MustComplex128Slice()
@@ -2301,6 +2379,7 @@ func TestWhereComplex128(t *testing.T) {
 
 func TestGroupComplex128(t *testing.T) {
 	m := objx.Map{"data": []complex128{complex128(1), complex128(1), complex128(1), complex128(1), complex128(1), complex128(1)}}
+
 	grouped := m.Get("data").GroupComplex128(func(i int, val complex128) string {
 		return fmt.Sprintf("%v", i%2 == 0)
 	}).Data().(map[string][]complex128)
@@ -2313,6 +2392,7 @@ func TestGroupComplex128(t *testing.T) {
 func TestReplaceComplex128(t *testing.T) {
 	m := objx.Map{"data": []complex128{complex128(1), complex128(1), complex128(1), complex128(1), complex128(1), complex128(1)}}
 	rawArr := m.Get("data").MustComplex128Slice()
+
 	replaced := m.Get("data").ReplaceComplex128(func(index int, val complex128) complex128 {
 		if index < len(rawArr)-1 {
 			return rawArr[index+1]
@@ -2333,6 +2413,7 @@ func TestReplaceComplex128(t *testing.T) {
 
 func TestCollectComplex128(t *testing.T) {
 	m := objx.Map{"data": []complex128{complex128(1), complex128(1), complex128(1), complex128(1), complex128(1), complex128(1)}}
+
 	collected := m.Get("data").CollectComplex128(func(index int, val complex128) interface{} {
 		return index
 	})
