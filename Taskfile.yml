@@ -10,8 +10,8 @@ update-deps:
 lint:
   desc: Runs golint
   cmds:
-    - go fmt -l $(go list ./... | grep -v /vendor/)
-    - go vet $(go list ./... | grep -v /vendor/)
+    - gofmt -d -s *.go
+    - go vet .
   silent: true
 
 test:
