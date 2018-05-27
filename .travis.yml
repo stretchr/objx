@@ -20,7 +20,6 @@ install:
   - mv task $HOME/gopath/bin
 
 script:
-  - task dl-deps
   - task lint
   - task test-coverage
 
