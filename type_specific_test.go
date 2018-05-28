@@ -29,12 +29,19 @@ func TestMSI(t *testing.T) {
 
 func TestMSISlice(t *testing.T) {
 	val := map[string]interface{}(map[string]interface{}{"name": "Tyler"})
-	m := objx.Map{"value": []map[string]interface{}{val}, "value2": []objx.Map{val}, "nothing": nil}
+	m := objx.Map{
+		"value":   []map[string]interface{}{val},
+		"value2":  []objx.Map{val},
+		"value3":  []interface{}{val},
+		"nothing": nil,
+	}
 
 	assert.Equal(t, val, m.Get("value").MSISlice()[0])
 	assert.Equal(t, val, m.Get("value2").MSISlice()[0])
+	assert.Equal(t, val, m.Get("value3").MSISlice()[0])
 	assert.Equal(t, val, m.Get("value").MustMSISlice()[0])
 	assert.Equal(t, val, m.Get("value2").MustMSISlice()[0])
+	assert.Equal(t, val, m.Get("value3").MustMSISlice()[0])
 	assert.Equal(t, []map[string]interface{}(nil), m.Get("nothing").MSISlice())
 	assert.Equal(t, val, m.Get("nothing").MSISlice([]map[string]interface{}{map[string]interface{}(map[string]interface{}{"name": "Tyler"})})[0])
 	assert.Panics(t, func() {
@@ -230,13 +237,23 @@ func TestObjxMap(t *testing.T) {
 
 func TestObjxMapSlice(t *testing.T) {
 	val := (objx.Map)(objx.New(1))
-	m := objx.Map{"value": [](objx.Map){val}, "value2": []map[string]interface{}{map[string]interface{}(map[string]interface{}{"name": "Taylor"})}, "nothing": nil}
+	m := objx.Map{
+		"value":   [](objx.Map){val},
+		"value2":  []map[string]interface{}{map[string]interface{}(map[string]interface{}{"name": "Taylor"})},
+		"value3":  []interface{}{val},
+		"value4":  []interface{}{map[string]interface{}(map[string]interface{}{"name": "Taylor"})},
+		"nothing": nil,
+	}
 	valMSI := objx.Map{"name": "Taylor"}
 
 	assert.Equal(t, val, m.Get("value").ObjxMapSlice()[0])
 	assert.Equal(t, valMSI, m.Get("value2").ObjxMapSlice()[0])
+	assert.Equal(t, val, m.Get("value3").ObjxMapSlice()[0])
+	assert.Equal(t, valMSI, m.Get("value4").ObjxMapSlice()[0])
 	assert.Equal(t, val, m.Get("value").MustObjxMapSlice()[0])
 	assert.Equal(t, valMSI, m.Get("value2").MustObjxMapSlice()[0])
+	assert.Equal(t, val, m.Get("value3").MustObjxMapSlice()[0])
+	assert.Equal(t, valMSI, m.Get("value4").MustObjxMapSlice()[0])
 	assert.Equal(t, [](objx.Map)(nil), m.Get("nothing").ObjxMapSlice())
 	assert.Equal(t, val, m.Get("nothing").ObjxMapSlice([](objx.Map){(objx.Map)(objx.New(1))})[0])
 	assert.Panics(t, func() {
