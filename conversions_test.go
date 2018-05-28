@@ -125,6 +125,22 @@ func TestConversionURLQueryNoSliceKeySuffix(t *testing.T) {
 	assert.Equal(t, "abc=123&bools=true&bools=false&data[age]=30&data[arr]=1&data[arr]=2&data[height]=162&mapSlice[age]=40&mapSlice[height]=152&name=Mat&stats=1&stats=2", ue)
 }
 
+func TestConversionURLQueryIndexSliceKeySuffix(t *testing.T) {
+	m := getURLQueryMap()
+	m.Set("mapSlice", []objx.Map{objx.Map{"age": 40, "sex": "male"}, objx.Map{"height": 152}})
+	objx.URLValuesSliceKeySuffix = "[i]"
+	u, err := m.URLQuery()
+
+	assert.Nil(t, err)
+	require.NotNil(t, u)
+
+	ue, err := url.QueryUnescape(u)
+	assert.Nil(t, err)
+	require.NotNil(t, ue)
+
+	assert.Equal(t, "abc=123&bools[0]=true&bools[1]=false&data[age]=30&data[arr][0]=1&data[arr][1]=2&data[height]=162&mapSlice[0][age]=40&mapSlice[0][sex]=male&mapSlice[1][height]=152&name=Mat&stats[0]=1&stats[1]=2", ue)
+}
+
 func getURLQueryMap() objx.Map {
 	return objx.Map{
 		"abc":      123,
