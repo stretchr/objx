@@ -93,6 +93,8 @@ func TestConversionURLValues(t *testing.T) {
 		"bools[]":            []string{"true", "false"},
 		"mapSlice[][age]":    []string{"40"},
 		"mapSlice[][height]": []string{"152"},
+		"msiSlice[][age]":    []string{"40"},
+		"msiSlice[][height]": []string{"152"},
 	}, u)
 }
 
@@ -107,7 +109,7 @@ func TestConversionURLQuery(t *testing.T) {
 	assert.Nil(t, err)
 	require.NotNil(t, ue)
 
-	assert.Equal(t, "abc=123&bools[]=true&bools[]=false&data[age]=30&data[arr][]=1&data[arr][]=2&data[height]=162&mapSlice[][age]=40&mapSlice[][height]=152&name=Mat&stats[]=1&stats[]=2", ue)
+	assert.Equal(t, "abc=123&bools[]=true&bools[]=false&data[age]=30&data[arr][]=1&data[arr][]=2&data[height]=162&mapSlice[][age]=40&mapSlice[][height]=152&msiSlice[][age]=40&msiSlice[][height]=152&name=Mat&stats[]=1&stats[]=2", ue)
 }
 
 func TestConversionURLQueryNoSliceKeySuffix(t *testing.T) {
@@ -122,7 +124,7 @@ func TestConversionURLQueryNoSliceKeySuffix(t *testing.T) {
 	assert.Nil(t, err)
 	require.NotNil(t, ue)
 
-	assert.Equal(t, "abc=123&bools=true&bools=false&data[age]=30&data[arr]=1&data[arr]=2&data[height]=162&mapSlice[age]=40&mapSlice[height]=152&name=Mat&stats=1&stats=2", ue)
+	assert.Equal(t, "abc=123&bools=true&bools=false&data[age]=30&data[arr]=1&data[arr]=2&data[height]=162&mapSlice[age]=40&mapSlice[height]=152&msiSlice[age]=40&msiSlice[height]=152&name=Mat&stats=1&stats=2", ue)
 }
 
 func TestConversionURLQueryIndexSliceKeySuffix(t *testing.T) {
@@ -138,7 +140,7 @@ func TestConversionURLQueryIndexSliceKeySuffix(t *testing.T) {
 	assert.Nil(t, err)
 	require.NotNil(t, ue)
 
-	assert.Equal(t, "abc=123&bools[0]=true&bools[1]=false&data[age]=30&data[arr][0]=1&data[arr][1]=2&data[height]=162&mapSlice[0][age]=40&mapSlice[0][sex]=male&mapSlice[1][height]=152&name=Mat&stats[0]=1&stats[1]=2", ue)
+	assert.Equal(t, "abc=123&bools[0]=true&bools[1]=false&data[age]=30&data[arr][0]=1&data[arr][1]=2&data[height]=162&mapSlice[0][age]=40&mapSlice[0][sex]=male&mapSlice[1][height]=152&msiSlice[0][age]=40&msiSlice[1][height]=152&name=Mat&stats[0]=1&stats[1]=2", ue)
 }
 
 func getURLQueryMap() objx.Map {
@@ -147,6 +149,7 @@ func getURLQueryMap() objx.Map {
 		"name":     "Mat",
 		"data":     objx.Map{"age": 30, "height": 162, "arr": []int{1, 2}},
 		"mapSlice": []objx.Map{objx.Map{"age": 40}, objx.Map{"height": 152}},
+		"msiSlice": []map[string]interface{}{map[string]interface{}{"age": 40}, map[string]interface{}{"height": 152}},
 		"stats":    []string{"1", "2"},
 		"bools":    []bool{true, false},
 	}
