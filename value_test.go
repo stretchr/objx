@@ -67,10 +67,12 @@ func TestStringTypeFloat(t *testing.T) {
 
 func TestStringTypeOther(t *testing.T) {
 	m := objx.Map{
-		"other": []string{"foo", "bar"},
+		"other":    []string{"foo", "bar"},
+		"nilValue": nil,
 	}
 
 	assert.Equal(t, "[]string{\"foo\", \"bar\"}", m.Get("other").String())
+	assert.Equal(t, "", m.Get("nilValue").String())
 }
 
 func TestStringSliceTypeString(t *testing.T) {
