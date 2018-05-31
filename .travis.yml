@@ -1,9 +1,15 @@
 language: go
 go:
-  - "1.7"
-  - "1.8"
-  - "1.9"
-  - "1.10"
+  - "1.7.x"
+  - "1.8.x"
+  - "1.9.x"
+  - "1.10.x"
+  - master
+
+matrix:
+  allow_failures:
+    - go: master
+fast_finish: true
 
 env:
   global:
@@ -20,7 +26,7 @@ install:
   - mv task $HOME/gopath/bin
 
 script:
-  - task lint
+  - diff -u <(echo -n) <(task lint)
   - task test-coverage
 
 after_script:

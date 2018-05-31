@@ -148,8 +148,8 @@ func getURLQueryMap() objx.Map {
 		"abc":      123,
 		"name":     "Mat",
 		"data":     objx.Map{"age": 30, "height": 162, "arr": []int{1, 2}},
-		"mapSlice": []objx.Map{objx.Map{"age": 40}, objx.Map{"height": 152}},
-		"msiSlice": []map[string]interface{}{map[string]interface{}{"age": 40}, map[string]interface{}{"height": 152}},
+		"mapSlice": []objx.Map{{"age": 40}, {"height": 152}},
+		"msiSlice": []map[string]interface{}{{"age": 40}, {"height": 152}},
 		"stats":    []string{"1", "2"},
 		"bools":    []bool{true, false},
 	}
