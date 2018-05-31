@@ -69,7 +69,7 @@ func TestEachMSI(t *testing.T) {
 		return i != 2
 	}))
 
-	m2 := objx.Map{"data": []objx.Map{objx.Map{"name": "Taylor"}, objx.Map{"name": "Taylor"}, objx.Map{"name": "Taylor"}, objx.Map{"name": "Taylor"}, objx.Map{"name": "Taylor"}}}
+	m2 := objx.Map{"data": []objx.Map{{"name": "Taylor"}, {"name": "Taylor"}, {"name": "Taylor"}, {"name": "Taylor"}, {"name": "Taylor"}}}
 	assert.Equal(t, m2.Get("data"), m2.Get("data").EachMSI(func(i int, val map[string]interface{}) bool {
 		count++
 		replacedVals = append(replacedVals, val)
@@ -98,7 +98,7 @@ func TestWhereMSI(t *testing.T) {
 }
 
 func TestWhereMSI2(t *testing.T) {
-	m := objx.Map{"data": []objx.Map{objx.Map{"name": "Taylor"}, objx.Map{"name": "Taylor"}, objx.Map{"name": "Taylor"}, objx.Map{"name": "Taylor"}, objx.Map{"name": "Taylor"}}}
+	m := objx.Map{"data": []objx.Map{{"name": "Taylor"}, {"name": "Taylor"}, {"name": "Taylor"}, {"name": "Taylor"}, {"name": "Taylor"}}}
 
 	selected := m.Get("data").WhereMSI(func(i int, val map[string]interface{}) bool {
 		return i%2 == 0
@@ -120,7 +120,7 @@ func TestGroupMSI(t *testing.T) {
 }
 
 func TestGroupMSI2(t *testing.T) {
-	m := objx.Map{"data": []objx.Map{objx.Map{"name": "Taylor"}, objx.Map{"name": "Taylor"}, objx.Map{"name": "Taylor"}, objx.Map{"name": "Taylor"}, objx.Map{"name": "Taylor"}}}
+	m := objx.Map{"data": []objx.Map{{"name": "Taylor"}, {"name": "Taylor"}, {"name": "Taylor"}, {"name": "Taylor"}, {"name": "Taylor"}}}
 
 	grouped := m.Get("data").GroupMSI(func(i int, val map[string]interface{}) string {
 		return fmt.Sprintf("%v", i%2 == 0)
@@ -154,7 +154,7 @@ func TestReplaceMSI(t *testing.T) {
 }
 
 func TestReplaceMSI2(t *testing.T) {
-	m := objx.Map{"data": []objx.Map{objx.Map{"name": "Taylor"}, objx.Map{"name": "Taylor"}, objx.Map{"name": "Taylor"}, objx.Map{"name": "Taylor"}, objx.Map{"name": "Taylor"}}}
+	m := objx.Map{"data": []objx.Map{{"name": "Taylor"}, {"name": "Taylor"}, {"name": "Taylor"}, {"name": "Taylor"}, {"name": "Taylor"}}}
 	rawArr := m.Get("data").MustMSISlice()
 
 	replaced := m.Get("data").ReplaceMSI(func(index int, val map[string]interface{}) map[string]interface{} {
@@ -193,7 +193,7 @@ func TestCollectMSI(t *testing.T) {
 }
 
 func TestCollectMSI2(t *testing.T) {
-	m := objx.Map{"data": []objx.Map{objx.Map{"name": "Taylor"}, objx.Map{"name": "Taylor"}, objx.Map{"name": "Taylor"}, objx.Map{"name": "Taylor"}, objx.Map{"name": "Taylor"}}}
+	m := objx.Map{"data": []objx.Map{{"name": "Taylor"}, {"name": "Taylor"}, {"name": "Taylor"}, {"name": "Taylor"}, {"name": "Taylor"}}}
 
 	collected := m.Get("data").CollectMSI(func(index int, val map[string]interface{}) interface{} {
 		return index
