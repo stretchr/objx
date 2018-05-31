@@ -20,7 +20,7 @@ install:
   - mv task $HOME/gopath/bin
 
 script:
-  - task lint
+  - diff -u <(echo -n) <(task lint)
   - task test-coverage
 
 after_script:
