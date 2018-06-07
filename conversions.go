@@ -120,9 +120,9 @@ func (m Map) parseURLValues(queryMap Map, vals url.Values, key string) {
 		switch {
 		case val.IsObjxMap():
 			if key == "" {
-				m.parseURLValues(v.(Map), vals, k)
+				m.parseURLValues(val.ObjxMap(), vals, k)
 			} else {
-				m.parseURLValues(v.(Map), vals, key+"["+k+"]")
+				m.parseURLValues(val.ObjxMap(), vals, key+"["+k+"]")
 			}
 		case val.IsObjxMapSlice():
 			sliceKey := k
@@ -140,12 +140,6 @@ func (m Map) parseURLValues(queryMap Map, vals url.Values, key string) {
 				for _, sv := range val.MustObjxMapSlice() {
 					m.parseURLValues(sv, vals, sliceKey)
 				}
-			}
-		case val.IsMSI():
-			if key == "" {
-				m.parseURLValues(New(v), vals, k)
-			} else {
-				m.parseURLValues(New(v), vals, key+"["+k+"]")
 			}
 		case val.IsMSISlice():
 			sliceKey := k
