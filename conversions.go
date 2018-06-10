@@ -20,7 +20,24 @@ const SignatureSeparator = "_"
 // Ex: Suffix "[]" would have the form a[]=b&a[]=c
 // OR Suffix "[i]" would have the form a[0]=b&a[1]=c
 // OR Suffix "" would have the form a=b&a=c
-var URLValuesSliceKeySuffix = "[]"
+var urlValuesSliceKeySuffix = "[]"
+
+const (
+	URLValuesSliceKeySuffixEmpty = ""
+	URLValuesSliceKeySuffixArray = "[]"
+	URLValuesSliceKeySuffixIndex = "[i]"
+)
+
+// SetURLValuesSliceKeySuffix sets the character that is used to
+// specify a suffic for slices parsed by URLValues.
+// If the suffix is set to "[i]", then the index of the slice
+// is used in place of i
+// Ex: Suffix "[]" would have the form a[]=b&a[]=c
+// OR Suffix "[i]" would have the form a[0]=b&a[1]=c
+// OR Suffix "" would have the form a=b&a=c
+func SetURLValuesSliceKeySuffix(s string) {
+	urlValuesSliceKeySuffix = s
+}
 
 // JSON converts the contained object to a JSON string
 // representation
@@ -111,7 +128,7 @@ func (m Map) URLValues() url.Values {
 
 func (m Map) parseURLValues(queryMap Map, vals url.Values, key string) {
 	useSliceIndex := false
-	if URLValuesSliceKeySuffix == "[i]" {
+	if urlValuesSliceKeySuffix == "[i]" {
 		useSliceIndex = true
 	}
 
@@ -136,7 +153,7 @@ func (m Map) parseURLValues(queryMap Map, vals url.Values, key string) {
 					m.parseURLValues(sv, vals, sk)
 				}
 			} else {
-				sliceKey = sliceKey + URLValuesSliceKeySuffix
+				sliceKey = sliceKey + urlValuesSliceKeySuffix
 				for _, sv := range val.MustObjxMapSlice() {
 					m.parseURLValues(sv, vals, sliceKey)
 				}
@@ -153,7 +170,7 @@ func (m Map) parseURLValues(queryMap Map, vals url.Values, key string) {
 					m.parseURLValues(New(sv), vals, sk)
 				}
 			} else {
-				sliceKey = sliceKey + URLValuesSliceKeySuffix
+				sliceKey = sliceKey + urlValuesSliceKeySuffix
 				for _, sv := range val.MustMSISlice() {
 					m.parseURLValues(New(sv), vals, sliceKey)
 				}
@@ -174,7 +191,7 @@ func (m Map) parseURLValues(queryMap Map, vals url.Values, key string) {
 					vals.Set(sk, sv)
 				}
 			} else {
-				sliceKey = sliceKey + URLValuesSliceKeySuffix
+				sliceKey = sliceKey + urlValuesSliceKeySuffix
 				vals[sliceKey] = val.StringSlice()
 			}
 

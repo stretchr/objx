@@ -117,7 +117,7 @@ func TestConversionURLQuery(t *testing.T) {
 
 func TestConversionURLQueryNoSliceKeySuffix(t *testing.T) {
 	m := getURLQueryMap()
-	objx.URLValuesSliceKeySuffix = ""
+	objx.SetURLValuesSliceKeySuffix(objx.URLValuesSliceKeySuffixEmpty)
 	u, err := m.URLQuery()
 
 	assert.Nil(t, err)
@@ -133,7 +133,7 @@ func TestConversionURLQueryNoSliceKeySuffix(t *testing.T) {
 func TestConversionURLQueryIndexSliceKeySuffix(t *testing.T) {
 	m := getURLQueryMap()
 	m.Set("mapSlice", []objx.Map{{"age": 40, "sex": "male"}, {"height": 152}})
-	objx.URLValuesSliceKeySuffix = "[i]"
+	objx.SetURLValuesSliceKeySuffix(objx.URLValuesSliceKeySuffixIndex)
 	u, err := m.URLQuery()
 
 	assert.Nil(t, err)
