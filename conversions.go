@@ -35,8 +35,13 @@ const (
 // Ex: Suffix "[]" would have the form a[]=b&a[]=c
 // OR Suffix "[i]" would have the form a[0]=b&a[1]=c
 // OR Suffix "" would have the form a=b&a=c
-func SetURLValuesSliceKeySuffix(s string) {
-	urlValuesSliceKeySuffix = s
+func SetURLValuesSliceKeySuffix(s string) error {
+	if s == URLValuesSliceKeySuffixEmpty || s == URLValuesSliceKeySuffixArray || s == URLValuesSliceKeySuffixIndex {
+		urlValuesSliceKeySuffix = s
+		return nil
+	}
+
+	return errors.New("objx: Invalid URLValuesSliceKeySuffix provided.")
 }
 
 // JSON converts the contained object to a JSON string

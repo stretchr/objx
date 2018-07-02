@@ -146,6 +146,17 @@ func TestConversionURLQueryIndexSliceKeySuffix(t *testing.T) {
 	assert.Equal(t, "abc=123&bools[0]=true&bools[1]=false&data[age]=30&data[arr][0]=1&data[arr][1]=2&data[height]=162&mapSlice[0][age]=40&mapSlice[0][sex]=male&mapSlice[1][height]=152&msiData[age]=30&msiData[arr][0]=1&msiData[arr][1]=2&msiData[height]=162&msiSlice[0][age]=40&msiSlice[1][height]=152&name=Mat&stats[0]=1&stats[1]=2", ue)
 }
 
+func TestValidityURLQuerySliceKeySuffix(t *testing.T) {
+	err := objx.SetURLValuesSliceKeySuffix("")
+	assert.Nil(t, err)
+	err = objx.SetURLValuesSliceKeySuffix("[]")
+	assert.Nil(t, err)
+	err = objx.SetURLValuesSliceKeySuffix("[i]")
+	assert.Nil(t, err)
+	err = objx.SetURLValuesSliceKeySuffix("{}")
+	assert.Error(t, err)
+}
+
 func getURLQueryMap() objx.Map {
 	return objx.Map{
 		"abc":      123,
