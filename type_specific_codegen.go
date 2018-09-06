@@ -148,6 +148,13 @@ func (v *Value) MustBool() bool {
 	return v.data.(bool)
 }
 
+// PointerBool gets the value a pointer to the bool
+//
+// Panics if the object is not a pointer to the bool
+func (v *Value) PointerBool() *bool {
+	return v.data.(*bool)
+}
+
 // BoolSlice gets the value as a []bool, returns the optionalDefault
 // value or nil if the value is not a []bool.
 func (v *Value) BoolSlice(optionalDefault ...[]bool) []bool {
@@ -271,6 +278,13 @@ func (v *Value) Str(optionalDefault ...string) string {
 // Panics if the object is not a string.
 func (v *Value) MustStr() string {
 	return v.data.(string)
+}
+
+// PointerStr gets the value a pointer to the string
+//
+// Panics if the object is not a pointer to the string
+func (v *Value) PointerStr() *string {
+	return v.data.(*string)
 }
 
 // StrSlice gets the value as a []string, returns the optionalDefault
@@ -398,6 +412,13 @@ func (v *Value) MustInt() int {
 	return v.data.(int)
 }
 
+// PointerInt gets the value a pointer to the int
+//
+// Panics if the object is not a pointer to the int
+func (v *Value) PointerInt() *int {
+	return v.data.(*int)
+}
+
 // IntSlice gets the value as a []int, returns the optionalDefault
 // value or nil if the value is not a []int.
 func (v *Value) IntSlice(optionalDefault ...[]int) []int {
@@ -521,6 +542,13 @@ func (v *Value) Int8(optionalDefault ...int8) int8 {
 // Panics if the object is not a int8.
 func (v *Value) MustInt8() int8 {
 	return v.data.(int8)
+}
+
+// PointerInt8 gets the value a pointer to the int8
+//
+// Panics if the object is not a pointer to the int8
+func (v *Value) PointerInt8() *int8 {
+	return v.data.(*int8)
 }
 
 // Int8Slice gets the value as a []int8, returns the optionalDefault
@@ -648,6 +676,13 @@ func (v *Value) MustInt16() int16 {
 	return v.data.(int16)
 }
 
+// PointerInt16 gets the value a pointer to the int16
+//
+// Panics if the object is not a pointer to the int16
+func (v *Value) PointerInt16() *int16 {
+	return v.data.(*int16)
+}
+
 // Int16Slice gets the value as a []int16, returns the optionalDefault
 // value or nil if the value is not a []int16.
 func (v *Value) Int16Slice(optionalDefault ...[]int16) []int16 {
@@ -771,6 +806,13 @@ func (v *Value) Int32(optionalDefault ...int32) int32 {
 // Panics if the object is not a int32.
 func (v *Value) MustInt32() int32 {
 	return v.data.(int32)
+}
+
+// PointerInt32 gets the value a pointer to the int32
+//
+// Panics if the object is not a pointer to the int32
+func (v *Value) PointerInt32() *int32 {
+	return v.data.(*int32)
 }
 
 // Int32Slice gets the value as a []int32, returns the optionalDefault
@@ -898,6 +940,13 @@ func (v *Value) MustInt64() int64 {
 	return v.data.(int64)
 }
 
+// PointerInt64 gets the value a pointer to the int64
+//
+// Panics if the object is not a pointer to the int64
+func (v *Value) PointerInt64() *int64 {
+	return v.data.(*int64)
+}
+
 // Int64Slice gets the value as a []int64, returns the optionalDefault
 // value or nil if the value is not a []int64.
 func (v *Value) Int64Slice(optionalDefault ...[]int64) []int64 {
@@ -1021,6 +1070,13 @@ func (v *Value) Uint(optionalDefault ...uint) uint {
 // Panics if the object is not a uint.
 func (v *Value) MustUint() uint {
 	return v.data.(uint)
+}
+
+// PointerUint gets the value a pointer to the uint
+//
+// Panics if the object is not a pointer to the uint
+func (v *Value) PointerUnit() *uint {
+	return v.data.(*uint)
 }
 
 // UintSlice gets the value as a []uint, returns the optionalDefault
@@ -1148,6 +1204,13 @@ func (v *Value) MustUint8() uint8 {
 	return v.data.(uint8)
 }
 
+// PointerUint8 gets the value a pointer to the uint8
+//
+// Panics if the object is not a pointer to the uint8
+func (v *Value) PointerUint8() *uint8 {
+	return v.data.(*uint8)
+}
+
 // Uint8Slice gets the value as a []uint8, returns the optionalDefault
 // value or nil if the value is not a []uint8.
 func (v *Value) Uint8Slice(optionalDefault ...[]uint8) []uint8 {
@@ -1271,6 +1334,13 @@ func (v *Value) Uint16(optionalDefault ...uint16) uint16 {
 // Panics if the object is not a uint16.
 func (v *Value) MustUint16() uint16 {
 	return v.data.(uint16)
+}
+
+// PointerUint16 gets the value a pointer to the uint16
+//
+// Panics if the object is not a pointer to the uint16
+func (v *Value) PointerUint16() *uint16 {
+	return v.data.(*uint16)
 }
 
 // Uint16Slice gets the value as a []uint16, returns the optionalDefault
@@ -1398,6 +1468,13 @@ func (v *Value) MustUint32() uint32 {
 	return v.data.(uint32)
 }
 
+// PointerUint32 gets the value a pointer to the uint32
+//
+// Panics if the object is not a pointer to the uint32
+func (v *Value) PointerUint32() *uint32 {
+	return v.data.(*uint32)
+}
+
 // Uint32Slice gets the value as a []uint32, returns the optionalDefault
 // value or nil if the value is not a []uint32.
 func (v *Value) Uint32Slice(optionalDefault ...[]uint32) []uint32 {
@@ -1521,6 +1598,13 @@ func (v *Value) Uint64(optionalDefault ...uint64) uint64 {
 // Panics if the object is not a uint64.
 func (v *Value) MustUint64() uint64 {
 	return v.data.(uint64)
+}
+
+// PointerUint64 gets the value a pointer to the uint64
+//
+// Panics if the object is not a pointer to the uint64
+func (v *Value) PointerUin64() *uint64 {
+	return v.data.(*uint64)
 }
 
 // Uint64Slice gets the value as a []uint64, returns the optionalDefault
@@ -1648,6 +1732,13 @@ func (v *Value) MustUintptr() uintptr {
 	return v.data.(uintptr)
 }
 
+// PointerUintptr gets the value a pointer to the uintptr
+//
+// Panics if the object is not a pointer to the uintptr
+func (v *Value) PointerUintptr() *uintptr {
+	return v.data.(*uintptr)
+}
+
 // UintptrSlice gets the value as a []uintptr, returns the optionalDefault
 // value or nil if the value is not a []uintptr.
 func (v *Value) UintptrSlice(optionalDefault ...[]uintptr) []uintptr {
@@ -1771,6 +1862,13 @@ func (v *Value) Float32(optionalDefault ...float32) float32 {
 // Panics if the object is not a float32.
 func (v *Value) MustFloat32() float32 {
 	return v.data.(float32)
+}
+
+// Pointerfloat32 gets the value a pointer to the float32
+//
+// Panics if the object is not a pointer to the float32
+func (v *Value) PointerFloat32() *float32 {
+	return v.data.(*float32)
 }
 
 // Float32Slice gets the value as a []float32, returns the optionalDefault
@@ -1898,6 +1996,13 @@ func (v *Value) MustFloat64() float64 {
 	return v.data.(float64)
 }
 
+// PointerFloat64 gets the value a pointer to the float64
+//
+// Panics if the object is not a pointer to the float64
+func (v *Value) PointerFloat64() *float64 {
+	return v.data.(*float64)
+}
+
 // Float64Slice gets the value as a []float64, returns the optionalDefault
 // value or nil if the value is not a []float64.
 func (v *Value) Float64Slice(optionalDefault ...[]float64) []float64 {
@@ -2023,6 +2128,13 @@ func (v *Value) MustComplex64() complex64 {
 	return v.data.(complex64)
 }
 
+// PointerComplex64 gets the value a pointer to the complex64
+//
+// Panics if the object is not a pointer to the complex64
+func (v *Value) PointerComplex64() *complex64 {
+	return v.data.(*complex64)
+}
+
 // Complex64Slice gets the value as a []complex64, returns the optionalDefault
 // value or nil if the value is not a []complex64.
 func (v *Value) Complex64Slice(optionalDefault ...[]complex64) []complex64 {
@@ -2146,6 +2258,13 @@ func (v *Value) Complex128(optionalDefault ...complex128) complex128 {
 // Panics if the object is not a complex128.
 func (v *Value) MustComplex128() complex128 {
 	return v.data.(complex128)
+}
+
+// PointerComplex128 gets the value a pointer to the complex128
+//
+// Panics if the object is not a pointer to the complex128
+func (v *Value) PointerComplex128() *complex128 {
+	return v.data.(*complex128)
 }
 
 // Complex128Slice gets the value as a []complex128, returns the optionalDefault
