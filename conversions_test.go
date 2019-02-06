@@ -18,6 +18,36 @@ func TestConversionJSON(t *testing.T) {
 	require.NoError(t, err)
 	assert.Equal(t, jsonString, result)
 	assert.Equal(t, jsonString, o.MustJSON())
+
+	i := objx.Map{
+		"a": map[interface{}]interface{}{
+			"b": objx.Map{
+				"c": map[interface{}]interface{}{
+					"d": "e",
+				},
+			},
+			"f": []objx.Map{
+				objx.Map{
+					"g": map[interface{}]interface{}{
+						"h": "i",
+					},
+				},
+			},
+			"j": []map[string]interface{}{
+				map[string]interface{}{
+					"k": map[interface{}]interface{}{
+						"l": "m",
+					},
+				},
+			},
+		},
+	}
+
+	jsonString = `{"a":{"b":{"c":{"d":"e"}},"f":[{"g":{"h":"i"}}],"j":[{"k":{"l":"m"}}]}}`
+	result, err = i.JSON()
+	require.NoError(t, err)
+	assert.Equal(t, jsonString, result)
+	assert.Equal(t, jsonString, i.MustJSON())
 }
 
 func TestConversionJSONWithError(t *testing.T) {
