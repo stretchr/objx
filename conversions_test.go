@@ -20,22 +20,9 @@ func TestConversionJSON(t *testing.T) {
 	assert.Equal(t, jsonString, o.MustJSON())
 
 	i := objx.Map{
-		"a": map[interface{}]interface{}{
-			"b": objx.Map{
-				"c": map[interface{}]interface{}{
-					"d": "e",
-				},
-			},
-			"f": []objx.Map{objx.Map{
-				"g": map[interface{}]interface{}{
-					"h": "i",
-				},
-			}},
-			"j": []map[string]interface{}{map[string]interface{}{
-				"k": map[interface{}]interface{}{
-					"l": "m",
-				},
-			}},
+		"a": map[interface{}]interface{}{"b": objx.Map{"c": map[interface{}]interface{}{"d": "e"}},
+			"f": []objx.Map{{"g": map[interface{}]interface{}{"h": "i"}}},
+			"j": []map[string]interface{}{{"k": map[interface{}]interface{}{"l": "m"}}},
 		},
 	}
 
