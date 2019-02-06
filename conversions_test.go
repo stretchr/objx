@@ -23,10 +23,11 @@ func TestConversionJSON(t *testing.T) {
 		"a": map[interface{}]interface{}{"b": objx.Map{"c": map[interface{}]interface{}{"d": "e"}},
 			"f": []objx.Map{{"g": map[interface{}]interface{}{"h": "i"}}},
 			"j": []map[string]interface{}{{"k": map[interface{}]interface{}{"l": "m"}}},
+			"n": []interface{}{objx.Map{"o": "p"}},
 		},
 	}
 
-	jsonString = `{"a":{"b":{"c":{"d":"e"}},"f":[{"g":{"h":"i"}}],"j":[{"k":{"l":"m"}}]}}`
+	jsonString = `{"a":{"b":{"c":{"d":"e"}},"f":[{"g":{"h":"i"}}],"j":[{"k":{"l":"m"}}],"n":[{"o":"p"}]}}`
 	result, err = i.JSON()
 	require.NoError(t, err)
 	assert.Equal(t, jsonString, result)
