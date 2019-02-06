@@ -26,20 +26,16 @@ func TestConversionJSON(t *testing.T) {
 					"d": "e",
 				},
 			},
-			"f": []objx.Map{
-				objx.Map{
-					"g": map[interface{}]interface{}{
-						"h": "i",
-					},
+			"f": []objx.Map{objx.Map{
+				"g": map[interface{}]interface{}{
+					"h": "i",
 				},
-			},
-			"j": []map[string]interface{}{
-				map[string]interface{}{
-					"k": map[interface{}]interface{}{
-						"l": "m",
-					},
+			}},
+			"j": []map[string]interface{}{map[string]interface{}{
+				"k": map[interface{}]interface{}{
+					"l": "m",
 				},
-			},
+			}},
 		},
 	}
 
