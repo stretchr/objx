@@ -23,8 +23,8 @@ install:
   - curl -sL https://taskfile.dev/install.sh | sh
 
 script:
-  - diff -u <(echo -n) <(task lint)
-  - task test-coverage
+  - diff -u <(echo -n) <(./bin/task lint)
+  - ./bin/task test-coverage
 
 after_script:
   - ./cc-test-reporter after-build --exit-code $TRAVIS_TEST_RESULT
