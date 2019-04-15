@@ -43,6 +43,25 @@ func TestAccessorsAccessGetDeepDeep(t *testing.T) {
 	}
 
 	assert.Equal(t, 4, m.Get("one.two.three.four").Data())
+	assert.Equal(t, 4, m.Get("one[two][three][four]").Data())
+}
+
+func TestAccessorsGetWithComplexKey(t *testing.T) {
+	m := objx.Map{
+		"domains": objx.Map{
+			"example-dot-com": objx.Map{
+				"apex": "example",
+			},
+			"example.com": objx.Map{
+				"apex": "example",
+			},
+		},
+	}
+
+	assert.Equal(t, "example", m.Get("domains.example-dot-com.apex").Data())
+
+	assert.Equal(t, "example", m.Get("domains[example.com].apex").Data())
+	assert.Equal(t, "example", m.Get("domains[example.com][apex]").Data())
 }
 
 func TestAccessorsAccessGetInsideArray(t *testing.T) {

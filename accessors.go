@@ -16,10 +16,17 @@ const (
 	// arrayAccesRegexString is the regex used to extract the array number
 	// from the access path
 	arrayAccesRegexString = `^(.+)\[([0-9]+)\]$`
+
+	// mapAccessRegexString is the regex used to extract the map key
+	// from the access path
+	mapAccessRegexString = `^([^\[]*)\[([^\]]+)\](.*)$`
 )
 
 // arrayAccesRegex is the compiled arrayAccesRegexString
 var arrayAccesRegex = regexp.MustCompile(arrayAccesRegexString)
+
+// mapAccessRegex is the compiled mapAccessRegexString
+var mapAccessRegex = regexp.MustCompile(mapAccessRegexString)
 
 // Get gets the value using the specified selector and
 // returns it inside a new Obj object.
@@ -76,6 +83,31 @@ func access(current interface{}, selector string, value interface{}, isSet bool)
 	selSegs := strings.SplitN(selector, PathSeparator, 2)
 	thisSel := selSegs[0]
 	index := -1
+
+	mapMatches := mapAccessRegex.FindStringSubmatch(selector)
+	if len(mapMatches) > 0 {
+		if _, err := strconv.Atoi(mapMatches[2]); err != nil {
+			thisSel = mapMatches[1]
+			nextSel := "[" + mapMatches[2] + "]" + mapMatches[3]
+
+			if thisSel == "" {
+				thisSel = mapMatches[2]
+				nextSel = mapMatches[3]
+			}
+
+			if nextSel == "" {
+				selSegs = []string{}
+			} else if nextSel[0] == '.' {
+				nextSel = nextSel[1:]
+			}
+
+			if len(selSegs) < 2 {
+				selSegs = append(selSegs, nextSel)
+			} else {
+				selSegs[1] = nextSel
+			}
+		}
+	}
 
 	if strings.Contains(thisSel, "[") {
 		index, thisSel = getIndex(thisSel)
