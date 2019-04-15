@@ -77,18 +77,22 @@ func getIndex(s string) (int, string) {
 	return -1, s
 }
 
-// access accesses the object using the selector and performs the
-// appropriate action.
-func access(current interface{}, selector string, value interface{}, isSet bool) interface{} {
-	selSegs := strings.SplitN(selector, PathSeparator, 2)
+// getKey returns the key which is held in s by two brackets.
+// It also returns the next selector.
+func getKey(s string) (string, string) {
+	selSegs := strings.SplitN(s, PathSeparator, 2)
 	thisSel := selSegs[0]
-	index := -1
+	nextSel := ""
 
-	mapMatches := mapAccessRegex.FindStringSubmatch(selector)
+	if len(selSegs) > 1 {
+		nextSel = selSegs[1]
+	}
+
+	mapMatches := mapAccessRegex.FindStringSubmatch(s)
 	if len(mapMatches) > 0 {
 		if _, err := strconv.Atoi(mapMatches[2]); err != nil {
 			thisSel = mapMatches[1]
-			nextSel := "[" + mapMatches[2] + "]" + mapMatches[3]
+			nextSel = "[" + mapMatches[2] + "]" + mapMatches[3]
 
 			if thisSel == "" {
 				thisSel = mapMatches[2]
@@ -96,19 +100,22 @@ func access(current interface{}, selector string, value interface{}, isSet bool)
 			}
 
 			if nextSel == "" {
-				selSegs = []string{}
+				selSegs = []string{"", ""}
 			} else if nextSel[0] == '.' {
 				nextSel = nextSel[1:]
-			}
-
-			if len(selSegs) < 2 {
-				selSegs = append(selSegs, nextSel)
-			} else {
-				selSegs[1] = nextSel
 			}
 		}
 	}
 
+	return thisSel, nextSel
+}
+
+// access accesses the object using the selector and performs the
+// appropriate action.
+func access(current interface{}, selector string, value interface{}, isSet bool) interface{} {
+	thisSel, nextSel := getKey(selector)
+
+	index := -1
 	if strings.Contains(thisSel, "[") {
 		index, thisSel = getIndex(thisSel)
 	}
@@ -120,7 +127,7 @@ func access(current interface{}, selector string, value interface{}, isSet bool)
 	switch current.(type) {
 	case map[string]interface{}:
 		curMSI := current.(map[string]interface{})
-		if len(selSegs) <= 1 && isSet {
+		if nextSel == "" && isSet {
 			curMSI[thisSel] = value
 			return nil
 		}
@@ -144,8 +151,8 @@ func access(current interface{}, selector string, value interface{}, isSet bool)
 			}
 		}
 	}
-	if len(selSegs) > 1 {
-		current = access(current, selSegs[1], value, isSet)
+	if nextSel != "" {
+		current = access(current, nextSel, value, isSet)
 	}
 	return current
 }
