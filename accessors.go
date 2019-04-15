@@ -145,12 +145,7 @@ func access(current interface{}, selector string, value interface{}, isSet bool)
 
 	// do we need to access the item of an array?
 	if index > -1 {
-		array, ok := current.([]interface{})
-		if !ok {
-			array, ok = interSlice(current)
-		}
-
-		if ok {
+		if array, ok := interSlice(current); ok {
 			if index < len(array) {
 				current = array[index]
 			} else {
@@ -165,6 +160,10 @@ func access(current interface{}, selector string, value interface{}, isSet bool)
 }
 
 func interSlice(slice interface{}) ([]interface{}, bool) {
+	if array, ok := slice.([]interface{}); ok {
+		return array, ok
+	}
+
 	s := reflect.ValueOf(slice)
 	if s.Kind() != reflect.Slice {
 		return nil, false
