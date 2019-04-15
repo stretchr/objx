@@ -24,11 +24,21 @@ func TestAccessorsAccessGetDeep(t *testing.T) {
 		"name": objx.Map{
 			"first": "Tyler",
 			"last":  "Bunnell",
+			"friends": []string{
+				"Capitol",
+				"Bollocks",
+			},
+			"ifriends": []interface{}{
+				"Capitol",
+				"Bollocks",
+			},
 		},
 	}
 
 	assert.Equal(t, "Tyler", m.Get("name.first").Data())
 	assert.Equal(t, "Bunnell", m.Get("name.last").Data())
+	assert.Equal(t, "Capitol", m.Get("name.friends[0]").Data())
+	assert.Equal(t, "Capitol", m.Get("name.ifriends[0]").Data())
 }
 
 func TestAccessorsAccessGetDeepDeep(t *testing.T) {
