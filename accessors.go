@@ -1,6 +1,7 @@
 package objx
 
 import (
+	"reflect"
 	"regexp"
 	"strconv"
 	"strings"
@@ -141,9 +142,15 @@ func access(current interface{}, selector string, value interface{}, isSet bool)
 	default:
 		current = nil
 	}
+
 	// do we need to access the item of an array?
 	if index > -1 {
-		if array, ok := current.([]interface{}); ok {
+		array, ok := current.([]interface{})
+		if !ok {
+			array, ok = interSlice(current)
+		}
+
+		if ok {
 			if index < len(array) {
 				current = array[index]
 			} else {
@@ -155,4 +162,19 @@ func access(current interface{}, selector string, value interface{}, isSet bool)
 		current = access(current, nextSel, value, isSet)
 	}
 	return current
+}
+
+func interSlice(slice interface{}) ([]interface{}, bool) {
+	s := reflect.ValueOf(slice)
+	if s.Kind() != reflect.Slice {
+		return nil, false
+	}
+
+	ret := make([]interface{}, s.Len())
+
+	for i := 0; i < s.Len(); i++ {
+		ret[i] = s.Index(i).Interface()
+	}
+
+	return ret, true
 }
