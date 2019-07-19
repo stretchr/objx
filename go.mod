@@ -1,6 +1,6 @@
 module github.com/stretchr/objx
 
-go 1.12
+go 1.11
 
 require (
 	github.com/davecgh/go-spew v1.1.1 // indirect
