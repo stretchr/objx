@@ -92,6 +92,18 @@ func MustFromJSON(jsonString string) Map {
 	return o
 }
 
+// MustFromJSONSlice creates a new slice of Map containing the data specified in the
+// jsonString. Works with jsons with a top level array
+//
+// Panics if the JSON is invalid.
+func MustFromJSONSlice(jsonString string) []Map {
+	slice, err := FromJSONSlice(jsonString)
+	if err != nil {
+		panic("objx: MustFromJSONSlice failed with error: " + err.Error())
+	}
+	return slice
+}
+
 // FromJSON creates a new Map containing the data specified in the
 // jsonString.
 //
@@ -104,6 +116,22 @@ func FromJSON(jsonString string) (Map, error) {
 	}
 	m.tryConvertFloat64()
 	return m, nil
+}
+
+// FromJSONSlice creates a new slice of Map containing the data specified in the
+// jsonString. Works with jsons with a top level array
+//
+// Returns an error if the JSON is invalid.
+func FromJSONSlice(jsonString string) ([]Map, error) {
+	var slice []Map
+	err := json.Unmarshal([]byte(jsonString), &slice)
+	if err != nil {
+		return nil, err
+	}
+	for _, m := range slice {
+		m.tryConvertFloat64()
+	}
+	return slice, nil
 }
 
 func (m Map) tryConvertFloat64() {

@@ -225,3 +225,22 @@ func TestMapFromURLQueryWithError(t *testing.T) {
 		objx.MustFromURLQuery("%")
 	})
 }
+
+func TestJSONTopLevelSlice(t *testing.T) {
+	slice, err := objx.FromJSONSlice(`[{"id": 10000001}, {"id": 42}]`)
+
+	assert.NoError(t, err)
+	require.Len(t, slice, 2)
+	assert.Equal(t, 10000001, slice[0].Get("id").MustInt())
+	assert.Equal(t, 42, slice[1].Get("id").MustInt())
+}
+
+func TestJSONTopLevelSliceWithError(t *testing.T) {
+	slice, err := objx.FromJSONSlice(`{"id": 10000001}`)
+
+	assert.Error(t, err)
+	assert.Nil(t, slice)
+	assert.Panics(t, func() {
+		_ = objx.MustFromJSONSlice(`{"id": 10000001}`)
+	})
+}
