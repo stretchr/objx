@@ -114,6 +114,7 @@ func getKey(s string) (string, string) {
 // access accesses the object using the selector and performs the
 // appropriate action.
 func access(current interface{}, selector string, value interface{}, isSet bool) interface{} {
+
 	thisSel, nextSel := getKey(selector)
 
 	index := -1
@@ -124,17 +125,22 @@ func access(current interface{}, selector string, value interface{}, isSet bool)
 	if curMap, ok := current.(Map); ok {
 		current = map[string]interface{}(curMap)
 	}
+
 	// get the object in question
 	switch current.(type) {
 	case map[string]interface{}:
 		curMSI := current.(map[string]interface{})
+
 		if nextSel == "" && isSet {
 			curMSI[thisSel] = value
 			return nil
 		}
 
 		_, ok := curMSI[thisSel].(map[string]interface{})
-		if (curMSI[thisSel] == nil || !ok) && index == -1 && isSet {
+		if !ok {
+			_, ok = curMSI[thisSel].(Map)
+		}
+		if (curMSI[thisSel] == nil || !ok) && len(indexes) == 0 && isSet {
 			curMSI[thisSel] = map[string]interface{}{}
 		}
 

@@ -218,3 +218,23 @@ func TestAccessorsSet(t *testing.T) {
 
 	assert.Equal(t, "Mat", m.Get("name").Data())
 }
+
+func TestAccessorsSetWithinObjxMapChild(t *testing.T) {
+	m, err := objx.FromJSON(`{"a": {"b": 1}}`)
+	assert.NoError(t, err)
+
+	m.Set("a.c", 2)
+	jsonConverted, err := m.JSON()
+	assert.NoError(t, err)
+
+	m = objx.New(map[string]interface{}{
+		"a": map[string]interface{}{
+			"b": 1,
+		},
+	})
+	m.Set("a.c", 2)
+	jsonNewObj, err := m.JSON()
+
+	assert.NoError(t, err)
+	assert.Equal(t, jsonConverted, jsonNewObj)
+}
