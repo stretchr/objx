@@ -47,5 +47,5 @@ jobs:
       run: ./bin/task test-coverage
 
     - name: Post run
-      run: ./cc-test-reporter after-build --exit-code $?
+      run: ./cc-test-reporter after-build format-coverage -t gocov --prefix github.com/stretchr/objx .cover/c.out --exit-code $?
 
