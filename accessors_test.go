@@ -218,3 +218,22 @@ func TestAccessorsSet(t *testing.T) {
 
 	assert.Equal(t, "Mat", m.Get("name").Data())
 }
+
+func TestAccessorsNested(t *testing.T) {
+	d := objx.MustFromJSON(`{"values":[["test", "test1"], ["test2", {"name":"Mat"}, {"names": ["Captain", "Mat"]}]]}`)
+
+	value := d.Get("values[0][0]").String()
+	assert.Equal(t, "test", value)
+
+	value = d.Get("values[0][1]").String()
+	assert.Equal(t, "test1", value)
+
+	value = d.Get("values[1][0]").String()
+	assert.Equal(t, "test2", value)
+
+	value = d.Get("values[1][1].name").String()
+	assert.Equal(t, "Mat", value)
+
+	value = d.Get("values[1][2].names[0]").String()
+	assert.Equal(t, "Captain", value)
+}
