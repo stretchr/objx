@@ -49,7 +49,7 @@ func TestMSISlice(t *testing.T) {
 	})
 
 	o := objx.MustFromJSON(`{"d":[{"author":{"displayName":"DemoUser3","id":2},"classes":null,"id":9879,"v":{"code":"","created":"2013-09-19T09:38:50+02:00","published":"0001-01-01T00:00:00Z","updated":"2013-09-19T09:38:50+02:00"}}],"s":200}`)
-	assert.Equal(t, 9879, o.Get("d").MustMSISlice()[0]["id"])
+	assert.Equal(t, float64(9879), o.Get("d").MustMSISlice()[0]["id"])
 	assert.Equal(t, 1, len(o.Get("d").MSISlice()))
 
 	i := objx.MustFromJSON(`{"d":[{"author":"abc"},[1]]}`)
