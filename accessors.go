@@ -140,6 +140,10 @@ func access(current interface{}, selector string, value interface{}, isSet bool)
 		}
 
 		_, ok := curMSI[thisSel].(map[string]interface{})
+		if !ok {
+			_, ok = curMSI[thisSel].(Map)
+		}
+
 		if (curMSI[thisSel] == nil || !ok) && len(indexes) == 0 && isSet {
 			curMSI[thisSel] = map[string]interface{}{}
 		}
