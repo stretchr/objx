@@ -1,5 +1,5 @@
 /*
-Objx - Go package for dealing with maps, slices, JSON and other data.
+Package objx provides utilities for dealing with maps, slices, JSON and other data.
 
 Overview
 
@@ -10,7 +10,7 @@ missing data, default values etc.
 
 Pattern
 
-Objx uses a preditable pattern to make access data from within `map[string]interface{}` easy.
+Objx uses a predictable pattern to make access data from within `map[string]interface{}` easy.
 Call one of the `objx.` functions to create your `objx.Map` to get going:
 
     m, err := objx.FromJSON(json)
