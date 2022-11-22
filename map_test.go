@@ -62,7 +62,7 @@ func TestMapCreation(t *testing.T) {
 	assert.Nil(t, o)
 }
 
-func TestMapValure(t *testing.T) {
+func TestMapValue(t *testing.T) {
 	m := objx.Map{
 		"a": 1,
 	}

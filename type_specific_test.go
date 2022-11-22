@@ -300,7 +300,7 @@ func TestIsObjxMapSlice(t *testing.T) {
 	assert.True(t, o.Has("d"))
 	assert.True(t, o.Get("d").IsObjxMapSlice())
 
-	//Valid json but not MSI slice
+	// Valid json but not MSI slice
 	o = objx.MustFromJSON(`{"d":[{"author":"abc"},[1]]}`)
 	assert.True(t, o.Has("d"))
 	assert.False(t, o.Get("d").IsObjxMapSlice())
