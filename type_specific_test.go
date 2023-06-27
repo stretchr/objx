@@ -9,7 +9,7 @@ import (
 )
 
 /*
-   Tests for MSI (map[string]interface{} and []map[string]interface{})
+Tests for MSI (map[string]interface{} and []map[string]interface{})
 */
 func TestMSI(t *testing.T) {
 	val := map[string]interface{}(map[string]interface{}{"name": "Tyler"})
@@ -232,7 +232,7 @@ func TestCollectMSI2(t *testing.T) {
 }
 
 /*
-   Tests for ObjxMap ((objx.Map) and [](objx.Map))
+Tests for ObjxMap ((objx.Map) and [](objx.Map))
 */
 func TestObjxMap(t *testing.T) {
 	val := (objx.Map)(objx.New(1))

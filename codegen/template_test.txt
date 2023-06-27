@@ -1,5 +1,5 @@
 /*
-    Tests for {4} ({1} and []{1})
+Tests for {4} ({1} and []{1})
 */
 func Test{4}(t *testing.T) {
     val := {1}({2})
