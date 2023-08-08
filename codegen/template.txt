@@ -1,5 +1,5 @@
 /*
-    {4} ({1} and []{1})
+{4} ({1} and []{1})
 */
 
 // {4} gets the value as a {1}, returns the optionalDefault

@@ -9,7 +9,7 @@ import (
 )
 
 /*
-   Tests for Inter (interface{} and []interface{})
+Tests for Inter (interface{} and []interface{})
 */
 func TestInter(t *testing.T) {
 	val := interface{}("something")
@@ -130,7 +130,7 @@ func TestCollectInter(t *testing.T) {
 }
 
 /*
-   Tests for Bool (bool and []bool)
+Tests for Bool (bool and []bool)
 */
 func TestBool(t *testing.T) {
 	val := bool(true)
@@ -251,7 +251,7 @@ func TestCollectBool(t *testing.T) {
 }
 
 /*
-   Tests for Str (string and []string)
+Tests for Str (string and []string)
 */
 func TestStr(t *testing.T) {
 	val := string("hello")
@@ -372,7 +372,7 @@ func TestCollectStr(t *testing.T) {
 }
 
 /*
-   Tests for Int (int and []int)
+Tests for Int (int and []int)
 */
 func TestInt(t *testing.T) {
 	val := int(1)
@@ -493,7 +493,7 @@ func TestCollectInt(t *testing.T) {
 }
 
 /*
-   Tests for Int8 (int8 and []int8)
+Tests for Int8 (int8 and []int8)
 */
 func TestInt8(t *testing.T) {
 	val := int8(1)
@@ -614,7 +614,7 @@ func TestCollectInt8(t *testing.T) {
 }
 
 /*
-   Tests for Int16 (int16 and []int16)
+Tests for Int16 (int16 and []int16)
 */
 func TestInt16(t *testing.T) {
 	val := int16(1)
@@ -735,7 +735,7 @@ func TestCollectInt16(t *testing.T) {
 }
 
 /*
-   Tests for Int32 (int32 and []int32)
+Tests for Int32 (int32 and []int32)
 */
 func TestInt32(t *testing.T) {
 	val := int32(1)
@@ -856,7 +856,7 @@ func TestCollectInt32(t *testing.T) {
 }
 
 /*
-   Tests for Int64 (int64 and []int64)
+Tests for Int64 (int64 and []int64)
 */
 func TestInt64(t *testing.T) {
 	val := int64(1)
@@ -977,7 +977,7 @@ func TestCollectInt64(t *testing.T) {
 }
 
 /*
-   Tests for Uint (uint and []uint)
+Tests for Uint (uint and []uint)
 */
 func TestUint(t *testing.T) {
 	val := uint(1)
@@ -1098,7 +1098,7 @@ func TestCollectUint(t *testing.T) {
 }
 
 /*
-   Tests for Uint8 (uint8 and []uint8)
+Tests for Uint8 (uint8 and []uint8)
 */
 func TestUint8(t *testing.T) {
 	val := uint8(1)
@@ -1219,7 +1219,7 @@ func TestCollectUint8(t *testing.T) {
 }
 
 /*
-   Tests for Uint16 (uint16 and []uint16)
+Tests for Uint16 (uint16 and []uint16)
 */
 func TestUint16(t *testing.T) {
 	val := uint16(1)
@@ -1340,7 +1340,7 @@ func TestCollectUint16(t *testing.T) {
 }
 
 /*
-   Tests for Uint32 (uint32 and []uint32)
+Tests for Uint32 (uint32 and []uint32)
 */
 func TestUint32(t *testing.T) {
 	val := uint32(1)
@@ -1461,7 +1461,7 @@ func TestCollectUint32(t *testing.T) {
 }
 
 /*
-   Tests for Uint64 (uint64 and []uint64)
+Tests for Uint64 (uint64 and []uint64)
 */
 func TestUint64(t *testing.T) {
 	val := uint64(1)
@@ -1582,7 +1582,7 @@ func TestCollectUint64(t *testing.T) {
 }
 
 /*
-   Tests for Uintptr (uintptr and []uintptr)
+Tests for Uintptr (uintptr and []uintptr)
 */
 func TestUintptr(t *testing.T) {
 	val := uintptr(1)
@@ -1703,7 +1703,7 @@ func TestCollectUintptr(t *testing.T) {
 }
 
 /*
-   Tests for Float32 (float32 and []float32)
+Tests for Float32 (float32 and []float32)
 */
 func TestFloat32(t *testing.T) {
 	val := float32(1)
@@ -1824,7 +1824,7 @@ func TestCollectFloat32(t *testing.T) {
 }
 
 /*
-   Tests for Float64 (float64 and []float64)
+Tests for Float64 (float64 and []float64)
 */
 func TestFloat64(t *testing.T) {
 	val := float64(1)
@@ -1945,7 +1945,7 @@ func TestCollectFloat64(t *testing.T) {
 }
 
 /*
-   Tests for Complex64 (complex64 and []complex64)
+Tests for Complex64 (complex64 and []complex64)
 */
 func TestComplex64(t *testing.T) {
 	val := complex64(1)
@@ -2066,7 +2066,7 @@ func TestCollectComplex64(t *testing.T) {
 }
 
 /*
-   Tests for Complex128 (complex128 and []complex128)
+Tests for Complex128 (complex128 and []complex128)
 */
 func TestComplex128(t *testing.T) {
 	val := complex128(1)
