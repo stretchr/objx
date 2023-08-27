@@ -257,3 +257,112 @@ func TestAccessorsNested(t *testing.T) {
 	value = d.Get("values[1][2].names[0]").String()
 	assert.Equal(t, "Captain", value)
 }
+
+func TestGenericDeepSetNested(t *testing.T) {
+	m := objx.Map{}
+
+	m.Set("other[0].x", "e0")
+	m.Set("other[1].x", "e1")
+
+	json, err := m.JSON()
+	assert.NoError(t, err)
+	assert.Equal(t, `{"other":[{"x":"e0"},{"x":"e1"}]}`, json)
+}
+func TestGenericDeepSetMixed(t *testing.T) {
+	m := objx.Map{}
+
+	m.Set("other[0].x", "e0")
+	m.Set("other[1]", "e1")
+
+	json, err := m.JSON()
+	assert.NoError(t, err)
+	assert.Equal(t, `{"other":[{"x":"e0"},"e1"]}`, json)
+}
+func TestGenericDeepSetOverride(t *testing.T) {
+	m := objx.Map{}
+
+	m.Set("other[0].x", "e0")
+	m.Set("other[1].x", "e1")
+	m.Set("other", "str")
+
+	json, err := m.JSON()
+	assert.NoError(t, err)
+	assert.Equal(t, `{"other":"str"}`, json)
+}
+func TestGenericDeepSetArraySkip(t *testing.T) {
+	m := objx.Map{}
+
+	m.Set("other[1]", "e1")
+	m.Set("other[3]", "e3")
+
+	json, err := m.JSON()
+	assert.NoError(t, err)
+	assert.Equal(t, `{"other":[null,"e1",null,"e3"]}`, json)
+}
+func TestGenericDeepSetArrayAlloc(t *testing.T) {
+	m := objx.Map{}
+
+	m.Set("other[10]", "e10")
+	m.Set("other[1]", "e1")
+
+	json, err := m.JSON()
+	assert.NoError(t, err)
+	assert.Equal(t, `{"other":[null,"e1",null,null,null,null,null,null,null,null,"e10"]}`, json)
+}
+
+func TestGenericDeepGetNested(t *testing.T) {
+	m := objx.Map{}
+
+	m.Set("other[0].x", "e0")
+	m.Set("other[1].x", "e1")
+
+	assert.Equal(t, "e0", m.Get("other[0].x").Data())
+	assert.Equal(t, "e1", m.Get("other[1].x").Data())
+	assert.Equal(t, nil, m.Get("other[2].x").Data())
+	assert.Equal(t, nil, m.Get("nope").Data())
+	assert.Equal(t, nil, m.Get("other[0].nope").Data())
+	assert.Equal(t, nil, m.Get("other[-1].nope").Data())
+
+	json, err := m.JSON()
+	assert.NoError(t, err)
+	assert.Equal(t, `{"other":[{"x":"e0"},{"x":"e1"}]}`, json)
+}
+
+func TestGenericDeepGetSkip(t *testing.T) {
+	m := objx.Map{}
+
+	m.Set("other[1].x", "e1")
+
+	assert.Equal(t, nil, m.Get("other[0]").Data())
+	assert.Equal(t, nil, m.Get("other[0].x").Data())
+	assert.Equal(t, "e1", m.Get("other[1].x").Data())
+
+	json, err := m.JSON()
+	assert.NoError(t, err)
+	assert.Equal(t, `{"other":[null,{"x":"e1"}]}`, json)
+}
+
+func TestGenericDeepPrimitives(t *testing.T) {
+	m := objx.Map{}
+
+	m.Set("str", "str")
+	m.Set("int", 1)
+	m.Set("float", 1.1)
+	m.Set("boolean", true)
+	m.Set("obj", map[string]interface{}{})
+	m.Set("arr", []interface{}{})
+	m.Set("null", nil)
+
+	assert.Equal(t, "str", m.Get("str").Data())
+	assert.Equal(t, 1, m.Get("int").Data())
+	assert.Equal(t, 1.1, m.Get("float").Data())
+	assert.Equal(t, true, m.Get("boolean").Data())
+	assert.Equal(t, map[string]interface{}{}, m.Get("obj").Data())
+	assert.Equal(t, []interface{}{}, m.Get("arr").Data())
+	assert.Equal(t, nil, m.Get("null").Data())
+
+	json, err := m.JSON()
+	assert.NoError(t, err)
+	assert.Equal(t, `{"arr":[],"boolean":true,"float":1.1,"int":1,"null":null,"obj":{},"str":"str"}`, json)
+}
+
