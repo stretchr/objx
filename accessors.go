@@ -56,6 +56,18 @@ func (m Map) Set(selector string, value interface{}) Map {
 	return m
 }
 
+// Has gets whether there is something at the specified selector
+// or not.
+//
+// If m is nil, Has will always return false.
+func (m Map) Has(selector string) bool {
+	if m == nil {
+		return false
+	}
+	_, err := access(m, selector, nil, false)
+	return err == nil
+}
+
 func parsePath(path string) ([]string, error) {
 	res := make([]string, 0, 8)
 	path = strings.TrimPrefix(path, ".")

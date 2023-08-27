@@ -366,3 +366,21 @@ func TestGenericDeepPrimitives(t *testing.T) {
 	assert.Equal(t, `{"arr":[],"boolean":true,"float":1.1,"int":1,"null":null,"obj":{},"str":"str"}`, json)
 }
 
+func TestGenericDeepNull(t *testing.T) {
+	m := objx.MustFromJSON(`{"nope":null}`)
+
+	m.Set("null", nil)
+
+	assert.Equal(t, true, m.Has("nope"))
+	assert.Equal(t, true, m.Has("null"))
+	assert.Equal(t, false, m.Has("no-exist"))
+
+	assert.Equal(t, nil, m.Get("nope").Data())
+	assert.Equal(t, nil, m.Get("null").Data())
+	assert.Equal(t, nil, m.Get("no-exist").Data())
+
+	json, err := m.JSON()
+	assert.NoError(t, err)
+	assert.Equal(t, `{"nope":null,"null":null}`, json)
+}
+
