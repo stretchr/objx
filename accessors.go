@@ -68,6 +68,15 @@ func (m Map) Has(selector string) bool {
 	return err == nil
 }
 
+// Deletes the value from the element
+// Note: Array elements can not be deleted, they will only be set null
+// Returns the old element or nil if it did not exist
+func (m Map) Delete(selector string) *Value {
+	val := reflect.ValueOf(nil)
+	res, _ := access(m, selector, &val, false)
+	return &Value{data: res}
+}
+
 func parsePath(path string) ([]string, error) {
 	res := make([]string, 0, 8)
 	path = strings.TrimPrefix(path, ".")

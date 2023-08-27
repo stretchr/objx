@@ -384,3 +384,48 @@ func TestGenericDeepNull(t *testing.T) {
 	assert.Equal(t, `{"nope":null,"null":null}`, json)
 }
 
+func TestGenericDeepDeleteNested(t *testing.T) {
+	m := objx.Map{}
+
+	m.Set("other[0].x", "e0")
+	m.Set("other[1].x", "e1")
+	m.Set("other[2].x", "e2")
+
+	assert.Equal(t, nil, m.Delete("a.b").Data())
+	assert.Equal(t, "e0", m.Delete("other[0].x").Data())
+	assert.Equal(t, map[string]interface{}{"x": "e1"}, m.Delete("other[1]").Data())
+
+	json, err := m.JSON()
+	assert.NoError(t, err)
+	assert.Equal(t, `{"other":[{},null,{"x":"e2"}]}`, json)
+}
+
+func TestGenericDeepDeleteArrayShrink(t *testing.T) {
+	m := objx.Map{}
+
+	m.Set("other[0].x", "e0")
+	m.Set("other[1].x", "e1")
+
+	assert.Equal(t, "e0", m.Delete("other[0].x").Data())
+	assert.Equal(t, map[string]interface{}{"x": "e1"}, m.Delete("other[1]").Data())
+
+	json, err := m.JSON()
+	assert.NoError(t, err)
+	assert.Equal(t, `{"other":[{},null]}`, json)
+}
+
+func TestGenericDeepDeleteAll(t *testing.T) {
+	m := objx.Map{}
+
+	m.Set("other[0].x", "e0")
+	m.Set("other[1].x", "e1")
+
+	assert.Equal(t, []interface{}{
+		map[string]interface{}{"x": "e0"},
+		map[string]interface{}{"x": "e1"},
+	}, m.Delete("other").Data())
+
+	json, err := m.JSON()
+	assert.NoError(t, err)
+	assert.Equal(t, `{}`, json)
+}
