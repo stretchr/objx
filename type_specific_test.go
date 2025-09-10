@@ -5,7 +5,6 @@ import (
 	"testing"
 
 	"github.com/stretchr/objx"
-	"github.com/stretchr/testify/assert"
 )
 
 /*

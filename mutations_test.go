@@ -5,8 +5,6 @@ import (
 	"testing"
 
 	"github.com/stretchr/objx"
-	"github.com/stretchr/testify/assert"
-	"github.com/stretchr/testify/require"
 )
 
 func TestExclude(t *testing.T) {
