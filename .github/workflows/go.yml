@@ -18,13 +18,6 @@ jobs:
     steps:
     - uses: actions/checkout@v5
 
-    - name: Pre-run
-      run: |
-        curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
-        chmod +x ./cc-test-reporter
-        ./cc-test-reporter before-build
-        curl -sL https://taskfile.dev/install.sh | sh
-
     - name: Set up Go
       uses: actions/setup-go@v5
       with:
@@ -45,7 +38,3 @@ jobs:
 
     - name: Test
       run: ./bin/task test-coverage
-
-    - name: Post run
-      run: ./cc-test-reporter after-build format-coverage -t gocov --prefix github.com/stretchr/objx .cover/c.out --exit-code $?
-
