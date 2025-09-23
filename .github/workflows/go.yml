@@ -9,8 +9,6 @@ on:
 jobs:
 
   build:
-    env:
-      CC_TEST_REPORTER_ID: 68feaa3410049ce73e145287acbcdacc525087a30627f96f04e579e75bd71c00
     runs-on: ubuntu-latest
     strategy:
       matrix:
