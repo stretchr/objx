@@ -14,7 +14,7 @@ jobs:
       matrix:
         go: [ '1.25', '1.24', '1.23', '1.22', '1.21', '1.20' ]
     steps:
-    - uses: actions/checkout@v6
+    - uses: actions/checkout@v7
 
     - name: Install Task
       uses: go-task/setup-task@v2
