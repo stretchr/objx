@@ -256,3 +256,28 @@ func TestAccessorsNested(t *testing.T) {
 	value = d.Get("values[1][2].names[0]").String()
 	assert.Equal(t, "Captain", value)
 }
+
+func TestGetIndexOnNonSlice(t *testing.T) {
+	for _, value := range []interface{}{42, "text", objx.Map{"name": "value"}, nil} {
+		m := objx.Map{"value": value}
+		assert.Nil(t, m.Get("value[0]").Data())
+		assert.Nil(t, m.Get("value[0].name").Data())
+	}
+	m := objx.Map{"value": []interface{}{42}}
+	assert.Nil(t, m.Get("value[0][0]").Data())
+	assert.Equal(t, 42, m.Get("value[0]").Data())
+}
+
+func TestSetIndexPreservesSlice(t *testing.T) {
+	m := objx.Map{"names": []interface{}{"Tyler", "Sam"}}
+	m.Set("names[0]", "Mat")
+	assert.Equal(t, []interface{}{"Mat", "Sam"}, m["names"])
+	m.Set("names[2]", "outside")
+	assert.Equal(t, []interface{}{"Mat", "Sam"}, m["names"])
+	m.Set("names[1]", nil)
+	assert.Equal(t, []interface{}{"Mat", nil}, m["names"])
+
+	m = objx.Map{"nested": []interface{}{[]interface{}{"first", "second"}}}
+	m.Set("nested[0][1]", "changed")
+	assert.Equal(t, []interface{}{[]interface{}{"first", "changed"}}, m["nested"])
+}
