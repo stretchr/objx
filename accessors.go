@@ -134,7 +134,7 @@ func access(current interface{}, selector string, value interface{}, isSet bool)
 	switch current.(type) {
 	case map[string]interface{}:
 		curMSI := current.(map[string]interface{})
-		if nextSel == "" && isSet {
+		if nextSel == "" && isSet && len(indexes) == 0 {
 			curMSI[thisSel] = value
 			return nil
 		}
@@ -161,12 +161,19 @@ func access(current interface{}, selector string, value interface{}, isSet bool)
 			index := indexes[num]
 			indexes = indexes[:num]
 			if array, ok := interSlice(current); ok {
-				if index < len(array) {
+				if index >= 0 && index < len(array) {
+					if isSet && nextSel == "" && num == 0 {
+						array[index] = value
+						return nil
+					}
 					current = array[index]
 				} else {
 					current = nil
 					break
 				}
+			} else {
+				current = nil
+				break
 			}
 		}
 	}
