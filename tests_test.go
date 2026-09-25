@@ -22,3 +22,23 @@ func TestHas(t *testing.T) {
 
 	assert.False(t, m.Has("nothing"))
 }
+
+func TestValue_IsNil(t *testing.T) {
+	var nilVal *objx.Value
+	assert.True(t, nilVal.IsNil())
+
+	m := objx.Map{
+		"nil":  nil,
+		"str":  "hello",
+		"int":  123,
+		"bool": true,
+	}
+
+	assert.True(t, m.Get("nil").IsNil())
+	assert.True(t, m.Get("nonexistent").IsNil())
+	assert.False(t, m.Get("str").IsNil())
+	assert.False(t, m.Get("int").IsNil())
+	assert.False(t, m.Get("bool").IsNil())
+}
+
+
