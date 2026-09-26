@@ -60,6 +60,9 @@ func (m Map) JSON() (string, error) {
 }
 
 func cleanUpInterfaceArray(in []interface{}) []interface{} {
+	if in == nil {
+		return nil
+	}
 	result := make([]interface{}, len(in))
 	for i, v := range in {
 		result[i] = cleanUp(v)
@@ -68,6 +71,9 @@ func cleanUpInterfaceArray(in []interface{}) []interface{} {
 }
 
 func cleanUpInterfaceMap(in map[interface{}]interface{}) Map {
+	if in == nil {
+		return nil
+	}
 	result := Map{}
 	for k, v := range in {
 		result[fmt.Sprintf("%v", k)] = cleanUp(v)
@@ -76,6 +82,9 @@ func cleanUpInterfaceMap(in map[interface{}]interface{}) Map {
 }
 
 func cleanUpStringMap(in map[string]interface{}) Map {
+	if in == nil {
+		return nil
+	}
 	result := Map{}
 	for k, v := range in {
 		result[k] = cleanUp(v)
@@ -84,6 +93,9 @@ func cleanUpStringMap(in map[string]interface{}) Map {
 }
 
 func cleanUpMSIArray(in []map[string]interface{}) []Map {
+	if in == nil {
+		return nil
+	}
 	result := make([]Map, len(in))
 	for i, v := range in {
 		result[i] = cleanUpStringMap(v)
@@ -92,6 +104,9 @@ func cleanUpMSIArray(in []map[string]interface{}) []Map {
 }
 
 func cleanUpMapArray(in []Map) []Map {
+	if in == nil {
+		return nil
+	}
 	result := make([]Map, len(in))
 	for i, v := range in {
 		result[i] = cleanUpStringMap(v)
