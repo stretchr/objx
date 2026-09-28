@@ -33,7 +33,9 @@ func TestConversionJSONPreservesNilContainers(t *testing.T) {
 		{"populated interface map", map[interface{}]interface{}{1: "value"}, `{"1":"value"}`},
 	}
 	for _, test := range tests {
+		test := test
 		t.Run(test.name, func(t *testing.T) {
+			t.Parallel()
 			for _, context := range []struct {
 				name  string
 				input objx.Map
