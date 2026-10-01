@@ -8,7 +8,7 @@ func (m Map) Has(selector string) bool {
 	if m == nil {
 		return false
 	}
-	return !m.Get(selector).IsNil()
+	return has(m, selector)
 }
 
 // IsNil gets whether the data is nil or not.
