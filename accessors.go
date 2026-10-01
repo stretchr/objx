@@ -202,3 +202,58 @@ func interSlice(slice interface{}) ([]interface{}, bool) {
 
 	return ret, true
 }
+
+// has checks whether the specified selector exists within the object.
+func has(current interface{}, selector string) bool {
+	thisSel, nextSel := getKey(selector)
+
+	indexes := []int{}
+	for strings.Contains(thisSel, "[") {
+		prevSel := thisSel
+		index := -1
+		index, thisSel = getIndex(thisSel)
+		indexes = append(indexes, index)
+		if prevSel == thisSel {
+			break
+		}
+	}
+
+	if curMap, ok := current.(Map); ok {
+		current = map[string]interface{}(curMap)
+	}
+
+	switch cur := current.(type) {
+	case map[string]interface{}:
+		val, ok := cur[thisSel]
+		if !ok {
+			return false
+		}
+		current = val
+	default:
+		return false
+	}
+
+	if len(indexes) > 0 {
+		num := len(indexes)
+		for num > 0 {
+			num--
+			index := indexes[num]
+			indexes = indexes[:num]
+			if array, ok := interSlice(current); ok {
+				if index >= 0 && index < len(array) {
+					current = array[index]
+				} else {
+					return false
+				}
+			} else {
+				return false
+			}
+		}
+	}
+
+	if nextSel != "" {
+		return has(current, nextSel)
+	}
+
+	return true
+}
