@@ -242,3 +242,112 @@ func TestJSONTopLevelSliceWithError(t *testing.T) {
 		_ = objx.MustFromJSONSlice(`{"id": 10000001}`)
 	})
 }
+
+func TestMapFromYAML(t *testing.T) {
+	yamlString := "name: Mat\nage: 30\n"
+	o, err := objx.FromYAML(yamlString)
+
+	require.NoError(t, err)
+	require.NotNil(t, o)
+	assert.Equal(t, "Mat", o["name"])
+	assert.Equal(t, 30, o["age"])
+	assert.Equal(t, "Mat", o.Get("name").Str())
+	assert.Equal(t, 30, o.Get("age").Int())
+
+	// Test alias FromYaml
+	o2, err := objx.FromYaml(yamlString)
+	require.NoError(t, err)
+	require.NotNil(t, o2)
+	assert.Equal(t, "Mat", o2.Get("name").Str())
+}
+
+func TestMapMustFromYAML(t *testing.T) {
+	yamlString := "name: Mat\nage: 30\n"
+	o := objx.MustFromYAML(yamlString)
+
+	require.NotNil(t, o)
+	assert.Equal(t, "Mat", o.Get("name").Str())
+	assert.Equal(t, 30, o.Get("age").Int())
+
+	// Test alias MustFromYaml
+	o2 := objx.MustFromYaml(yamlString)
+	require.NotNil(t, o2)
+	assert.Equal(t, "Mat", o2.Get("name").Str())
+}
+
+func TestMapFromYAMLWithError(t *testing.T) {
+	_, err := objx.FromYAML(":\n  invalid: yaml: :")
+	assert.Error(t, err)
+
+	assert.Panics(t, func() {
+		objx.MustFromYAML(":\n  invalid: yaml: :")
+	})
+
+	assert.Panics(t, func() {
+		objx.MustFromYaml(":\n  invalid: yaml: :")
+	})
+}
+
+func TestMapFromYAMLNested(t *testing.T) {
+	yamlString := `
+user:
+  name: Tyler
+  address:
+    city: Salt Lake City
+    state: UT
+  tags:
+    - admin
+    - developer
+`
+	m, err := objx.FromYAML(yamlString)
+	require.NoError(t, err)
+	require.NotNil(t, m)
+
+	assert.Equal(t, "Tyler", m.Get("user.name").Str())
+	assert.Equal(t, "Salt Lake City", m.Get("user.address.city").Str())
+	assert.Equal(t, "UT", m.Get("user.address.state").Str())
+	assert.Equal(t, "admin", m.Get("user.tags[0]").Str())
+	assert.Equal(t, "developer", m.Get("user.tags[1]").Str())
+}
+
+func TestYAMLTopLevelSlice(t *testing.T) {
+	yamlString := `
+- id: 10000001
+  name: Item 1
+- id: 42
+  name: Item 2
+`
+	slice, err := objx.FromYAMLSlice(yamlString)
+
+	assert.NoError(t, err)
+	require.Len(t, slice, 2)
+	assert.Equal(t, 10000001, slice[0].Get("id").MustInt())
+	assert.Equal(t, "Item 1", slice[0].Get("name").Str())
+	assert.Equal(t, 42, slice[1].Get("id").MustInt())
+	assert.Equal(t, "Item 2", slice[1].Get("name").Str())
+
+	mustSlice := objx.MustFromYAMLSlice(yamlString)
+	require.Len(t, mustSlice, 2)
+	assert.Equal(t, 10000001, mustSlice[0].Get("id").MustInt())
+
+	// Test aliases
+	aliasSlice, err := objx.FromYamlSlice(yamlString)
+	assert.NoError(t, err)
+	require.Len(t, aliasSlice, 2)
+
+	mustAliasSlice := objx.MustFromYamlSlice(yamlString)
+	require.Len(t, mustAliasSlice, 2)
+}
+
+func TestYAMLTopLevelSliceWithError(t *testing.T) {
+	slice, err := objx.FromYAMLSlice(":\n  invalid: yaml: :")
+
+	assert.Error(t, err)
+	assert.Nil(t, slice)
+	assert.Panics(t, func() {
+		_ = objx.MustFromYAMLSlice(":\n  invalid: yaml: :")
+	})
+	assert.Panics(t, func() {
+		_ = objx.MustFromYamlSlice(":\n  invalid: yaml: :")
+	})
+}

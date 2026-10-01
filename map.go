@@ -4,9 +4,12 @@ import (
 	"encoding/base64"
 	"encoding/json"
 	"errors"
+	"fmt"
 	"io/ioutil"
 	"net/url"
 	"strings"
+
+	"gopkg.in/yaml.v3"
 )
 
 // MSIConvertable is an interface that defines methods for converting your
@@ -127,6 +130,97 @@ func FromJSONSlice(jsonString string) ([]Map, error) {
 		return nil, err
 	}
 	return slice, nil
+}
+
+// MustFromYAML creates a new Map containing the data specified in the
+// yamlString.
+//
+// Panics if the YAML is invalid.
+func MustFromYAML(yamlString string) Map {
+	o, err := FromYAML(yamlString)
+	if err != nil {
+		panic("objx: MustFromYAML failed with error: " + err.Error())
+	}
+	return o
+}
+
+// MustFromYaml is an alias for MustFromYAML.
+func MustFromYaml(yamlString string) Map {
+	return MustFromYAML(yamlString)
+}
+
+// MustFromYAMLSlice creates a new slice of Map containing the data specified in the
+// yamlString. Works with YAML with a top level array.
+//
+// Panics if the YAML is invalid.
+func MustFromYAMLSlice(yamlString string) []Map {
+	slice, err := FromYAMLSlice(yamlString)
+	if err != nil {
+		panic("objx: MustFromYAMLSlice failed with error: " + err.Error())
+	}
+	return slice
+}
+
+// MustFromYamlSlice is an alias for MustFromYAMLSlice.
+func MustFromYamlSlice(yamlString string) []Map {
+	return MustFromYAMLSlice(yamlString)
+}
+
+// FromYAML creates a new Map containing the data specified in the
+// yamlString.
+//
+// Returns an error if the YAML is invalid.
+func FromYAML(yamlString string) (m Map, err error) {
+	defer func() {
+		if r := recover(); r != nil {
+			err = fmt.Errorf("objx: YAML decode failed with: %v", r)
+			m = Nil
+		}
+	}()
+
+	err = yaml.Unmarshal([]byte(yamlString), &m)
+	if err != nil {
+		return Nil, err
+	}
+	for k, v := range m {
+		m[k] = cleanUp(v)
+	}
+	return m, nil
+}
+
+// FromYaml is an alias for FromYAML.
+func FromYaml(yamlString string) (Map, error) {
+	return FromYAML(yamlString)
+}
+
+// FromYAMLSlice creates a new slice of Map containing the data specified in the
+// yamlString. Works with YAML with a top level array.
+//
+// Returns an error if the YAML is invalid.
+func FromYAMLSlice(yamlString string) (slice []Map, err error) {
+	defer func() {
+		if r := recover(); r != nil {
+			err = fmt.Errorf("objx: YAML decode failed with: %v", r)
+			slice = nil
+		}
+	}()
+
+	err = yaml.Unmarshal([]byte(yamlString), &slice)
+	if err != nil {
+		return nil, err
+	}
+	for i, sm := range slice {
+		for k, v := range sm {
+			sm[k] = cleanUp(v)
+		}
+		slice[i] = sm
+	}
+	return slice, nil
+}
+
+// FromYamlSlice is an alias for FromYAMLSlice.
+func FromYamlSlice(yamlString string) ([]Map, error) {
+	return FromYAMLSlice(yamlString)
 }
 
 // FromBase64 creates a new Obj containing the data specified
