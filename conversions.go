@@ -8,6 +8,8 @@ import (
 	"fmt"
 	"net/url"
 	"strconv"
+
+	"gopkg.in/yaml.v3"
 )
 
 // SignatureSeparator is the character that is used to
@@ -99,15 +101,27 @@ func cleanUpMapArray(in []Map) []Map {
 	return result
 }
 
+func cleanUpMIIArray(in []map[interface{}]interface{}) []Map {
+	result := make([]Map, len(in))
+	for i, v := range in {
+		result[i] = cleanUpInterfaceMap(v)
+	}
+	return result
+}
+
 func cleanUp(v interface{}) interface{} {
 	switch v := v.(type) {
 	case []interface{}:
 		return cleanUpInterfaceArray(v)
 	case []map[string]interface{}:
 		return cleanUpMSIArray(v)
+	case []map[interface{}]interface{}:
+		return cleanUpMIIArray(v)
 	case map[interface{}]interface{}:
 		return cleanUpInterfaceMap(v)
 	case Map:
+		return cleanUpStringMap(v)
+	case map[string]interface{}:
 		return cleanUpStringMap(v)
 	case []Map:
 		return cleanUpMapArray(v)
@@ -124,6 +138,48 @@ func (m Map) MustJSON() string {
 		panic(err.Error())
 	}
 	return result
+}
+
+// YAML converts the contained object to a YAML string
+// representation
+func (m Map) YAML() (resultStr string, err error) {
+	defer func() {
+		if r := recover(); r != nil {
+			err = fmt.Errorf("objx: YAML encode failed with: %v", r)
+		}
+	}()
+
+	for k, v := range m {
+		m[k] = cleanUp(v)
+	}
+
+	result, err := yaml.Marshal(m)
+	if err != nil {
+		err = errors.New("objx: YAML encode failed with: " + err.Error())
+	}
+	return string(result), err
+}
+
+// MustYAML converts the contained object to a YAML string
+// representation and panics if there is an error
+func (m Map) MustYAML() string {
+	result, err := m.YAML()
+	if err != nil {
+		panic(err.Error())
+	}
+	return result
+}
+
+// Yaml converts the contained object to a YAML string
+// representation. Alias for YAML.
+func (m Map) Yaml() (string, error) {
+	return m.YAML()
+}
+
+// MustYaml converts the contained object to a YAML string
+// representation and panics if there is an error. Alias for MustYAML.
+func (m Map) MustYaml() string {
+	return m.MustYAML()
 }
 
 // Base64 converts the contained object to a Base64 string

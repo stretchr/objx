@@ -45,6 +45,65 @@ func TestConversionJSONWithError(t *testing.T) {
 	assert.Error(t, err)
 }
 
+func TestConversionYAML(t *testing.T) {
+	o := objx.Map{"name": "Mat", "age": 30}
+
+	result, err := o.YAML()
+	require.NoError(t, err)
+	require.NotNil(t, result)
+
+	parsed, err := objx.FromYAML(result)
+	require.NoError(t, err)
+	assert.Equal(t, "Mat", parsed.Get("name").Str())
+	assert.Equal(t, 30, parsed.Get("age").Int())
+
+	assert.Equal(t, result, o.MustYAML())
+	assert.Equal(t, result, o.MustYaml())
+
+	aliasResult, err := o.Yaml()
+	require.NoError(t, err)
+	assert.Equal(t, result, aliasResult)
+
+	i := objx.Map{
+		"a": map[interface{}]interface{}{"b": objx.Map{"c": map[interface{}]interface{}{"d": "e"}},
+			"f": []objx.Map{{"g": map[interface{}]interface{}{"h": "i"}}},
+			"j": []map[string]interface{}{{"k": map[interface{}]interface{}{"l": "m"}}},
+			"n": []interface{}{objx.Map{"o": "p"}},
+		},
+	}
+
+	result, err = i.YAML()
+	require.NoError(t, err)
+	require.NotNil(t, result)
+	assert.Equal(t, result, i.MustYAML())
+
+	parsedNested, err := objx.FromYAML(result)
+	require.NoError(t, err)
+	assert.Equal(t, "e", parsedNested.Get("a.b.c.d").Str())
+	assert.Equal(t, "i", parsedNested.Get("a.f[0].g.h").Str())
+	assert.Equal(t, "m", parsedNested.Get("a.j[0].k.l").Str())
+	assert.Equal(t, "p", parsedNested.Get("a.n[0].o").Str())
+}
+
+func TestConversionYAMLWithError(t *testing.T) {
+	o := objx.MSI()
+	o["test"] = func() {}
+
+	assert.Panics(t, func() {
+		o.MustYAML()
+	})
+
+	assert.Panics(t, func() {
+		o.MustYaml()
+	})
+
+	_, err := o.YAML()
+	assert.Error(t, err)
+
+	_, err = o.Yaml()
+	assert.Error(t, err)
+}
+
 func TestConversionBase64(t *testing.T) {
 	o := objx.Map{"name": "Mat"}
 
