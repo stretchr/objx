@@ -43,7 +43,7 @@ var mapAccessRegex = regexp.MustCompile(mapAccessRegexString)
 //
 //	o.Get("books[1].chapters[2].title")
 func (m Map) Get(selector string) *Value {
-	rawObj := access(m, selector, nil, false)
+	rawObj := access(m, selector, nil, actionGet)
 	return &Value{data: rawObj}
 }
 
@@ -58,7 +58,24 @@ func (m Map) Get(selector string) *Value {
 //
 //	o.Set("books[1].chapters[2].title","Time to Go")
 func (m Map) Set(selector string, value interface{}) Map {
-	access(m, selector, value, true)
+	access(m, selector, value, actionSet)
+	return m
+}
+
+// Delete deletes the value using the specified selector and
+// returns the object on which Delete was called.
+//
+// Delete can only operate directly on map[string]interface{} and []interface.
+//
+// # Example
+//
+// To delete the title of the third chapter of the second book, do:
+//
+//	o.Delete("books[1].chapters[2].title")
+func (m Map) Delete(selectors ...string) Map {
+	for _, selector := range selectors {
+		access(m, selector, nil, actionDelete)
+	}
 	return m
 }
 
@@ -111,9 +128,17 @@ func getKey(s string) (string, string) {
 	return thisSel, nextSel
 }
 
+type accessAction int
+
+const (
+	actionGet accessAction = iota
+	actionSet
+	actionDelete
+)
+
 // access accesses the object using the selector and performs the
 // appropriate action.
-func access(current interface{}, selector string, value interface{}, isSet bool) interface{} {
+func access(current interface{}, selector string, value interface{}, action accessAction) interface{} {
 	thisSel, nextSel := getKey(selector)
 
 	indexes := []int{}
@@ -130,13 +155,19 @@ func access(current interface{}, selector string, value interface{}, isSet bool)
 	if curMap, ok := current.(Map); ok {
 		current = map[string]interface{}(curMap)
 	}
+	var curMSI map[string]interface{}
 	// get the object in question
 	switch current.(type) {
 	case map[string]interface{}:
-		curMSI := current.(map[string]interface{})
-		if nextSel == "" && isSet && len(indexes) == 0 {
-			curMSI[thisSel] = value
-			return nil
+		curMSI = current.(map[string]interface{})
+		if nextSel == "" && len(indexes) == 0 {
+			if action == actionSet {
+				curMSI[thisSel] = value
+				return nil
+			} else if action == actionDelete {
+				delete(curMSI, thisSel)
+				return nil
+			}
 		}
 
 		_, ok := curMSI[thisSel].(map[string]interface{})
@@ -144,7 +175,7 @@ func access(current interface{}, selector string, value interface{}, isSet bool)
 			_, ok = curMSI[thisSel].(Map)
 		}
 
-		if (curMSI[thisSel] == nil || !ok) && len(indexes) == 0 && isSet {
+		if (curMSI[thisSel] == nil || !ok) && len(indexes) == 0 && action == actionSet {
 			curMSI[thisSel] = map[string]interface{}{}
 		}
 
@@ -162,9 +193,16 @@ func access(current interface{}, selector string, value interface{}, isSet bool)
 			indexes = indexes[:num]
 			if array, ok := interSlice(current); ok {
 				if index >= 0 && index < len(array) {
-					if isSet && nextSel == "" && num == 0 {
-						array[index] = value
-						return nil
+					if nextSel == "" && num == 0 {
+						if action == actionSet {
+							array[index] = value
+							return nil
+						} else if action == actionDelete {
+							if curMSI != nil {
+								curMSI[thisSel] = append(array[:index], array[index+1:]...)
+							}
+							return nil
+						}
 					}
 					current = array[index]
 				} else {
@@ -179,7 +217,7 @@ func access(current interface{}, selector string, value interface{}, isSet bool)
 	}
 
 	if nextSel != "" {
-		current = access(current, nextSel, value, isSet)
+		current = access(current, nextSel, value, action)
 	}
 	return current
 }

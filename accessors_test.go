@@ -281,3 +281,59 @@ func TestSetIndexPreservesSlice(t *testing.T) {
 	m.Set("nested[0][1]", "changed")
 	assert.Equal(t, []interface{}{[]interface{}{"first", "changed"}}, m["nested"])
 }
+
+func TestAccessorsDelete(t *testing.T) {
+	m := objx.Map{
+		"name": objx.Map{
+			"first": "Tyler",
+			"last":  "Bunnell",
+		},
+		"age": 30,
+		"domains": objx.Map{
+			"example.com": objx.Map{
+				"apex": "example",
+			},
+		},
+		"tags": []interface{}{"admin", "user"},
+		"users": []interface{}{
+			objx.Map{"first": "Tyler", "last": "Bunnell"},
+			objx.Map{"first": "Capitol", "last": "Bollocks"},
+		},
+	}
+
+	// Delete single top-level field
+	m.Delete("age")
+	assert.False(t, m.Has("age"))
+	assert.Nil(t, m.Get("age").Data())
+
+	// Delete nested field
+	m.Delete("name.first")
+	assert.False(t, m.Has("name.first"))
+	assert.Equal(t, "Bunnell", m.Get("name.last").Data())
+
+	// Delete with complex bracket key
+	m.Delete("domains[example.com][apex]")
+	assert.False(t, m.Has("domains[example.com][apex]"))
+
+	// Delete nested in array
+	m.Delete("users[0].first")
+	assert.False(t, m.Has("users[0].first"))
+	assert.Equal(t, "Bunnell", m.Get("users[0].last").Data())
+
+	// Delete array element
+	m.Delete("tags[0]")
+	assert.Equal(t, []interface{}{"user"}, m.Get("tags").Data())
+
+	// Delete multiple selectors
+	m.Delete("name.last", "users[1]")
+	assert.False(t, m.Has("name.last"))
+	assert.Equal(t, 1, len(m.Get("users").InterSlice()))
+
+	// Delete nonexistent key should be a no-op
+	m.Delete("nonexistent.nested.key")
+	m.Delete("tags[99]")
+
+	// Nil map should not panic
+	var nilMap objx.Map
+	assert.Nil(t, nilMap.Delete("something"))
+}
