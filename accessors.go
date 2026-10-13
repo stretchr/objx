@@ -160,14 +160,20 @@ func access(current any, selector string, value any, action accessAction) (any, 
 	switch current.(type) {
 	case map[string]any:
 		curMSI := current.(map[string]any)
-		if nextSel == "" && len(indexes) == 0 {
-			switch action {
-			case actionSet:
+		if nextSel == "" {
+			switch {
+			case action == actionSet && len(indexes) == 0:
 				curMSI[thisSel] = value
 				return nil, true
-			case actionDelete:
+			case action == actionDelete && len(indexes) == 0:
 				delete(curMSI, thisSel)
 				return nil, true
+			case action == actionDelete:
+				updated, ok := deleteSliceIndex(curMSI[thisSel], indexes)
+				if ok {
+					curMSI[thisSel] = updated
+				}
+				return nil, ok
 			}
 		}
 
@@ -183,13 +189,6 @@ func access(current any, selector string, value any, action accessAction) (any, 
 		current, ok = curMSI[thisSel]
 		if !ok {
 			return nil, false
-		}
-		if action == actionDelete && nextSel == "" && len(indexes) > 0 {
-			updated, ok := deleteSliceIndex(current, indexes)
-			if ok {
-				curMSI[thisSel] = updated
-			}
-			return nil, ok
 		}
 	default:
 		return nil, false
