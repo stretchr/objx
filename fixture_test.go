@@ -13,9 +13,9 @@ var fixtures = []struct {
 	// data is the JSON data to be worked on
 	data string
 	// get is the argument(s) to pass to Get
-	get interface{}
+	get any
 	// output is the expected output
-	output interface{}
+	output any
 }{
 	{
 		name:   "Simple get",

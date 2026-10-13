@@ -8,15 +8,15 @@ import (
 )
 
 /*
-Tests for Inter (interface{} and []interface{})
+Tests for Inter (any and []any)
 */
 func TestInter(t *testing.T) {
-	val := interface{}("something")
+	val := any("something")
 	m := objx.Map{"value": val, "nothing": nil}
 
 	assert.Equal(t, val, m.Get("value").Inter())
 	assert.Equal(t, val, m.Get("value").MustInter())
-	assert.Equal(t, interface{}(nil), m.Get("nothing").Inter())
+	assert.Equal(t, any(nil), m.Get("nothing").Inter())
 	assert.Equal(t, val, m.Get("nothing").Inter("something"))
 	assert.Panics(t, func() {
 		m.Get("age").MustInter()
@@ -24,35 +24,35 @@ func TestInter(t *testing.T) {
 }
 
 func TestInterSlice(t *testing.T) {
-	val := interface{}("something")
-	m := objx.Map{"value": []interface{}{val}, "nothing": nil}
+	val := any("something")
+	m := objx.Map{"value": []any{val}, "nothing": nil}
 
 	assert.Equal(t, val, m.Get("value").InterSlice()[0])
 	assert.Equal(t, val, m.Get("value").MustInterSlice()[0])
-	assert.Equal(t, []interface{}(nil), m.Get("nothing").InterSlice())
-	assert.Equal(t, val, m.Get("nothing").InterSlice([]interface{}{interface{}("something")})[0])
+	assert.Equal(t, []any(nil), m.Get("nothing").InterSlice())
+	assert.Equal(t, val, m.Get("nothing").InterSlice([]any{any("something")})[0])
 	assert.Panics(t, func() {
 		m.Get("nothing").MustInterSlice()
 	})
 }
 
 func TestIsInter(t *testing.T) {
-	m := objx.Map{"data": interface{}("something")}
+	m := objx.Map{"data": any("something")}
 
 	assert.True(t, m.Get("data").IsInter())
 }
 
 func TestIsInterSlice(t *testing.T) {
-	m := objx.Map{"data": []interface{}{interface{}("something")}}
+	m := objx.Map{"data": []any{any("something")}}
 
 	assert.True(t, m.Get("data").IsInterSlice())
 }
 
 func TestEachInter(t *testing.T) {
-	m := objx.Map{"data": []interface{}{interface{}("something"), interface{}("something"), interface{}("something"), interface{}("something"), interface{}("something")}}
+	m := objx.Map{"data": []any{any("something"), any("something"), any("something"), any("something"), any("something")}}
 	count := 0
-	replacedVals := make([]interface{}, 0)
-	assert.Equal(t, m.Get("data"), m.Get("data").EachInter(func(i int, val interface{}) bool {
+	replacedVals := make([]any, 0)
+	assert.Equal(t, m.Get("data"), m.Get("data").EachInter(func(i int, val any) bool {
 		count++
 		replacedVals = append(replacedVals, val)
 
@@ -67,9 +67,9 @@ func TestEachInter(t *testing.T) {
 }
 
 func TestWhereInter(t *testing.T) {
-	m := objx.Map{"data": []interface{}{interface{}("something"), interface{}("something"), interface{}("something"), interface{}("something"), interface{}("something"), interface{}("something")}}
+	m := objx.Map{"data": []any{any("something"), any("something"), any("something"), any("something"), any("something"), any("something")}}
 
-	selected := m.Get("data").WhereInter(func(i int, val interface{}) bool {
+	selected := m.Get("data").WhereInter(func(i int, val any) bool {
 		return i%2 == 0
 	}).MustInterSlice()
 
@@ -77,11 +77,11 @@ func TestWhereInter(t *testing.T) {
 }
 
 func TestGroupInter(t *testing.T) {
-	m := objx.Map{"data": []interface{}{interface{}("something"), interface{}("something"), interface{}("something"), interface{}("something"), interface{}("something"), interface{}("something")}}
+	m := objx.Map{"data": []any{any("something"), any("something"), any("something"), any("something"), any("something"), any("something")}}
 
-	grouped := m.Get("data").GroupInter(func(i int, val interface{}) string {
+	grouped := m.Get("data").GroupInter(func(i int, val any) string {
 		return fmt.Sprintf("%v", i%2 == 0)
-	}).Data().(map[string][]interface{})
+	}).Data().(map[string][]any)
 
 	assert.Equal(t, 2, len(grouped))
 	assert.Equal(t, 3, len(grouped["true"]))
@@ -89,10 +89,10 @@ func TestGroupInter(t *testing.T) {
 }
 
 func TestReplaceInter(t *testing.T) {
-	m := objx.Map{"data": []interface{}{interface{}("something"), interface{}("something"), interface{}("something"), interface{}("something"), interface{}("something"), interface{}("something")}}
+	m := objx.Map{"data": []any{any("something"), any("something"), any("something"), any("something"), any("something"), any("something")}}
 	rawArr := m.Get("data").MustInterSlice()
 
-	replaced := m.Get("data").ReplaceInter(func(index int, val interface{}) interface{} {
+	replaced := m.Get("data").ReplaceInter(func(index int, val any) any {
 		if index < len(rawArr)-1 {
 			return rawArr[index+1]
 		}
@@ -111,9 +111,9 @@ func TestReplaceInter(t *testing.T) {
 }
 
 func TestCollectInter(t *testing.T) {
-	m := objx.Map{"data": []interface{}{interface{}("something"), interface{}("something"), interface{}("something"), interface{}("something"), interface{}("something"), interface{}("something")}}
+	m := objx.Map{"data": []any{any("something"), any("something"), any("something"), any("something"), any("something"), any("something")}}
 
-	collected := m.Get("data").CollectInter(func(index int, val interface{}) interface{} {
+	collected := m.Get("data").CollectInter(func(index int, val any) any {
 		return index
 	})
 	collectedArr := collected.MustInterSlice()
@@ -234,7 +234,7 @@ func TestReplaceBool(t *testing.T) {
 func TestCollectBool(t *testing.T) {
 	m := objx.Map{"data": []bool{bool(true), bool(true), bool(true), bool(true), bool(true), bool(true)}}
 
-	collected := m.Get("data").CollectBool(func(index int, val bool) interface{} {
+	collected := m.Get("data").CollectBool(func(index int, val bool) any {
 		return index
 	})
 	collectedArr := collected.MustInterSlice()
@@ -355,7 +355,7 @@ func TestReplaceStr(t *testing.T) {
 func TestCollectStr(t *testing.T) {
 	m := objx.Map{"data": []string{string("hello"), string("hello"), string("hello"), string("hello"), string("hello"), string("hello")}}
 
-	collected := m.Get("data").CollectStr(func(index int, val string) interface{} {
+	collected := m.Get("data").CollectStr(func(index int, val string) any {
 		return index
 	})
 	collectedArr := collected.MustInterSlice()
@@ -476,7 +476,7 @@ func TestReplaceInt(t *testing.T) {
 func TestCollectInt(t *testing.T) {
 	m := objx.Map{"data": []int{int(1), int(1), int(1), int(1), int(1), int(1)}}
 
-	collected := m.Get("data").CollectInt(func(index int, val int) interface{} {
+	collected := m.Get("data").CollectInt(func(index int, val int) any {
 		return index
 	})
 	collectedArr := collected.MustInterSlice()
@@ -597,7 +597,7 @@ func TestReplaceInt8(t *testing.T) {
 func TestCollectInt8(t *testing.T) {
 	m := objx.Map{"data": []int8{int8(1), int8(1), int8(1), int8(1), int8(1), int8(1)}}
 
-	collected := m.Get("data").CollectInt8(func(index int, val int8) interface{} {
+	collected := m.Get("data").CollectInt8(func(index int, val int8) any {
 		return index
 	})
 	collectedArr := collected.MustInterSlice()
@@ -718,7 +718,7 @@ func TestReplaceInt16(t *testing.T) {
 func TestCollectInt16(t *testing.T) {
 	m := objx.Map{"data": []int16{int16(1), int16(1), int16(1), int16(1), int16(1), int16(1)}}
 
-	collected := m.Get("data").CollectInt16(func(index int, val int16) interface{} {
+	collected := m.Get("data").CollectInt16(func(index int, val int16) any {
 		return index
 	})
 	collectedArr := collected.MustInterSlice()
@@ -839,7 +839,7 @@ func TestReplaceInt32(t *testing.T) {
 func TestCollectInt32(t *testing.T) {
 	m := objx.Map{"data": []int32{int32(1), int32(1), int32(1), int32(1), int32(1), int32(1)}}
 
-	collected := m.Get("data").CollectInt32(func(index int, val int32) interface{} {
+	collected := m.Get("data").CollectInt32(func(index int, val int32) any {
 		return index
 	})
 	collectedArr := collected.MustInterSlice()
@@ -960,7 +960,7 @@ func TestReplaceInt64(t *testing.T) {
 func TestCollectInt64(t *testing.T) {
 	m := objx.Map{"data": []int64{int64(1), int64(1), int64(1), int64(1), int64(1), int64(1)}}
 
-	collected := m.Get("data").CollectInt64(func(index int, val int64) interface{} {
+	collected := m.Get("data").CollectInt64(func(index int, val int64) any {
 		return index
 	})
 	collectedArr := collected.MustInterSlice()
@@ -1081,7 +1081,7 @@ func TestReplaceUint(t *testing.T) {
 func TestCollectUint(t *testing.T) {
 	m := objx.Map{"data": []uint{uint(1), uint(1), uint(1), uint(1), uint(1), uint(1)}}
 
-	collected := m.Get("data").CollectUint(func(index int, val uint) interface{} {
+	collected := m.Get("data").CollectUint(func(index int, val uint) any {
 		return index
 	})
 	collectedArr := collected.MustInterSlice()
@@ -1202,7 +1202,7 @@ func TestReplaceUint8(t *testing.T) {
 func TestCollectUint8(t *testing.T) {
 	m := objx.Map{"data": []uint8{uint8(1), uint8(1), uint8(1), uint8(1), uint8(1), uint8(1)}}
 
-	collected := m.Get("data").CollectUint8(func(index int, val uint8) interface{} {
+	collected := m.Get("data").CollectUint8(func(index int, val uint8) any {
 		return index
 	})
 	collectedArr := collected.MustInterSlice()
@@ -1323,7 +1323,7 @@ func TestReplaceUint16(t *testing.T) {
 func TestCollectUint16(t *testing.T) {
 	m := objx.Map{"data": []uint16{uint16(1), uint16(1), uint16(1), uint16(1), uint16(1), uint16(1)}}
 
-	collected := m.Get("data").CollectUint16(func(index int, val uint16) interface{} {
+	collected := m.Get("data").CollectUint16(func(index int, val uint16) any {
 		return index
 	})
 	collectedArr := collected.MustInterSlice()
@@ -1444,7 +1444,7 @@ func TestReplaceUint32(t *testing.T) {
 func TestCollectUint32(t *testing.T) {
 	m := objx.Map{"data": []uint32{uint32(1), uint32(1), uint32(1), uint32(1), uint32(1), uint32(1)}}
 
-	collected := m.Get("data").CollectUint32(func(index int, val uint32) interface{} {
+	collected := m.Get("data").CollectUint32(func(index int, val uint32) any {
 		return index
 	})
 	collectedArr := collected.MustInterSlice()
@@ -1565,7 +1565,7 @@ func TestReplaceUint64(t *testing.T) {
 func TestCollectUint64(t *testing.T) {
 	m := objx.Map{"data": []uint64{uint64(1), uint64(1), uint64(1), uint64(1), uint64(1), uint64(1)}}
 
-	collected := m.Get("data").CollectUint64(func(index int, val uint64) interface{} {
+	collected := m.Get("data").CollectUint64(func(index int, val uint64) any {
 		return index
 	})
 	collectedArr := collected.MustInterSlice()
@@ -1686,7 +1686,7 @@ func TestReplaceUintptr(t *testing.T) {
 func TestCollectUintptr(t *testing.T) {
 	m := objx.Map{"data": []uintptr{uintptr(1), uintptr(1), uintptr(1), uintptr(1), uintptr(1), uintptr(1)}}
 
-	collected := m.Get("data").CollectUintptr(func(index int, val uintptr) interface{} {
+	collected := m.Get("data").CollectUintptr(func(index int, val uintptr) any {
 		return index
 	})
 	collectedArr := collected.MustInterSlice()
@@ -1807,7 +1807,7 @@ func TestReplaceFloat32(t *testing.T) {
 func TestCollectFloat32(t *testing.T) {
 	m := objx.Map{"data": []float32{float32(1), float32(1), float32(1), float32(1), float32(1), float32(1)}}
 
-	collected := m.Get("data").CollectFloat32(func(index int, val float32) interface{} {
+	collected := m.Get("data").CollectFloat32(func(index int, val float32) any {
 		return index
 	})
 	collectedArr := collected.MustInterSlice()
@@ -1928,7 +1928,7 @@ func TestReplaceFloat64(t *testing.T) {
 func TestCollectFloat64(t *testing.T) {
 	m := objx.Map{"data": []float64{float64(1), float64(1), float64(1), float64(1), float64(1), float64(1)}}
 
-	collected := m.Get("data").CollectFloat64(func(index int, val float64) interface{} {
+	collected := m.Get("data").CollectFloat64(func(index int, val float64) any {
 		return index
 	})
 	collectedArr := collected.MustInterSlice()
@@ -2049,7 +2049,7 @@ func TestReplaceComplex64(t *testing.T) {
 func TestCollectComplex64(t *testing.T) {
 	m := objx.Map{"data": []complex64{complex64(1), complex64(1), complex64(1), complex64(1), complex64(1), complex64(1)}}
 
-	collected := m.Get("data").CollectComplex64(func(index int, val complex64) interface{} {
+	collected := m.Get("data").CollectComplex64(func(index int, val complex64) any {
 		return index
 	})
 	collectedArr := collected.MustInterSlice()
@@ -2170,7 +2170,7 @@ func TestReplaceComplex128(t *testing.T) {
 func TestCollectComplex128(t *testing.T) {
 	m := objx.Map{"data": []complex128{complex128(1), complex128(1), complex128(1), complex128(1), complex128(1), complex128(1)}}
 
-	collected := m.Get("data").CollectComplex128(func(index int, val complex128) interface{} {
+	collected := m.Get("data").CollectComplex128(func(index int, val complex128) any {
 		return index
 	})
 	collectedArr := collected.MustInterSlice()

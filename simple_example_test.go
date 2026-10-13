@@ -10,7 +10,7 @@ func TestSimpleExample(t *testing.T) {
 	// build a map from a JSON object
 	o := objx.MustFromJSON(`{"name":"Mat","foods":["indian","chinese"], "location":{"county":"hobbiton","city":"the shire"}}`)
 
-	// Map can be used as a straight map[string]interface{}
+	// Map can be used as a straight map[string]any
 	assert.Equal(t, o["name"], "Mat")
 
 	// Get an Value object

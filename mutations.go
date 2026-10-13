@@ -24,7 +24,7 @@ func (m Map) Copy() Map {
 // Merge blends the specified map with a copy of this map and returns the result.
 //
 // Keys that appear in both will be selected from the specified map.
-// This method requires that the wrapped object be a map[string]interface{}
+// This method requires that the wrapped object be a map[string]any
 func (m Map) Merge(merge Map) Map {
 	return m.Copy().MergeHere(merge)
 }
@@ -33,7 +33,7 @@ func (m Map) Merge(merge Map) Map {
 //
 // Keys that appear in both will be selected from the specified map. The original map
 // will be modified. This method requires that
-// the wrapped object be a map[string]interface{}
+// the wrapped object be a map[string]any
 func (m Map) MergeHere(merge Map) Map {
 	for k, v := range merge {
 		m[k] = v
@@ -43,8 +43,8 @@ func (m Map) MergeHere(merge Map) Map {
 
 // Transform builds a new Obj giving the transformer a chance
 // to change the keys and values as it goes. This method requires that
-// the wrapped object be a map[string]interface{}
-func (m Map) Transform(transformer func(key string, value interface{}) (string, interface{})) Map {
+// the wrapped object be a map[string]any
+func (m Map) Transform(transformer func(key string, value any) (string, any)) Map {
 	newMap := Map{}
 	for k, v := range m {
 		modifiedKey, modifiedVal := transformer(k, v)
@@ -56,9 +56,9 @@ func (m Map) Transform(transformer func(key string, value interface{}) (string, 
 // TransformKeys builds a new map using the specified key mapping.
 //
 // Unspecified keys will be unaltered.
-// This method requires that the wrapped object be a map[string]interface{}
+// This method requires that the wrapped object be a map[string]any
 func (m Map) TransformKeys(mapping map[string]string) Map {
-	return m.Transform(func(key string, value interface{}) (string, interface{}) {
+	return m.Transform(func(key string, value any) (string, any) {
 		if newKey, ok := mapping[key]; ok {
 			return newKey, value
 		}

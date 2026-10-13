@@ -10,27 +10,27 @@ import (
 func TestConversionJSONPreservesNilContainers(t *testing.T) {
 	tests := []struct {
 		name  string
-		value interface{}
+		value any
 		json  string
 	}{
-		{"nil interface slice", []interface{}(nil), "null"},
+		{"nil interface slice", []any(nil), "null"},
 		{"nil map slice", []objx.Map(nil), "null"},
-		{"nil string map slice", []map[string]interface{}(nil), "null"},
+		{"nil string map slice", []map[string]any(nil), "null"},
 		{"nil map", objx.Map(nil), "null"},
-		{"nil interface map", map[interface{}]interface{}(nil), "null"},
-		{"nil string map", map[string]interface{}(nil), "null"},
+		{"nil interface map", map[any]any(nil), "null"},
+		{"nil string map", map[string]any(nil), "null"},
 		{"nil string slice", []string(nil), "null"},
 		{"nil interface", nil, "null"},
-		{"empty interface slice", []interface{}{}, "[]"},
+		{"empty interface slice", []any{}, "[]"},
 		{"empty map slice", []objx.Map{}, "[]"},
-		{"empty string map slice", []map[string]interface{}{}, "[]"},
+		{"empty string map slice", []map[string]any{}, "[]"},
 		{"empty map", objx.Map{}, "{}"},
-		{"empty interface map", map[interface{}]interface{}{}, "{}"},
-		{"populated interface slice", []interface{}{1}, "[1]"},
+		{"empty interface map", map[any]any{}, "{}"},
+		{"populated interface slice", []any{1}, "[1]"},
 		{"populated map slice", []objx.Map{{"key": "value"}}, `[{"key":"value"}]`},
-		{"populated string map slice", []map[string]interface{}{{"key": "value"}}, `[{"key":"value"}]`},
+		{"populated string map slice", []map[string]any{{"key": "value"}}, `[{"key":"value"}]`},
 		{"populated map", objx.Map{"key": "value"}, `{"key":"value"}`},
-		{"populated interface map", map[interface{}]interface{}{1: "value"}, `{"1":"value"}`},
+		{"populated interface map", map[any]any{1: "value"}, `{"1":"value"}`},
 	}
 	for _, test := range tests {
 		test := test
@@ -42,7 +42,7 @@ func TestConversionJSONPreservesNilContainers(t *testing.T) {
 				want  string
 			}{
 				{"direct", objx.Map{"value": test.value}, `{"value":` + test.json + `}`},
-				{"in slice", objx.Map{"value": []interface{}{test.value}}, `{"value":[` + test.json + `]}`},
+				{"in slice", objx.Map{"value": []any{test.value}}, `{"value":[` + test.json + `]}`},
 				{"in map", objx.Map{"value": objx.Map{"nested": test.value}}, `{"value":{"nested":` + test.json + `}}`},
 			} {
 				t.Run(context.name, func(t *testing.T) {
