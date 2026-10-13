@@ -2,9 +2,3 @@
 
 #### Summary
 <!-- A brief description of what this pull request does -->
-
-#### Checklist
-[Place an '[x]' (no spaces) in all applicable fields. Please remove unrelated fields.]
-- [ ] Tests are passing: `task test`
-- [ ] Code style is correct: `task lint`
-- [ ] Generated code is up to date: `task generate` (if `codegen/` changed) 
