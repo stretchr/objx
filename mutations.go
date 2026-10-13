@@ -10,7 +10,7 @@ import (
 func (m Map) Exclude(exclude []string) Map {
 	excluded := make(Map)
 	for k, v := range m {
-		if !contains(exclude, k) {
+		if !slices.Contains(exclude, k) {
 			excluded[k] = v
 		}
 	}
@@ -65,9 +65,4 @@ func (m Map) TransformKeys(mapping map[string]string) Map {
 		}
 		return key, value
 	})
-}
-
-// Checks if a string slice contains a string
-func contains(s []string, e string) bool {
-	return slices.Contains(s, e)
 }
