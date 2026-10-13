@@ -88,8 +88,7 @@ func (v *Value) Each{{.Name}}(callback func(int, {{.Type}}) bool) *Value {
 func (v *Value) Where{{.Name}}(decider func(int, {{.Type}}) bool) *Value {
 	var selected []{{.Type}}
 	v.Each{{.Name}}(func(index int, val {{.Type}}) bool {
-		shouldSelect := decider(index, val)
-		if !shouldSelect {
+		if decider(index, val) {
 			selected = append(selected, val)
 		}
 		return true
