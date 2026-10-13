@@ -8,11 +8,15 @@ import (
 	"testing"
 )
 
-type nonfatal struct{}
-type fatal struct{}
+type (
+	nonfatal struct{}
+	fatal    struct{}
+)
 
-var assert nonfatal
-var require fatal
+var (
+	assert  nonfatal
+	require fatal
+)
 
 func (nonfatal) fail(t *testing.T, msg string, msgAndArgs ...any) bool {
 	t.Helper()
@@ -38,6 +42,7 @@ func (a nonfatal) Equal(t *testing.T, expected, actual any, msgAndArgs ...any) b
 	}
 	return true
 }
+
 func (a fatal) Equal(t *testing.T, expected, actual any, msgAndArgs ...any) {
 	t.Helper()
 	if !reflect.DeepEqual(expected, actual) {
@@ -109,6 +114,7 @@ func (a nonfatal) True(t *testing.T, value bool, msgAndArgs ...any) bool {
 	}
 	return true
 }
+
 func (a fatal) True(t *testing.T, value bool, msgAndArgs ...any) {
 	t.Helper()
 	if !value {
@@ -123,6 +129,7 @@ func (a nonfatal) False(t *testing.T, value bool, msgAndArgs ...any) bool {
 	}
 	return true
 }
+
 func (a fatal) False(t *testing.T, value bool, msgAndArgs ...any) {
 	t.Helper()
 	if value {
@@ -137,6 +144,7 @@ func (a nonfatal) NoError(t *testing.T, err error, msgAndArgs ...any) bool {
 	}
 	return true
 }
+
 func (a fatal) NoError(t *testing.T, err error, msgAndArgs ...any) {
 	t.Helper()
 	if err != nil {
@@ -151,6 +159,7 @@ func (a nonfatal) Error(t *testing.T, err error, msgAndArgs ...any) bool {
 	}
 	return true
 }
+
 func (a fatal) Error(t *testing.T, err error, msgAndArgs ...any) {
 	t.Helper()
 	if err == nil {

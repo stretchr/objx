@@ -192,7 +192,7 @@ func interSlice(slice any) ([]any, bool) {
 
 	ret := make([]any, s.Len())
 
-	for i := 0; i < s.Len(); i++ {
+	for i := range ret {
 		ret[i] = s.Index(i).Interface()
 	}
 

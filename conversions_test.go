@@ -18,7 +18,8 @@ func TestConversionJSON(t *testing.T) {
 	assert.Equal(t, jsonString, o.MustJSON())
 
 	i := objx.Map{
-		"a": map[any]any{"b": objx.Map{"c": map[any]any{"d": "e"}},
+		"a": map[any]any{
+			"b": objx.Map{"c": map[any]any{"d": "e"}},
 			"f": []objx.Map{{"g": map[any]any{"h": "i"}}},
 			"j": []map[string]any{{"k": map[any]any{"l": "m"}}},
 			"n": []any{objx.Map{"o": "p"}},

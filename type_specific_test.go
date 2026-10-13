@@ -11,7 +11,7 @@ import (
 Tests for MSI (map[string]any and []map[string]any)
 */
 func TestMSI(t *testing.T) {
-	val := map[string]any(map[string]any{"name": "Tyler"})
+	val := map[string]any{"name": "Tyler"}
 	m := objx.Map{"value": val, "nothing": nil}
 	mVal := map[string]any{"value": val, "nothing": nil}
 
@@ -27,7 +27,7 @@ func TestMSI(t *testing.T) {
 }
 
 func TestMSISlice(t *testing.T) {
-	val := map[string]any(map[string]any{"name": "Tyler"})
+	val := map[string]any{"name": "Tyler"}
 	m := objx.Map{
 		"value":   []map[string]any{val},
 		"value2":  []objx.Map{val},
@@ -42,7 +42,7 @@ func TestMSISlice(t *testing.T) {
 	assert.Equal(t, val, m.Get("value2").MustMSISlice()[0])
 	assert.Equal(t, val, m.Get("value3").MustMSISlice()[0])
 	assert.Equal(t, []map[string]any(nil), m.Get("nothing").MSISlice())
-	assert.Equal(t, val, m.Get("nothing").MSISlice([]map[string]any{map[string]any(map[string]any{"name": "Tyler"})})[0])
+	assert.Equal(t, val, m.Get("nothing").MSISlice([]map[string]any{{"name": "Tyler"}})[0])
 	assert.Panics(t, func() {
 		m.Get("nothing").MustMSISlice()
 	})
@@ -56,14 +56,14 @@ func TestMSISlice(t *testing.T) {
 }
 
 func TestIsMSI(t *testing.T) {
-	m := objx.Map{"data": map[string]any(map[string]any{"name": "Tyler"})}
+	m := objx.Map{"data": map[string]any{"name": "Tyler"}}
 
 	assert.True(t, m.Get("data").IsMSI())
 	assert.True(t, m.Value().IsMSI())
 }
 
 func TestIsMSISlice(t *testing.T) {
-	val := map[string]any(map[string]any{"name": "Tyler"})
+	val := map[string]any{"name": "Tyler"}
 	m := objx.Map{"data": []map[string]any{val}, "data2": []objx.Map{val}}
 
 	assert.True(t, m.Get("data").IsMSISlice())
@@ -79,7 +79,7 @@ func TestIsMSISlice(t *testing.T) {
 }
 
 func TestEachMSI(t *testing.T) {
-	m := objx.Map{"data": []map[string]any{map[string]any(map[string]any{"name": "Tyler"}), map[string]any(map[string]any{"name": "Tyler"}), map[string]any(map[string]any{"name": "Tyler"}), map[string]any(map[string]any{"name": "Tyler"}), map[string]any(map[string]any{"name": "Tyler"})}}
+	m := objx.Map{"data": []map[string]any{{"name": "Tyler"}, {"name": "Tyler"}, {"name": "Tyler"}, {"name": "Tyler"}, {"name": "Tyler"}}}
 	count := 0
 	replacedVals := make([]map[string]any, 0)
 	assert.Equal(t, m.Get("data"), m.Get("data").EachMSI(func(i int, val map[string]any) bool {
@@ -109,7 +109,7 @@ func TestEachMSI(t *testing.T) {
 }
 
 func TestWhereMSI(t *testing.T) {
-	m := objx.Map{"data": []map[string]any{map[string]any(map[string]any{"name": "Tyler"}), map[string]any(map[string]any{"name": "Tyler"}), map[string]any(map[string]any{"name": "Tyler"}), map[string]any(map[string]any{"name": "Tyler"}), map[string]any(map[string]any{"name": "Tyler"}), map[string]any(map[string]any{"name": "Tyler"})}}
+	m := objx.Map{"data": []map[string]any{{"name": "Tyler"}, {"name": "Tyler"}, {"name": "Tyler"}, {"name": "Tyler"}, {"name": "Tyler"}, {"name": "Tyler"}}}
 
 	selected := m.Get("data").WhereMSI(func(i int, val map[string]any) bool {
 		return i%2 == 0
@@ -129,7 +129,7 @@ func TestWhereMSI2(t *testing.T) {
 }
 
 func TestGroupMSI(t *testing.T) {
-	m := objx.Map{"data": []map[string]any{map[string]any(map[string]any{"name": "Tyler"}), map[string]any(map[string]any{"name": "Tyler"}), map[string]any(map[string]any{"name": "Tyler"}), map[string]any(map[string]any{"name": "Tyler"}), map[string]any(map[string]any{"name": "Tyler"}), map[string]any(map[string]any{"name": "Tyler"})}}
+	m := objx.Map{"data": []map[string]any{{"name": "Tyler"}, {"name": "Tyler"}, {"name": "Tyler"}, {"name": "Tyler"}, {"name": "Tyler"}, {"name": "Tyler"}}}
 
 	grouped := m.Get("data").GroupMSI(func(i int, val map[string]any) string {
 		return fmt.Sprintf("%v", i%2 == 0)
@@ -153,7 +153,7 @@ func TestGroupMSI2(t *testing.T) {
 }
 
 func TestReplaceMSI(t *testing.T) {
-	m := objx.Map{"data": []map[string]any{map[string]any(map[string]any{"name": "Tyler"}), map[string]any(map[string]any{"name": "Tyler"}), map[string]any(map[string]any{"name": "Tyler"}), map[string]any(map[string]any{"name": "Tyler"}), map[string]any(map[string]any{"name": "Tyler"}), map[string]any(map[string]any{"name": "Tyler"})}}
+	m := objx.Map{"data": []map[string]any{{"name": "Tyler"}, {"name": "Tyler"}, {"name": "Tyler"}, {"name": "Tyler"}, {"name": "Tyler"}, {"name": "Tyler"}}}
 	rawArr := m.Get("data").MustMSISlice()
 
 	replaced := m.Get("data").ReplaceMSI(func(index int, val map[string]any) map[string]any {
@@ -196,7 +196,7 @@ func TestReplaceMSI2(t *testing.T) {
 }
 
 func TestCollectMSI(t *testing.T) {
-	m := objx.Map{"data": []map[string]any{map[string]any(map[string]any{"name": "Tyler"}), map[string]any(map[string]any{"name": "Tyler"}), map[string]any(map[string]any{"name": "Tyler"}), map[string]any(map[string]any{"name": "Tyler"}), map[string]any(map[string]any{"name": "Tyler"}), map[string]any(map[string]any{"name": "Tyler"})}}
+	m := objx.Map{"data": []map[string]any{{"name": "Tyler"}, {"name": "Tyler"}, {"name": "Tyler"}, {"name": "Tyler"}, {"name": "Tyler"}, {"name": "Tyler"}}}
 
 	collected := m.Get("data").CollectMSI(func(index int, val map[string]any) any {
 		return index
@@ -234,7 +234,7 @@ func TestCollectMSI2(t *testing.T) {
 Tests for ObjxMap ((objx.Map) and [](objx.Map))
 */
 func TestObjxMap(t *testing.T) {
-	val := (objx.Map)(objx.New(1))
+	val := objx.New(1)
 	m := objx.Map{"value": val, "value2": map[string]any{"name": "Taylor"}, "nothing": nil}
 	valMSI := objx.Map{"name": "Taylor"}
 
@@ -242,7 +242,7 @@ func TestObjxMap(t *testing.T) {
 	assert.Equal(t, valMSI, m.Get("value2").ObjxMap())
 	assert.Equal(t, val, m.Get("value").MustObjxMap())
 	assert.Equal(t, valMSI, m.Get("value2").MustObjxMap())
-	assert.Equal(t, (objx.Map)(objx.New(nil)), m.Get("nothing").ObjxMap())
+	assert.Equal(t, objx.New(nil), m.Get("nothing").ObjxMap())
 	assert.Equal(t, val, m.Get("nothing").ObjxMap(objx.New(1)))
 	assert.Panics(t, func() {
 		m.Get("age").MustObjxMap()
@@ -250,12 +250,12 @@ func TestObjxMap(t *testing.T) {
 }
 
 func TestObjxMapSlice(t *testing.T) {
-	val := (objx.Map)(objx.New(1))
+	val := objx.New(1)
 	m := objx.Map{
-		"value":   [](objx.Map){val},
-		"value2":  []map[string]any{map[string]any(map[string]any{"name": "Taylor"})},
+		"value":   []objx.Map{val},
+		"value2":  []map[string]any{{"name": "Taylor"}},
 		"value3":  []any{val},
-		"value4":  []any{map[string]any(map[string]any{"name": "Taylor"})},
+		"value4":  []any{map[string]any{"name": "Taylor"}},
 		"nothing": nil,
 	}
 	valMSI := objx.Map{"name": "Taylor"}
@@ -268,8 +268,8 @@ func TestObjxMapSlice(t *testing.T) {
 	assert.Equal(t, valMSI, m.Get("value2").MustObjxMapSlice()[0])
 	assert.Equal(t, val, m.Get("value3").MustObjxMapSlice()[0])
 	assert.Equal(t, valMSI, m.Get("value4").MustObjxMapSlice()[0])
-	assert.Equal(t, [](objx.Map)(nil), m.Get("nothing").ObjxMapSlice())
-	assert.Equal(t, val, m.Get("nothing").ObjxMapSlice([](objx.Map){(objx.Map)(objx.New(1))})[0])
+	assert.Equal(t, []objx.Map(nil), m.Get("nothing").ObjxMapSlice())
+	assert.Equal(t, val, m.Get("nothing").ObjxMapSlice([]objx.Map{objx.New(1)})[0])
 	assert.Panics(t, func() {
 		m.Get("nothing").MustObjxMapSlice()
 	})
@@ -283,14 +283,14 @@ func TestObjxMapSlice(t *testing.T) {
 }
 
 func TestIsObjxMap(t *testing.T) {
-	m := objx.Map{"data": (objx.Map)(objx.New(1)), "data2": map[string]any{"name": "Taylor"}}
+	m := objx.Map{"data": objx.New(1), "data2": map[string]any{"name": "Taylor"}}
 
 	assert.True(t, m.Get("data").IsObjxMap())
 	assert.True(t, m.Get("data2").IsObjxMap())
 }
 
 func TestIsObjxMapSlice(t *testing.T) {
-	m := objx.Map{"data": [](objx.Map){(objx.Map)(objx.New(1))}, "data2": []map[string]any{map[string]any(map[string]any{"name": "Taylor"})}}
+	m := objx.Map{"data": []objx.Map{objx.New(1)}, "data2": []map[string]any{{"name": "Taylor"}}}
 
 	assert.True(t, m.Get("data").IsObjxMapSlice())
 	assert.True(t, m.Get("data2").IsObjxMapSlice())
@@ -306,9 +306,9 @@ func TestIsObjxMapSlice(t *testing.T) {
 }
 
 func TestEachObjxMap(t *testing.T) {
-	m := objx.Map{"data": [](objx.Map){(objx.Map)(objx.New(1)), (objx.Map)(objx.New(1)), (objx.Map)(objx.New(1)), (objx.Map)(objx.New(1)), (objx.Map)(objx.New(1))}}
+	m := objx.Map{"data": []objx.Map{objx.New(1), objx.New(1), objx.New(1), objx.New(1), objx.New(1)}}
 	count := 0
-	replacedVals := make([](objx.Map), 0)
+	replacedVals := make([]objx.Map, 0)
 	assert.Equal(t, m.Get("data"), m.Get("data").EachObjxMap(func(i int, val objx.Map) bool {
 		count++
 		replacedVals = append(replacedVals, val)
@@ -317,7 +317,7 @@ func TestEachObjxMap(t *testing.T) {
 		return i != 2
 	}))
 
-	m2 := objx.Map{"data": []map[string]any{map[string]any(map[string]any{"name": "Tyler"}), map[string]any(map[string]any{"name": "Tyler"}), map[string]any(map[string]any{"name": "Tyler"}), map[string]any(map[string]any{"name": "Tyler"}), map[string]any(map[string]any{"name": "Tyler"})}}
+	m2 := objx.Map{"data": []map[string]any{{"name": "Tyler"}, {"name": "Tyler"}, {"name": "Tyler"}, {"name": "Tyler"}, {"name": "Tyler"}}}
 	assert.Equal(t, m2.Get("data"), m2.Get("data").EachObjxMap(func(i int, val objx.Map) bool {
 		count++
 		replacedVals = append(replacedVals, val)
@@ -336,7 +336,7 @@ func TestEachObjxMap(t *testing.T) {
 }
 
 func TestWhereObjxMap(t *testing.T) {
-	m := objx.Map{"data": [](objx.Map){(objx.Map)(objx.New(1)), (objx.Map)(objx.New(1)), (objx.Map)(objx.New(1)), (objx.Map)(objx.New(1)), (objx.Map)(objx.New(1)), (objx.Map)(objx.New(1))}}
+	m := objx.Map{"data": []objx.Map{objx.New(1), objx.New(1), objx.New(1), objx.New(1), objx.New(1), objx.New(1)}}
 
 	selected := m.Get("data").WhereObjxMap(func(i int, val objx.Map) bool {
 		return i%2 == 0
@@ -346,7 +346,7 @@ func TestWhereObjxMap(t *testing.T) {
 }
 
 func TestWhereObjxMap2(t *testing.T) {
-	m := objx.Map{"data": []map[string]any{map[string]any(map[string]any{"name": "Tyler"}), map[string]any(map[string]any{"name": "Tyler"}), map[string]any(map[string]any{"name": "Tyler"}), map[string]any(map[string]any{"name": "Tyler"}), map[string]any(map[string]any{"name": "Tyler"})}}
+	m := objx.Map{"data": []map[string]any{{"name": "Tyler"}, {"name": "Tyler"}, {"name": "Tyler"}, {"name": "Tyler"}, {"name": "Tyler"}}}
 
 	selected := m.Get("data").WhereObjxMap(func(i int, val objx.Map) bool {
 		return i%2 == 0
@@ -356,11 +356,11 @@ func TestWhereObjxMap2(t *testing.T) {
 }
 
 func TestGroupObjxMap(t *testing.T) {
-	m := objx.Map{"data": [](objx.Map){(objx.Map)(objx.New(1)), (objx.Map)(objx.New(1)), (objx.Map)(objx.New(1)), (objx.Map)(objx.New(1)), (objx.Map)(objx.New(1)), (objx.Map)(objx.New(1))}}
+	m := objx.Map{"data": []objx.Map{objx.New(1), objx.New(1), objx.New(1), objx.New(1), objx.New(1), objx.New(1)}}
 
 	grouped := m.Get("data").GroupObjxMap(func(i int, val objx.Map) string {
 		return fmt.Sprintf("%v", i%2 == 0)
-	}).Data().(map[string][](objx.Map))
+	}).Data().(map[string][]objx.Map)
 
 	assert.Equal(t, 2, len(grouped))
 	assert.Equal(t, 3, len(grouped["true"]))
@@ -368,11 +368,11 @@ func TestGroupObjxMap(t *testing.T) {
 }
 
 func TestGroupObjxMap2(t *testing.T) {
-	m := objx.Map{"data": []map[string]any{map[string]any(map[string]any{"name": "Tyler"}), map[string]any(map[string]any{"name": "Tyler"}), map[string]any(map[string]any{"name": "Tyler"}), map[string]any(map[string]any{"name": "Tyler"}), map[string]any(map[string]any{"name": "Tyler"})}}
+	m := objx.Map{"data": []map[string]any{{"name": "Tyler"}, {"name": "Tyler"}, {"name": "Tyler"}, {"name": "Tyler"}, {"name": "Tyler"}}}
 
 	grouped := m.Get("data").GroupObjxMap(func(i int, val objx.Map) string {
 		return fmt.Sprintf("%v", i%2 == 0)
-	}).Data().(map[string][](objx.Map))
+	}).Data().(map[string][]objx.Map)
 
 	assert.Equal(t, 2, len(grouped))
 	assert.Equal(t, 3, len(grouped["true"]))
@@ -380,7 +380,7 @@ func TestGroupObjxMap2(t *testing.T) {
 }
 
 func TestReplaceObjxMap(t *testing.T) {
-	m := objx.Map{"data": [](objx.Map){(objx.Map)(objx.New(1)), (objx.Map)(objx.New(1)), (objx.Map)(objx.New(1)), (objx.Map)(objx.New(1)), (objx.Map)(objx.New(1)), (objx.Map)(objx.New(1))}}
+	m := objx.Map{"data": []objx.Map{objx.New(1), objx.New(1), objx.New(1), objx.New(1), objx.New(1), objx.New(1)}}
 	rawArr := m.Get("data").MustObjxMapSlice()
 
 	replaced := m.Get("data").ReplaceObjxMap(func(index int, val objx.Map) objx.Map {
@@ -402,7 +402,7 @@ func TestReplaceObjxMap(t *testing.T) {
 }
 
 func TestReplaceObjxMap2(t *testing.T) {
-	m := objx.Map{"data": []map[string]any{map[string]any(map[string]any{"name": "Tyler"}), map[string]any(map[string]any{"name": "Tyler"}), map[string]any(map[string]any{"name": "Tyler"}), map[string]any(map[string]any{"name": "Tyler"}), map[string]any(map[string]any{"name": "Tyler"})}}
+	m := objx.Map{"data": []map[string]any{{"name": "Tyler"}, {"name": "Tyler"}, {"name": "Tyler"}, {"name": "Tyler"}, {"name": "Tyler"}}}
 	rawArr := m.Get("data").MustObjxMapSlice()
 
 	replaced := m.Get("data").ReplaceObjxMap(func(index int, val objx.Map) objx.Map {
@@ -423,7 +423,7 @@ func TestReplaceObjxMap2(t *testing.T) {
 }
 
 func TestCollectObjxMap(t *testing.T) {
-	m := objx.Map{"data": [](objx.Map){(objx.Map)(objx.New(1)), (objx.Map)(objx.New(1)), (objx.Map)(objx.New(1)), (objx.Map)(objx.New(1)), (objx.Map)(objx.New(1)), (objx.Map)(objx.New(1))}}
+	m := objx.Map{"data": []objx.Map{objx.New(1), objx.New(1), objx.New(1), objx.New(1), objx.New(1), objx.New(1)}}
 
 	collected := m.Get("data").CollectObjxMap(func(index int, val objx.Map) any {
 		return index
@@ -441,7 +441,7 @@ func TestCollectObjxMap(t *testing.T) {
 }
 
 func TestCollectObjxMap2(t *testing.T) {
-	m := objx.Map{"data": []map[string]any{map[string]any(map[string]any{"name": "Tyler"}), map[string]any(map[string]any{"name": "Tyler"}), map[string]any(map[string]any{"name": "Tyler"}), map[string]any(map[string]any{"name": "Tyler"}), map[string]any(map[string]any{"name": "Tyler"})}}
+	m := objx.Map{"data": []map[string]any{{"name": "Tyler"}, {"name": "Tyler"}, {"name": "Tyler"}, {"name": "Tyler"}, {"name": "Tyler"}}}
 
 	collected := m.Get("data").CollectObjxMap(func(index int, val objx.Map) any {
 		return index
