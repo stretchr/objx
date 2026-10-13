@@ -91,8 +91,7 @@ func TestMapFromJSONWithError(t *testing.T) {
 }
 
 func TestConversionJSONInt(t *testing.T) {
-	jsonString :=
-		`{
+	jsonString := `{
     "a": 1,
     "b": {
       "data": 1
@@ -115,8 +114,7 @@ func TestConversionJSONInt(t *testing.T) {
 }
 
 func TestJSONSliceInt(t *testing.T) {
-	jsonString :=
-		`{
+	jsonString := `{
       "a": [
         {"b": 1},
         {"c": 2}
@@ -130,8 +128,7 @@ func TestJSONSliceInt(t *testing.T) {
 }
 
 func TestJSONSliceMixed(t *testing.T) {
-	jsonString :=
-		`{
+	jsonString := `{
       "a": [
         {"b": 1},
         "a"

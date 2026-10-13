@@ -33,7 +33,6 @@ func TestCopy(t *testing.T) {
 
 	assert.Equal(t, m1.Get("name").Str(), "Tyler")
 	assert.Equal(t, m2.Get("name").Str(), "Mat")
-
 }
 
 func TestMerge(t *testing.T) {
