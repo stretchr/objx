@@ -76,8 +76,7 @@ func (v *Value) EachInter(callback func(int, any) bool) *Value {
 func (v *Value) WhereInter(decider func(int, any) bool) *Value {
 	var selected []any
 	v.EachInter(func(index int, val any) bool {
-		shouldSelect := decider(index, val)
-		if !shouldSelect {
+		if decider(index, val) {
 			selected = append(selected, val)
 		}
 		return true
@@ -201,8 +200,7 @@ func (v *Value) EachBool(callback func(int, bool) bool) *Value {
 func (v *Value) WhereBool(decider func(int, bool) bool) *Value {
 	var selected []bool
 	v.EachBool(func(index int, val bool) bool {
-		shouldSelect := decider(index, val)
-		if !shouldSelect {
+		if decider(index, val) {
 			selected = append(selected, val)
 		}
 		return true
@@ -326,8 +324,7 @@ func (v *Value) EachStr(callback func(int, string) bool) *Value {
 func (v *Value) WhereStr(decider func(int, string) bool) *Value {
 	var selected []string
 	v.EachStr(func(index int, val string) bool {
-		shouldSelect := decider(index, val)
-		if !shouldSelect {
+		if decider(index, val) {
 			selected = append(selected, val)
 		}
 		return true
@@ -461,8 +458,7 @@ func (v *Value) EachInt(callback func(int, int) bool) *Value {
 func (v *Value) WhereInt(decider func(int, int) bool) *Value {
 	var selected []int
 	v.EachInt(func(index int, val int) bool {
-		shouldSelect := decider(index, val)
-		if !shouldSelect {
+		if decider(index, val) {
 			selected = append(selected, val)
 		}
 		return true
@@ -586,8 +582,7 @@ func (v *Value) EachInt8(callback func(int, int8) bool) *Value {
 func (v *Value) WhereInt8(decider func(int, int8) bool) *Value {
 	var selected []int8
 	v.EachInt8(func(index int, val int8) bool {
-		shouldSelect := decider(index, val)
-		if !shouldSelect {
+		if decider(index, val) {
 			selected = append(selected, val)
 		}
 		return true
@@ -711,8 +706,7 @@ func (v *Value) EachInt16(callback func(int, int16) bool) *Value {
 func (v *Value) WhereInt16(decider func(int, int16) bool) *Value {
 	var selected []int16
 	v.EachInt16(func(index int, val int16) bool {
-		shouldSelect := decider(index, val)
-		if !shouldSelect {
+		if decider(index, val) {
 			selected = append(selected, val)
 		}
 		return true
@@ -836,8 +830,7 @@ func (v *Value) EachInt32(callback func(int, int32) bool) *Value {
 func (v *Value) WhereInt32(decider func(int, int32) bool) *Value {
 	var selected []int32
 	v.EachInt32(func(index int, val int32) bool {
-		shouldSelect := decider(index, val)
-		if !shouldSelect {
+		if decider(index, val) {
 			selected = append(selected, val)
 		}
 		return true
@@ -961,8 +954,7 @@ func (v *Value) EachInt64(callback func(int, int64) bool) *Value {
 func (v *Value) WhereInt64(decider func(int, int64) bool) *Value {
 	var selected []int64
 	v.EachInt64(func(index int, val int64) bool {
-		shouldSelect := decider(index, val)
-		if !shouldSelect {
+		if decider(index, val) {
 			selected = append(selected, val)
 		}
 		return true
@@ -1086,8 +1078,7 @@ func (v *Value) EachUint(callback func(int, uint) bool) *Value {
 func (v *Value) WhereUint(decider func(int, uint) bool) *Value {
 	var selected []uint
 	v.EachUint(func(index int, val uint) bool {
-		shouldSelect := decider(index, val)
-		if !shouldSelect {
+		if decider(index, val) {
 			selected = append(selected, val)
 		}
 		return true
@@ -1211,8 +1202,7 @@ func (v *Value) EachUint8(callback func(int, uint8) bool) *Value {
 func (v *Value) WhereUint8(decider func(int, uint8) bool) *Value {
 	var selected []uint8
 	v.EachUint8(func(index int, val uint8) bool {
-		shouldSelect := decider(index, val)
-		if !shouldSelect {
+		if decider(index, val) {
 			selected = append(selected, val)
 		}
 		return true
@@ -1336,8 +1326,7 @@ func (v *Value) EachUint16(callback func(int, uint16) bool) *Value {
 func (v *Value) WhereUint16(decider func(int, uint16) bool) *Value {
 	var selected []uint16
 	v.EachUint16(func(index int, val uint16) bool {
-		shouldSelect := decider(index, val)
-		if !shouldSelect {
+		if decider(index, val) {
 			selected = append(selected, val)
 		}
 		return true
@@ -1461,8 +1450,7 @@ func (v *Value) EachUint32(callback func(int, uint32) bool) *Value {
 func (v *Value) WhereUint32(decider func(int, uint32) bool) *Value {
 	var selected []uint32
 	v.EachUint32(func(index int, val uint32) bool {
-		shouldSelect := decider(index, val)
-		if !shouldSelect {
+		if decider(index, val) {
 			selected = append(selected, val)
 		}
 		return true
@@ -1586,8 +1574,7 @@ func (v *Value) EachUint64(callback func(int, uint64) bool) *Value {
 func (v *Value) WhereUint64(decider func(int, uint64) bool) *Value {
 	var selected []uint64
 	v.EachUint64(func(index int, val uint64) bool {
-		shouldSelect := decider(index, val)
-		if !shouldSelect {
+		if decider(index, val) {
 			selected = append(selected, val)
 		}
 		return true
@@ -1711,8 +1698,7 @@ func (v *Value) EachUintptr(callback func(int, uintptr) bool) *Value {
 func (v *Value) WhereUintptr(decider func(int, uintptr) bool) *Value {
 	var selected []uintptr
 	v.EachUintptr(func(index int, val uintptr) bool {
-		shouldSelect := decider(index, val)
-		if !shouldSelect {
+		if decider(index, val) {
 			selected = append(selected, val)
 		}
 		return true
@@ -1836,8 +1822,7 @@ func (v *Value) EachFloat32(callback func(int, float32) bool) *Value {
 func (v *Value) WhereFloat32(decider func(int, float32) bool) *Value {
 	var selected []float32
 	v.EachFloat32(func(index int, val float32) bool {
-		shouldSelect := decider(index, val)
-		if !shouldSelect {
+		if decider(index, val) {
 			selected = append(selected, val)
 		}
 		return true
@@ -1961,8 +1946,7 @@ func (v *Value) EachFloat64(callback func(int, float64) bool) *Value {
 func (v *Value) WhereFloat64(decider func(int, float64) bool) *Value {
 	var selected []float64
 	v.EachFloat64(func(index int, val float64) bool {
-		shouldSelect := decider(index, val)
-		if !shouldSelect {
+		if decider(index, val) {
 			selected = append(selected, val)
 		}
 		return true
@@ -2086,8 +2070,7 @@ func (v *Value) EachComplex64(callback func(int, complex64) bool) *Value {
 func (v *Value) WhereComplex64(decider func(int, complex64) bool) *Value {
 	var selected []complex64
 	v.EachComplex64(func(index int, val complex64) bool {
-		shouldSelect := decider(index, val)
-		if !shouldSelect {
+		if decider(index, val) {
 			selected = append(selected, val)
 		}
 		return true
@@ -2211,8 +2194,7 @@ func (v *Value) EachComplex128(callback func(int, complex128) bool) *Value {
 func (v *Value) WhereComplex128(decider func(int, complex128) bool) *Value {
 	var selected []complex128
 	v.EachComplex128(func(index int, val complex128) bool {
-		shouldSelect := decider(index, val)
-		if !shouldSelect {
+		if decider(index, val) {
 			selected = append(selected, val)
 		}
 		return true

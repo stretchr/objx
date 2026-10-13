@@ -70,10 +70,10 @@ func TestWhere{{.Name}}(t *testing.T) {
 	m := objx.Map{"data": []{{.Type}}{ {{.Type}}({{.Example}}), {{.Type}}({{.Example}}), {{.Type}}({{.Example}}), {{.Type}}({{.Example}}), {{.Type}}({{.Example}}), {{.Type}}({{.Example}})}}
 
 	selected := m.Get("data").Where{{.Name}}(func(i int, val {{.Type}}) bool {
-		return i%2 == 0
+		return i < 2
 	}).Must{{.Name}}Slice()
 
-	assert.Equal(t, 3, len(selected))
+	assert.Equal(t, 2, len(selected))
 }
 
 func TestGroup{{.Name}}(t *testing.T) {

@@ -114,8 +114,7 @@ func (v *Value) EachMSI(callback func(int, map[string]any) bool) *Value {
 func (v *Value) WhereMSI(decider func(int, map[string]any) bool) *Value {
 	var selected []map[string]any
 	v.EachMSI(func(index int, val map[string]any) bool {
-		shouldSelect := decider(index, val)
-		if !shouldSelect {
+		if decider(index, val) {
 			selected = append(selected, val)
 		}
 		return true
@@ -294,8 +293,7 @@ func (v *Value) EachObjxMap(callback func(int, Map) bool) *Value {
 func (v *Value) WhereObjxMap(decider func(int, Map) bool) *Value {
 	var selected []Map
 	v.EachObjxMap(func(index int, val Map) bool {
-		shouldSelect := decider(index, val)
-		if !shouldSelect {
+		if decider(index, val) {
 			selected = append(selected, val)
 		}
 		return true

@@ -72,10 +72,10 @@ func TestWhereInter(t *testing.T) {
 	m := objx.Map{"data": []any{any("something"), any("something"), any("something"), any("something"), any("something"), any("something")}}
 
 	selected := m.Get("data").WhereInter(func(i int, val any) bool {
-		return i%2 == 0
+		return i < 2
 	}).MustInterSlice()
 
-	assert.Equal(t, 3, len(selected))
+	assert.Equal(t, 2, len(selected))
 }
 
 func TestGroupInter(t *testing.T) {
@@ -193,10 +193,10 @@ func TestWhereBool(t *testing.T) {
 	m := objx.Map{"data": []bool{bool(true), bool(true), bool(true), bool(true), bool(true), bool(true)}}
 
 	selected := m.Get("data").WhereBool(func(i int, val bool) bool {
-		return i%2 == 0
+		return i < 2
 	}).MustBoolSlice()
 
-	assert.Equal(t, 3, len(selected))
+	assert.Equal(t, 2, len(selected))
 }
 
 func TestGroupBool(t *testing.T) {
@@ -314,10 +314,10 @@ func TestWhereStr(t *testing.T) {
 	m := objx.Map{"data": []string{string("hello"), string("hello"), string("hello"), string("hello"), string("hello"), string("hello")}}
 
 	selected := m.Get("data").WhereStr(func(i int, val string) bool {
-		return i%2 == 0
+		return i < 2
 	}).MustStrSlice()
 
-	assert.Equal(t, 3, len(selected))
+	assert.Equal(t, 2, len(selected))
 }
 
 func TestGroupStr(t *testing.T) {
@@ -435,10 +435,10 @@ func TestWhereInt(t *testing.T) {
 	m := objx.Map{"data": []int{int(1), int(1), int(1), int(1), int(1), int(1)}}
 
 	selected := m.Get("data").WhereInt(func(i int, val int) bool {
-		return i%2 == 0
+		return i < 2
 	}).MustIntSlice()
 
-	assert.Equal(t, 3, len(selected))
+	assert.Equal(t, 2, len(selected))
 }
 
 func TestGroupInt(t *testing.T) {
@@ -556,10 +556,10 @@ func TestWhereInt8(t *testing.T) {
 	m := objx.Map{"data": []int8{int8(1), int8(1), int8(1), int8(1), int8(1), int8(1)}}
 
 	selected := m.Get("data").WhereInt8(func(i int, val int8) bool {
-		return i%2 == 0
+		return i < 2
 	}).MustInt8Slice()
 
-	assert.Equal(t, 3, len(selected))
+	assert.Equal(t, 2, len(selected))
 }
 
 func TestGroupInt8(t *testing.T) {
@@ -677,10 +677,10 @@ func TestWhereInt16(t *testing.T) {
 	m := objx.Map{"data": []int16{int16(1), int16(1), int16(1), int16(1), int16(1), int16(1)}}
 
 	selected := m.Get("data").WhereInt16(func(i int, val int16) bool {
-		return i%2 == 0
+		return i < 2
 	}).MustInt16Slice()
 
-	assert.Equal(t, 3, len(selected))
+	assert.Equal(t, 2, len(selected))
 }
 
 func TestGroupInt16(t *testing.T) {
@@ -798,10 +798,10 @@ func TestWhereInt32(t *testing.T) {
 	m := objx.Map{"data": []int32{int32(1), int32(1), int32(1), int32(1), int32(1), int32(1)}}
 
 	selected := m.Get("data").WhereInt32(func(i int, val int32) bool {
-		return i%2 == 0
+		return i < 2
 	}).MustInt32Slice()
 
-	assert.Equal(t, 3, len(selected))
+	assert.Equal(t, 2, len(selected))
 }
 
 func TestGroupInt32(t *testing.T) {
@@ -919,10 +919,10 @@ func TestWhereInt64(t *testing.T) {
 	m := objx.Map{"data": []int64{int64(1), int64(1), int64(1), int64(1), int64(1), int64(1)}}
 
 	selected := m.Get("data").WhereInt64(func(i int, val int64) bool {
-		return i%2 == 0
+		return i < 2
 	}).MustInt64Slice()
 
-	assert.Equal(t, 3, len(selected))
+	assert.Equal(t, 2, len(selected))
 }
 
 func TestGroupInt64(t *testing.T) {
@@ -1040,10 +1040,10 @@ func TestWhereUint(t *testing.T) {
 	m := objx.Map{"data": []uint{uint(1), uint(1), uint(1), uint(1), uint(1), uint(1)}}
 
 	selected := m.Get("data").WhereUint(func(i int, val uint) bool {
-		return i%2 == 0
+		return i < 2
 	}).MustUintSlice()
 
-	assert.Equal(t, 3, len(selected))
+	assert.Equal(t, 2, len(selected))
 }
 
 func TestGroupUint(t *testing.T) {
@@ -1161,10 +1161,10 @@ func TestWhereUint8(t *testing.T) {
 	m := objx.Map{"data": []uint8{uint8(1), uint8(1), uint8(1), uint8(1), uint8(1), uint8(1)}}
 
 	selected := m.Get("data").WhereUint8(func(i int, val uint8) bool {
-		return i%2 == 0
+		return i < 2
 	}).MustUint8Slice()
 
-	assert.Equal(t, 3, len(selected))
+	assert.Equal(t, 2, len(selected))
 }
 
 func TestGroupUint8(t *testing.T) {
@@ -1282,10 +1282,10 @@ func TestWhereUint16(t *testing.T) {
 	m := objx.Map{"data": []uint16{uint16(1), uint16(1), uint16(1), uint16(1), uint16(1), uint16(1)}}
 
 	selected := m.Get("data").WhereUint16(func(i int, val uint16) bool {
-		return i%2 == 0
+		return i < 2
 	}).MustUint16Slice()
 
-	assert.Equal(t, 3, len(selected))
+	assert.Equal(t, 2, len(selected))
 }
 
 func TestGroupUint16(t *testing.T) {
@@ -1403,10 +1403,10 @@ func TestWhereUint32(t *testing.T) {
 	m := objx.Map{"data": []uint32{uint32(1), uint32(1), uint32(1), uint32(1), uint32(1), uint32(1)}}
 
 	selected := m.Get("data").WhereUint32(func(i int, val uint32) bool {
-		return i%2 == 0
+		return i < 2
 	}).MustUint32Slice()
 
-	assert.Equal(t, 3, len(selected))
+	assert.Equal(t, 2, len(selected))
 }
 
 func TestGroupUint32(t *testing.T) {
@@ -1524,10 +1524,10 @@ func TestWhereUint64(t *testing.T) {
 	m := objx.Map{"data": []uint64{uint64(1), uint64(1), uint64(1), uint64(1), uint64(1), uint64(1)}}
 
 	selected := m.Get("data").WhereUint64(func(i int, val uint64) bool {
-		return i%2 == 0
+		return i < 2
 	}).MustUint64Slice()
 
-	assert.Equal(t, 3, len(selected))
+	assert.Equal(t, 2, len(selected))
 }
 
 func TestGroupUint64(t *testing.T) {
@@ -1645,10 +1645,10 @@ func TestWhereUintptr(t *testing.T) {
 	m := objx.Map{"data": []uintptr{uintptr(1), uintptr(1), uintptr(1), uintptr(1), uintptr(1), uintptr(1)}}
 
 	selected := m.Get("data").WhereUintptr(func(i int, val uintptr) bool {
-		return i%2 == 0
+		return i < 2
 	}).MustUintptrSlice()
 
-	assert.Equal(t, 3, len(selected))
+	assert.Equal(t, 2, len(selected))
 }
 
 func TestGroupUintptr(t *testing.T) {
@@ -1766,10 +1766,10 @@ func TestWhereFloat32(t *testing.T) {
 	m := objx.Map{"data": []float32{float32(1), float32(1), float32(1), float32(1), float32(1), float32(1)}}
 
 	selected := m.Get("data").WhereFloat32(func(i int, val float32) bool {
-		return i%2 == 0
+		return i < 2
 	}).MustFloat32Slice()
 
-	assert.Equal(t, 3, len(selected))
+	assert.Equal(t, 2, len(selected))
 }
 
 func TestGroupFloat32(t *testing.T) {
@@ -1887,10 +1887,10 @@ func TestWhereFloat64(t *testing.T) {
 	m := objx.Map{"data": []float64{float64(1), float64(1), float64(1), float64(1), float64(1), float64(1)}}
 
 	selected := m.Get("data").WhereFloat64(func(i int, val float64) bool {
-		return i%2 == 0
+		return i < 2
 	}).MustFloat64Slice()
 
-	assert.Equal(t, 3, len(selected))
+	assert.Equal(t, 2, len(selected))
 }
 
 func TestGroupFloat64(t *testing.T) {
@@ -2008,10 +2008,10 @@ func TestWhereComplex64(t *testing.T) {
 	m := objx.Map{"data": []complex64{complex64(1), complex64(1), complex64(1), complex64(1), complex64(1), complex64(1)}}
 
 	selected := m.Get("data").WhereComplex64(func(i int, val complex64) bool {
-		return i%2 == 0
+		return i < 2
 	}).MustComplex64Slice()
 
-	assert.Equal(t, 3, len(selected))
+	assert.Equal(t, 2, len(selected))
 }
 
 func TestGroupComplex64(t *testing.T) {
@@ -2129,10 +2129,10 @@ func TestWhereComplex128(t *testing.T) {
 	m := objx.Map{"data": []complex128{complex128(1), complex128(1), complex128(1), complex128(1), complex128(1), complex128(1)}}
 
 	selected := m.Get("data").WhereComplex128(func(i int, val complex128) bool {
-		return i%2 == 0
+		return i < 2
 	}).MustComplex128Slice()
 
-	assert.Equal(t, 3, len(selected))
+	assert.Equal(t, 2, len(selected))
 }
 
 func TestGroupComplex128(t *testing.T) {
