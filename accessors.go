@@ -35,7 +35,7 @@ var mapAccessRegex = regexp.MustCompile(mapAccessRegexString)
 // If it cannot find the value, Get will return a nil
 // value inside an instance of Obj.
 //
-// Get can only operate directly on map[string]interface{} and []interface.
+// Get can only operate directly on map[string]any and []interface.
 //
 // # Example
 //
@@ -43,21 +43,21 @@ var mapAccessRegex = regexp.MustCompile(mapAccessRegexString)
 //
 //	o.Get("books[1].chapters[2].title")
 func (m Map) Get(selector string) *Value {
-	rawObj := access(m, selector, nil, actionGet)
+	rawObj, _ := access(m, selector, nil, actionGet)
 	return &Value{data: rawObj}
 }
 
 // Set sets the value using the specified selector and
 // returns the object on which Set was called.
 //
-// Set can only operate directly on map[string]interface{} and []interface
+// Set can only operate directly on map[string]any and []interface
 //
 // # Example
 //
 // To set the title of the third chapter of the second book, do:
 //
 //	o.Set("books[1].chapters[2].title","Time to Go")
-func (m Map) Set(selector string, value interface{}) Map {
+func (m Map) Set(selector string, value any) Map {
 	access(m, selector, value, actionSet)
 	return m
 }
@@ -117,11 +117,7 @@ func getKey(s string) (string, string) {
 				nextSel = mapMatches[3]
 			}
 
-			if nextSel == "" {
-				selSegs = []string{"", ""}
-			} else if nextSel[0] == '.' {
-				nextSel = nextSel[1:]
-			}
+			nextSel = strings.TrimPrefix(nextSel, ".")
 		}
 	}
 
@@ -138,13 +134,13 @@ const (
 
 // access accesses the object using the selector and performs the
 // appropriate action.
-func access(current interface{}, selector string, value interface{}, action accessAction) interface{} {
+func access(current any, selector string, value any, action accessAction) (any, bool) {
 	thisSel, nextSel := getKey(selector)
 
 	indexes := []int{}
 	for strings.Contains(thisSel, "[") {
 		prevSel := thisSel
-		index := -1
+		var index int
 		index, thisSel = getIndex(thisSel)
 		indexes = append(indexes, index)
 		if prevSel == thisSel {
@@ -153,35 +149,38 @@ func access(current interface{}, selector string, value interface{}, action acce
 	}
 
 	if curMap, ok := current.(Map); ok {
-		current = map[string]interface{}(curMap)
+		current = map[string]any(curMap)
 	}
-	var curMSI map[string]interface{}
+	var curMSI map[string]any
 	// get the object in question
 	switch current.(type) {
-	case map[string]interface{}:
-		curMSI = current.(map[string]interface{})
+	case map[string]any:
+		curMSI = current.(map[string]any)
 		if nextSel == "" && len(indexes) == 0 {
 			if action == actionSet {
 				curMSI[thisSel] = value
-				return nil
+				return nil, true
 			} else if action == actionDelete {
 				delete(curMSI, thisSel)
-				return nil
+				return nil, true
 			}
 		}
 
-		_, ok := curMSI[thisSel].(map[string]interface{})
+		_, ok := curMSI[thisSel].(map[string]any)
 		if !ok {
 			_, ok = curMSI[thisSel].(Map)
 		}
 
 		if (curMSI[thisSel] == nil || !ok) && len(indexes) == 0 && action == actionSet {
-			curMSI[thisSel] = map[string]interface{}{}
+			curMSI[thisSel] = map[string]any{}
 		}
 
-		current = curMSI[thisSel]
+		current, ok = curMSI[thisSel]
+		if !ok {
+			return nil, false
+		}
 	default:
-		current = nil
+		return nil, false
 	}
 
 	// do we need to access the item of an array?
@@ -196,34 +195,32 @@ func access(current interface{}, selector string, value interface{}, action acce
 					if nextSel == "" && num == 0 {
 						if action == actionSet {
 							array[index] = value
-							return nil
+							return nil, true
 						} else if action == actionDelete {
 							if curMSI != nil {
 								curMSI[thisSel] = append(array[:index], array[index+1:]...)
 							}
-							return nil
+							return nil, true
 						}
 					}
 					current = array[index]
 				} else {
-					current = nil
-					break
+					return nil, false
 				}
 			} else {
-				current = nil
-				break
+				return nil, false
 			}
 		}
 	}
 
 	if nextSel != "" {
-		current = access(current, nextSel, value, action)
+		return access(current, nextSel, value, action)
 	}
-	return current
+	return current, true
 }
 
-func interSlice(slice interface{}) ([]interface{}, bool) {
-	if array, ok := slice.([]interface{}); ok {
+func interSlice(slice any) ([]any, bool) {
+	if array, ok := slice.([]any); ok {
 		return array, ok
 	}
 
@@ -232,9 +229,9 @@ func interSlice(slice interface{}) ([]interface{}, bool) {
 		return nil, false
 	}
 
-	ret := make([]interface{}, s.Len())
+	ret := make([]any, s.Len())
 
-	for i := 0; i < s.Len(); i++ {
+	for i := range ret {
 		ret[i] = s.Index(i).Interface()
 	}
 

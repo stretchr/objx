@@ -12,7 +12,7 @@ var TestMap = objx.Map{
 		"city":  "Salt Lake City",
 		"state": "UT",
 	},
-	"numbers": []interface{}{"one", "two", "three", "four", "five"},
+	"numbers": []any{"one", "two", "three", "four", "five"},
 }
 
 type Convertable struct {
@@ -23,7 +23,7 @@ type Unconvertable struct {
 	name string
 }
 
-func (c *Convertable) MSI() map[string]interface{} {
+func (c *Convertable) MSI() map[string]any {
 	return objx.Map{"name": c.name}
 }
 
@@ -91,8 +91,7 @@ func TestMapFromJSONWithError(t *testing.T) {
 }
 
 func TestConversionJSONInt(t *testing.T) {
-	jsonString :=
-		`{
+	jsonString := `{
     "a": 1,
     "b": {
       "data": 1
@@ -111,12 +110,11 @@ func TestConversionJSONInt(t *testing.T) {
 	assert.Equal(t, float64(1), m.Get("c").InterSlice()[0])
 
 	assert.True(t, m.Get("d").IsInterSlice())
-	assert.Equal(t, []interface{}{float64(1)}, m.Get("d").InterSlice()[0])
+	assert.Equal(t, []any{float64(1)}, m.Get("d").InterSlice()[0])
 }
 
 func TestJSONSliceInt(t *testing.T) {
-	jsonString :=
-		`{
+	jsonString := `{
       "a": [
         {"b": 1},
         {"c": 2}
@@ -130,8 +128,7 @@ func TestJSONSliceInt(t *testing.T) {
 }
 
 func TestJSONSliceMixed(t *testing.T) {
-	jsonString :=
-		`{
+	jsonString := `{
       "a": [
         {"b": 1},
         "a"

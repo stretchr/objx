@@ -1,0 +1,30 @@
+name: Feature request
+description: Suggest a new feature or API change for objx
+labels: ["feature request"]
+body:
+  - type: textarea
+    id: use-case
+    attributes:
+      label: Use case
+      description: |
+        What are you trying to do, and why is it hard or impossible with objx
+        today?
+    validations:
+      required: true
+
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed API
+      description: |
+        How you'd like it to work. A sketch of the function signatures and an
+        example of calling them is ideal.
+      render: go
+    validations:
+      required: true
+
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives considered
+      description: Other approaches or workarounds you've considered.

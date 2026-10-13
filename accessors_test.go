@@ -27,7 +27,7 @@ func TestAccessorsAccessGetDeep(t *testing.T) {
 				"Capitol",
 				"Bollocks",
 			},
-			"ifriends": []interface{}{
+			"ifriends": []any{
 				"Capitol",
 				"Bollocks",
 			},
@@ -75,7 +75,7 @@ func TestAccessorsGetWithComplexKey(t *testing.T) {
 
 func TestAccessorsAccessGetInsideArray(t *testing.T) {
 	m := objx.Map{
-		"names": []interface{}{
+		"names": []any{
 			objx.Map{
 				"first": "Tyler",
 				"last":  "Bunnell",
@@ -178,7 +178,7 @@ func TestAccessorsAccessSetDeepDeepWithoutExisting(t *testing.T) {
 
 func TestAccessorsAccessSetArray(t *testing.T) {
 	m := objx.Map{
-		"names": []interface{}{"Tyler"},
+		"names": []any{"Tyler"},
 	}
 	m.Set("names[0]", "Mat")
 
@@ -187,7 +187,7 @@ func TestAccessorsAccessSetArray(t *testing.T) {
 
 func TestAccessorsAccessSetInsideArray(t *testing.T) {
 	m := objx.Map{
-		"names": []interface{}{
+		"names": []any{
 			objx.Map{
 				"first": "Tyler",
 				"last":  "Bunnell",
@@ -226,8 +226,8 @@ func TestAccessorsSetWithinObjxMapChild(t *testing.T) {
 	jsonConverted, err := m.JSON()
 	assert.NoError(t, err)
 
-	m = objx.New(map[string]interface{}{
-		"a": map[string]interface{}{
+	m = objx.New(map[string]any{
+		"a": map[string]any{
 			"b": 1,
 		},
 	})
@@ -258,28 +258,28 @@ func TestAccessorsNested(t *testing.T) {
 }
 
 func TestGetIndexOnNonSlice(t *testing.T) {
-	for _, value := range []interface{}{42, "text", objx.Map{"name": "value"}, nil} {
+	for _, value := range []any{42, "text", objx.Map{"name": "value"}, nil} {
 		m := objx.Map{"value": value}
 		assert.Nil(t, m.Get("value[0]").Data())
 		assert.Nil(t, m.Get("value[0].name").Data())
 	}
-	m := objx.Map{"value": []interface{}{42}}
+	m := objx.Map{"value": []any{42}}
 	assert.Nil(t, m.Get("value[0][0]").Data())
 	assert.Equal(t, 42, m.Get("value[0]").Data())
 }
 
 func TestSetIndexPreservesSlice(t *testing.T) {
-	m := objx.Map{"names": []interface{}{"Tyler", "Sam"}}
+	m := objx.Map{"names": []any{"Tyler", "Sam"}}
 	m.Set("names[0]", "Mat")
-	assert.Equal(t, []interface{}{"Mat", "Sam"}, m["names"])
+	assert.Equal(t, []any{"Mat", "Sam"}, m["names"])
 	m.Set("names[2]", "outside")
-	assert.Equal(t, []interface{}{"Mat", "Sam"}, m["names"])
+	assert.Equal(t, []any{"Mat", "Sam"}, m["names"])
 	m.Set("names[1]", nil)
-	assert.Equal(t, []interface{}{"Mat", nil}, m["names"])
+	assert.Equal(t, []any{"Mat", nil}, m["names"])
 
-	m = objx.Map{"nested": []interface{}{[]interface{}{"first", "second"}}}
+	m = objx.Map{"nested": []any{[]any{"first", "second"}}}
 	m.Set("nested[0][1]", "changed")
-	assert.Equal(t, []interface{}{[]interface{}{"first", "changed"}}, m["nested"])
+	assert.Equal(t, []any{[]any{"first", "changed"}}, m["nested"])
 }
 
 func TestAccessorsDelete(t *testing.T) {

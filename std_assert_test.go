@@ -8,13 +8,17 @@ import (
 	"testing"
 )
 
-type nonfatal struct{}
-type fatal struct{}
+type (
+	nonfatal struct{}
+	fatal    struct{}
+)
 
-var assert nonfatal
-var require fatal
+var (
+	assert  nonfatal
+	require fatal
+)
 
-func (nonfatal) fail(t *testing.T, msg string, msgAndArgs ...interface{}) bool {
+func (nonfatal) fail(t *testing.T, msg string, msgAndArgs ...any) bool {
 	t.Helper()
 	if len(msgAndArgs) > 0 {
 		msg = fmt.Sprintf(msg, msgAndArgs...)
@@ -23,7 +27,7 @@ func (nonfatal) fail(t *testing.T, msg string, msgAndArgs ...interface{}) bool {
 	return false
 }
 
-func (fatal) fail(t *testing.T, msg string, msgAndArgs ...interface{}) {
+func (fatal) fail(t *testing.T, msg string, msgAndArgs ...any) {
 	t.Helper()
 	if len(msgAndArgs) > 0 {
 		msg = fmt.Sprintf(msg, msgAndArgs...)
@@ -31,21 +35,22 @@ func (fatal) fail(t *testing.T, msg string, msgAndArgs ...interface{}) {
 	t.Fatal(msg)
 }
 
-func (a nonfatal) Equal(t *testing.T, expected, actual interface{}, msgAndArgs ...interface{}) bool {
+func (a nonfatal) Equal(t *testing.T, expected, actual any, msgAndArgs ...any) bool {
 	t.Helper()
 	if !reflect.DeepEqual(expected, actual) {
 		return a.fail(t, "not equal:\nexpected: %#v\nactual:   %#v", expected, actual)
 	}
 	return true
 }
-func (a fatal) Equal(t *testing.T, expected, actual interface{}, msgAndArgs ...interface{}) {
+
+func (a fatal) Equal(t *testing.T, expected, actual any, msgAndArgs ...any) {
 	t.Helper()
 	if !reflect.DeepEqual(expected, actual) {
 		a.fail(t, "not equal:\nexpected: %#v\nactual:   %#v", expected, actual)
 	}
 }
 
-func (a nonfatal) NotEqual(t *testing.T, expected, actual interface{}, msgAndArgs ...interface{}) bool {
+func (a nonfatal) NotEqual(t *testing.T, expected, actual any, msgAndArgs ...any) bool {
 	t.Helper()
 	if reflect.DeepEqual(expected, actual) {
 		return a.fail(t, "should not be equal: %#v", actual)
@@ -53,26 +58,26 @@ func (a nonfatal) NotEqual(t *testing.T, expected, actual interface{}, msgAndArg
 	return true
 }
 
-func (a fatal) NotEqual(t *testing.T, expected, actual interface{}, msgAndArgs ...interface{}) {
+func (a fatal) NotEqual(t *testing.T, expected, actual any, msgAndArgs ...any) {
 	t.Helper()
 	if reflect.DeepEqual(expected, actual) {
 		a.fail(t, "should not be equal: %#v", actual)
 	}
 }
 
-func isNil(i interface{}) bool {
+func isNil(i any) bool {
 	if i == nil {
 		return true
 	}
 	v := reflect.ValueOf(i)
 	switch v.Kind() {
-	case reflect.Chan, reflect.Func, reflect.Interface, reflect.Map, reflect.Ptr, reflect.Slice:
+	case reflect.Chan, reflect.Func, reflect.Interface, reflect.Map, reflect.Pointer, reflect.Slice:
 		return v.IsNil()
 	}
 	return false
 }
 
-func (a nonfatal) Nil(t *testing.T, object interface{}, msgAndArgs ...interface{}) bool {
+func (a nonfatal) Nil(t *testing.T, object any, msgAndArgs ...any) bool {
 	t.Helper()
 	if !isNil(object) {
 		return a.fail(t, "expected nil, got: %#v", object)
@@ -80,14 +85,14 @@ func (a nonfatal) Nil(t *testing.T, object interface{}, msgAndArgs ...interface{
 	return true
 }
 
-func (a fatal) Nil(t *testing.T, object interface{}, msgAndArgs ...interface{}) {
+func (a fatal) Nil(t *testing.T, object any, msgAndArgs ...any) {
 	t.Helper()
 	if !isNil(object) {
 		a.fail(t, "expected nil, got: %#v", object)
 	}
 }
 
-func (a nonfatal) NotNil(t *testing.T, object interface{}, msgAndArgs ...interface{}) bool {
+func (a nonfatal) NotNil(t *testing.T, object any, msgAndArgs ...any) bool {
 	t.Helper()
 	if isNil(object) {
 		return a.fail(t, "expected not nil")
@@ -95,70 +100,74 @@ func (a nonfatal) NotNil(t *testing.T, object interface{}, msgAndArgs ...interfa
 	return true
 }
 
-func (a fatal) NotNil(t *testing.T, object interface{}, msgAndArgs ...interface{}) {
+func (a fatal) NotNil(t *testing.T, object any, msgAndArgs ...any) {
 	t.Helper()
 	if isNil(object) {
 		a.fail(t, "expected not nil")
 	}
 }
 
-func (a nonfatal) True(t *testing.T, value bool, msgAndArgs ...interface{}) bool {
+func (a nonfatal) True(t *testing.T, value bool, msgAndArgs ...any) bool {
 	t.Helper()
 	if !value {
 		return a.fail(t, "expected true, got false")
 	}
 	return true
 }
-func (a fatal) True(t *testing.T, value bool, msgAndArgs ...interface{}) {
+
+func (a fatal) True(t *testing.T, value bool, msgAndArgs ...any) {
 	t.Helper()
 	if !value {
 		a.fail(t, "expected true, got false")
 	}
 }
 
-func (a nonfatal) False(t *testing.T, value bool, msgAndArgs ...interface{}) bool {
+func (a nonfatal) False(t *testing.T, value bool, msgAndArgs ...any) bool {
 	t.Helper()
 	if value {
 		return a.fail(t, "expected false, got true")
 	}
 	return true
 }
-func (a fatal) False(t *testing.T, value bool, msgAndArgs ...interface{}) {
+
+func (a fatal) False(t *testing.T, value bool, msgAndArgs ...any) {
 	t.Helper()
 	if value {
 		a.fail(t, "expected false, got true")
 	}
 }
 
-func (a nonfatal) NoError(t *testing.T, err error, msgAndArgs ...interface{}) bool {
+func (a nonfatal) NoError(t *testing.T, err error, msgAndArgs ...any) bool {
 	t.Helper()
 	if err != nil {
 		return a.fail(t, "expected no error, got: %v", err)
 	}
 	return true
 }
-func (a fatal) NoError(t *testing.T, err error, msgAndArgs ...interface{}) {
+
+func (a fatal) NoError(t *testing.T, err error, msgAndArgs ...any) {
 	t.Helper()
 	if err != nil {
 		a.fail(t, "expected no error, got: %v", err)
 	}
 }
 
-func (a nonfatal) Error(t *testing.T, err error, msgAndArgs ...interface{}) bool {
+func (a nonfatal) Error(t *testing.T, err error, msgAndArgs ...any) bool {
 	t.Helper()
 	if err == nil {
 		return a.fail(t, "expected error, got nil")
 	}
 	return true
 }
-func (a fatal) Error(t *testing.T, err error, msgAndArgs ...interface{}) {
+
+func (a fatal) Error(t *testing.T, err error, msgAndArgs ...any) {
 	t.Helper()
 	if err == nil {
 		a.fail(t, "expected error, got nil")
 	}
 }
 
-func (a nonfatal) Panics(t *testing.T, f func(), msgAndArgs ...interface{}) bool {
+func (a nonfatal) Panics(t *testing.T, f func(), msgAndArgs ...any) bool {
 	t.Helper()
 	defer func() {
 		if r := recover(); r == nil {
@@ -169,7 +178,7 @@ func (a nonfatal) Panics(t *testing.T, f func(), msgAndArgs ...interface{}) bool
 	return true
 }
 
-func (a fatal) Panics(t *testing.T, f func(), msgAndArgs ...interface{}) {
+func (a fatal) Panics(t *testing.T, f func(), msgAndArgs ...any) {
 	t.Helper()
 	defer func() {
 		if r := recover(); r == nil {
@@ -179,7 +188,7 @@ func (a fatal) Panics(t *testing.T, f func(), msgAndArgs ...interface{}) {
 	f()
 }
 
-func (a nonfatal) Empty(t *testing.T, object interface{}, msgAndArgs ...interface{}) bool {
+func (a nonfatal) Empty(t *testing.T, object any, msgAndArgs ...any) bool {
 	t.Helper()
 	if !isEmpty(object) {
 		return a.fail(t, "expected empty, got: %#v", object)
@@ -187,14 +196,14 @@ func (a nonfatal) Empty(t *testing.T, object interface{}, msgAndArgs ...interfac
 	return true
 }
 
-func (a fatal) Empty(t *testing.T, object interface{}, msgAndArgs ...interface{}) {
+func (a fatal) Empty(t *testing.T, object any, msgAndArgs ...any) {
 	t.Helper()
 	if !isEmpty(object) {
 		a.fail(t, "expected empty, got: %#v", object)
 	}
 }
 
-func isEmpty(object interface{}) bool {
+func isEmpty(object any) bool {
 	if object == nil {
 		return true
 	}
@@ -202,7 +211,7 @@ func isEmpty(object interface{}) bool {
 	switch v.Kind() {
 	case reflect.Array, reflect.Slice, reflect.Map, reflect.Chan, reflect.String:
 		return v.Len() == 0
-	case reflect.Ptr, reflect.Interface:
+	case reflect.Pointer, reflect.Interface:
 		if v.IsNil() {
 			return true
 		}
@@ -212,7 +221,7 @@ func isEmpty(object interface{}) bool {
 	return false
 }
 
-func (a nonfatal) Len(t *testing.T, object interface{}, length int, msgAndArgs ...interface{}) bool {
+func (a nonfatal) Len(t *testing.T, object any, length int, msgAndArgs ...any) bool {
 	t.Helper()
 	v := reflect.ValueOf(object)
 	switch v.Kind() {
@@ -226,7 +235,7 @@ func (a nonfatal) Len(t *testing.T, object interface{}, length int, msgAndArgs .
 	}
 }
 
-func (a fatal) Len(t *testing.T, object interface{}, length int, msgAndArgs ...interface{}) {
+func (a fatal) Len(t *testing.T, object any, length int, msgAndArgs ...any) {
 	t.Helper()
 	v := reflect.ValueOf(object)
 	switch v.Kind() {
