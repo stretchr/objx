@@ -112,10 +112,10 @@ func (v *Value) Replace{4}(replacer func(int, {1}) {1}) *Value {
 
 // Collect{4} uses the specified collector function to collect a value
 // for each of the {1}s in the slice.  The data returned will be a
-// []interface{}.
-func (v *Value) Collect{4}(collector func(int, {1}) interface{}) *Value {
+// []any.
+func (v *Value) Collect{4}(collector func(int, {1}) any) *Value {
     arr := v.Must{4}Slice()
-    collected := make([]interface{}, len(arr))
+    collected := make([]any, len(arr))
     v.Each{4}(func(index int, val {1}) bool {
         collected[index] = collector(index, val)
         return true

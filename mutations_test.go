@@ -99,6 +99,6 @@ func TestTransformKeys(t *testing.T) {
 	}, r)
 }
 
-func keyToUpper(s string, v interface{}) (string, interface{}) {
+func keyToUpper(s string, v any) (string, any) {
 	return strings.ToUpper(s), v
 }

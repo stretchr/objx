@@ -104,7 +104,7 @@ func TestReplace{4}(t *testing.T) {
 func TestCollect{4}(t *testing.T) {
     m := objx.Map{"data": []{1}{{1}({2}), {1}({2}), {1}({2}), {1}({2}), {1}({2}), {1}({2})}}
 
-    collected := m.Get("data").Collect{4}(func(index int, val {1}) interface{} {
+    collected := m.Get("data").Collect{4}(func(index int, val {1}) any {
         return index
     })
     collectedArr := collected.MustInterSlice()

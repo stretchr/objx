@@ -59,15 +59,21 @@ func (m Map) JSON() (string, error) {
 	return string(result), err
 }
 
-func cleanUpInterfaceArray(in []interface{}) []interface{} {
-	result := make([]interface{}, len(in))
+func cleanUpInterfaceArray(in []any) []any {
+	if in == nil {
+		return nil
+	}
+	result := make([]any, len(in))
 	for i, v := range in {
 		result[i] = cleanUp(v)
 	}
 	return result
 }
 
-func cleanUpInterfaceMap(in map[interface{}]interface{}) Map {
+func cleanUpInterfaceMap(in map[any]any) Map {
+	if in == nil {
+		return nil
+	}
 	result := Map{}
 	for k, v := range in {
 		result[fmt.Sprintf("%v", k)] = cleanUp(v)
@@ -75,7 +81,10 @@ func cleanUpInterfaceMap(in map[interface{}]interface{}) Map {
 	return result
 }
 
-func cleanUpStringMap(in map[string]interface{}) Map {
+func cleanUpStringMap(in map[string]any) Map {
+	if in == nil {
+		return nil
+	}
 	result := Map{}
 	for k, v := range in {
 		result[k] = cleanUp(v)
@@ -83,7 +92,10 @@ func cleanUpStringMap(in map[string]interface{}) Map {
 	return result
 }
 
-func cleanUpMSIArray(in []map[string]interface{}) []Map {
+func cleanUpMSIArray(in []map[string]any) []Map {
+	if in == nil {
+		return nil
+	}
 	result := make([]Map, len(in))
 	for i, v := range in {
 		result[i] = cleanUpStringMap(v)
@@ -92,6 +104,9 @@ func cleanUpMSIArray(in []map[string]interface{}) []Map {
 }
 
 func cleanUpMapArray(in []Map) []Map {
+	if in == nil {
+		return nil
+	}
 	result := make([]Map, len(in))
 	for i, v := range in {
 		result[i] = cleanUpStringMap(v)
@@ -99,13 +114,13 @@ func cleanUpMapArray(in []Map) []Map {
 	return result
 }
 
-func cleanUp(v interface{}) interface{} {
+func cleanUp(v any) any {
 	switch v := v.(type) {
-	case []interface{}:
+	case []any:
 		return cleanUpInterfaceArray(v)
-	case []map[string]interface{}:
+	case []map[string]any:
 		return cleanUpMSIArray(v)
-	case map[interface{}]interface{}:
+	case map[any]any:
 		return cleanUpInterfaceMap(v)
 	case Map:
 		return cleanUpStringMap(v)
@@ -184,7 +199,7 @@ func (m Map) MustSignedBase64(key string) string {
 */
 
 // URLValues creates a url.Values object from an Obj. This
-// function requires that the wrapped object be a map[string]interface{}
+// function requires that the wrapped object be a map[string]any
 func (m Map) URLValues() url.Values {
 	vals := make(url.Values)
 
@@ -274,7 +289,7 @@ func (m Map) parseURLValues(queryMap Map, vals url.Values, key string) {
 
 // URLQuery gets an encoded URL query representing the given
 // Obj. This function requires that the wrapped object be a
-// map[string]interface{}
+// map[string]any
 func (m Map) URLQuery() (string, error) {
 	return m.URLValues().Encode(), nil
 }

@@ -35,7 +35,7 @@ var mapAccessRegex = regexp.MustCompile(mapAccessRegexString)
 // If it cannot find the value, Get will return a nil
 // value inside an instance of Obj.
 //
-// Get can only operate directly on map[string]interface{} and []interface.
+// Get can only operate directly on map[string]any and []interface.
 //
 // # Example
 //
@@ -50,14 +50,14 @@ func (m Map) Get(selector string) *Value {
 // Set sets the value using the specified selector and
 // returns the object on which Set was called.
 //
-// Set can only operate directly on map[string]interface{} and []interface
+// Set can only operate directly on map[string]any and []interface
 //
 // # Example
 //
 // To set the title of the third chapter of the second book, do:
 //
 //	o.Set("books[1].chapters[2].title","Time to Go")
-func (m Map) Set(selector string, value interface{}) Map {
+func (m Map) Set(selector string, value any) Map {
 	access(m, selector, value, true)
 	return m
 }
@@ -113,7 +113,7 @@ func getKey(s string) (string, string) {
 
 // access accesses the object using the selector and performs the
 // appropriate action.
-func access(current interface{}, selector string, value interface{}, isSet bool) interface{} {
+func access(current any, selector string, value any, isSet bool) any {
 	thisSel, nextSel := getKey(selector)
 
 	indexes := []int{}
@@ -128,24 +128,24 @@ func access(current interface{}, selector string, value interface{}, isSet bool)
 	}
 
 	if curMap, ok := current.(Map); ok {
-		current = map[string]interface{}(curMap)
+		current = map[string]any(curMap)
 	}
 	// get the object in question
 	switch current.(type) {
-	case map[string]interface{}:
-		curMSI := current.(map[string]interface{})
+	case map[string]any:
+		curMSI := current.(map[string]any)
 		if nextSel == "" && isSet && len(indexes) == 0 {
 			curMSI[thisSel] = value
 			return nil
 		}
 
-		_, ok := curMSI[thisSel].(map[string]interface{})
+		_, ok := curMSI[thisSel].(map[string]any)
 		if !ok {
 			_, ok = curMSI[thisSel].(Map)
 		}
 
 		if (curMSI[thisSel] == nil || !ok) && len(indexes) == 0 && isSet {
-			curMSI[thisSel] = map[string]interface{}{}
+			curMSI[thisSel] = map[string]any{}
 		}
 
 		current = curMSI[thisSel]
@@ -184,8 +184,8 @@ func access(current interface{}, selector string, value interface{}, isSet bool)
 	return current
 }
 
-func interSlice(slice interface{}) ([]interface{}, bool) {
-	if array, ok := slice.([]interface{}); ok {
+func interSlice(slice any) ([]any, bool) {
+	if array, ok := slice.([]any); ok {
 		return array, ok
 	}
 
@@ -194,7 +194,7 @@ func interSlice(slice interface{}) ([]interface{}, bool) {
 		return nil, false
 	}
 
-	ret := make([]interface{}, s.Len())
+	ret := make([]any, s.Len())
 
 	for i := 0; i < s.Len(); i++ {
 		ret[i] = s.Index(i).Interface()

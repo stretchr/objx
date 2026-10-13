@@ -18,10 +18,10 @@ func TestConversionJSON(t *testing.T) {
 	assert.Equal(t, jsonString, o.MustJSON())
 
 	i := objx.Map{
-		"a": map[interface{}]interface{}{"b": objx.Map{"c": map[interface{}]interface{}{"d": "e"}},
-			"f": []objx.Map{{"g": map[interface{}]interface{}{"h": "i"}}},
-			"j": []map[string]interface{}{{"k": map[interface{}]interface{}{"l": "m"}}},
-			"n": []interface{}{objx.Map{"o": "p"}},
+		"a": map[any]any{"b": objx.Map{"c": map[any]any{"d": "e"}},
+			"f": []objx.Map{{"g": map[any]any{"h": "i"}}},
+			"j": []map[string]any{{"k": map[any]any{"l": "m"}}},
+			"n": []any{objx.Map{"o": "p"}},
 		},
 	}
 
@@ -180,8 +180,8 @@ func getURLQueryMap() objx.Map {
 		"name":     "Mat",
 		"data":     objx.Map{"age": 30, "height": 162, "arr": []int{1, 2}},
 		"mapSlice": []objx.Map{{"age": 40}, {"height": 152}},
-		"msiData":  map[string]interface{}{"age": 30, "height": 162, "arr": []int{1, 2}},
-		"msiSlice": []map[string]interface{}{{"age": 40}, {"height": 152}},
+		"msiData":  map[string]any{"age": 30, "height": 162, "arr": []int{1, 2}},
+		"msiSlice": []map[string]any{{"age": 40}, {"height": 152}},
 		"stats":    []string{"1", "2"},
 		"bools":    []bool{true, false},
 	}
