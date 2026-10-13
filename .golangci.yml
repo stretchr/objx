@@ -3,6 +3,10 @@ version: "2"
 linters:
   # The "standard" set: errcheck, govet, ineffassign, staticcheck, unused.
   default: standard
+  enable:
+    # Same checks as `go fix`: any over interface{}, maps/slices helpers,
+    # range over int, etc.
+    - modernize
   exclusions:
     rules:
       # Inter/MustInter/IsInter assert v.data.(any) on purpose: the assertion
