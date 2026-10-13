@@ -170,7 +170,12 @@ func TestConversionURLValuesNested(t *testing.T) {
 			"o": []any{objx.Map{"y": 1}, map[string]any{"y": 2}},
 		},
 		"top": []objx.Map{{"x": 1}, {"x": 2}},
+		"j":   []any{1, "two", nil, map[string]any{"z": 3}, []any{4}},
 	}
+
+	// Without an index suffix, values from different slice elements are
+	// merged under shared keys (e.g. a[s][][arr][] below); only the "[i]"
+	// suffix keeps them separable.
 
 	tests := []struct {
 		suffix   string
@@ -184,6 +189,9 @@ func TestConversionURLValuesNested(t *testing.T) {
 				"a[s][][arr][]": []string{"1", "2", "3"},
 				"a[o][][y]":     []string{"1", "2"},
 				"top[][x]":      []string{"1", "2"},
+				"j[]":           []string{"1", "two"},
+				"j[][z]":        []string{"3"},
+				"j[][]":         []string{"4"},
 			},
 		},
 		{
@@ -194,6 +202,8 @@ func TestConversionURLValuesNested(t *testing.T) {
 				"a[s][arr]": []string{"1", "2", "3"},
 				"a[o][y]":   []string{"1", "2"},
 				"top[x]":    []string{"1", "2"},
+				"j":         []string{"1", "two", "4"},
+				"j[z]":      []string{"3"},
 			},
 		},
 		{
@@ -209,6 +219,10 @@ func TestConversionURLValuesNested(t *testing.T) {
 				"a[o][1][y]":      []string{"2"},
 				"top[0][x]":       []string{"1"},
 				"top[1][x]":       []string{"2"},
+				"j[0]":            []string{"1"},
+				"j[1]":            []string{"two"},
+				"j[3][z]":         []string{"3"},
+				"j[4][0]":         []string{"4"},
 			},
 		},
 	}
