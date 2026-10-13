@@ -1,0 +1,24 @@
+version: "2"
+
+linters:
+  # The "standard" set: errcheck, govet, ineffassign, staticcheck, unused.
+  default: standard
+  enable:
+    # Same checks as `go fix`: any over interface{}, maps/slices helpers,
+    # range over int, etc.
+    - modernize
+  exclusions:
+    rules:
+      # Inter/MustInter/IsInter assert v.data.(any) on purpose: the assertion
+      # fails for a nil value, so IsInter reports false and Inter falls back
+      # to its default. Removing it would change behavior.
+      - path: type_specific_codegen\.go
+        linters: [staticcheck]
+        text: "S1040"
+
+formatters:
+  enable:
+    - gofmt
+  settings:
+    gofmt:
+      simplify: true

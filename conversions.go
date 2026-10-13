@@ -42,7 +42,7 @@ func SetURLValuesSliceKeySuffix(s string) error {
 		return nil
 	}
 
-	return errors.New("objx: Invalid URLValuesSliceKeySuffix provided.")
+	return errors.New("objx: invalid URLValuesSliceKeySuffix provided")
 }
 
 // JSON converts the contained object to a JSON string
@@ -209,10 +209,7 @@ func (m Map) URLValues() url.Values {
 }
 
 func (m Map) parseURLValues(queryMap Map, vals url.Values, key string) {
-	useSliceIndex := false
-	if urlValuesSliceKeySuffix == "[i]" {
-		useSliceIndex = true
-	}
+	useSliceIndex := urlValuesSliceKeySuffix == "[i]"
 
 	for k, v := range queryMap {
 		val := &Value{data: v}
