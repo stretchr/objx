@@ -240,23 +240,6 @@ func (m Map) parseURLValues(queryMap Map, vals url.Values, key string) {
 					m.parseURLValues(sv, vals, sliceKey)
 				}
 			}
-		case val.IsMSISlice():
-			sliceKey := k
-			if key != "" {
-				sliceKey = key + "[" + k + "]"
-			}
-
-			if useSliceIndex {
-				for i, sv := range val.MustMSISlice() {
-					sk := sliceKey + "[" + strconv.FormatInt(int64(i), 10) + "]"
-					m.parseURLValues(New(sv), vals, sk)
-				}
-			} else {
-				sliceKey = sliceKey + urlValuesSliceKeySuffix
-				for _, sv := range val.MustMSISlice() {
-					m.parseURLValues(New(sv), vals, sliceKey)
-				}
-			}
 		case val.IsStrSlice(), val.IsBoolSlice(),
 			val.IsFloat32Slice(), val.IsFloat64Slice(),
 			val.IsIntSlice(), val.IsInt8Slice(), val.IsInt16Slice(), val.IsInt32Slice(), val.IsInt64Slice(),
@@ -274,14 +257,16 @@ func (m Map) parseURLValues(queryMap Map, vals url.Values, key string) {
 				}
 			} else {
 				sliceKey = sliceKey + urlValuesSliceKeySuffix
-				vals[sliceKey] = val.StringSlice()
+				vals[sliceKey] = append(vals[sliceKey], val.StringSlice()...)
 			}
 
 		default:
+			// Add rather than Set: without an index suffix, every element of a
+			// map slice shares the same key, and Set would keep only the last.
 			if key == "" {
-				vals.Set(k, val.String())
+				vals.Add(k, val.String())
 			} else {
-				vals.Set(key+"["+k+"]", val.String())
+				vals.Add(key+"["+k+"]", val.String())
 			}
 		}
 	}

@@ -162,6 +162,66 @@ func TestConversionURLQueryIndexSliceKeySuffix(t *testing.T) {
 	assert.Equal(t, "abc=123&bools[0]=true&bools[1]=false&data[age]=30&data[arr][0]=1&data[arr][1]=2&data[height]=162&mapSlice[0][age]=40&mapSlice[0][sex]=male&mapSlice[1][height]=152&msiData[age]=30&msiData[arr][0]=1&msiData[arr][1]=2&msiData[height]=162&msiSlice[0][age]=40&msiSlice[1][height]=152&name=Mat&stats[0]=1&stats[1]=2", ue)
 }
 
+func TestConversionURLValuesNested(t *testing.T) {
+	m := objx.Map{
+		"a": objx.Map{
+			"b": map[string]any{"c": 1},
+			"s": []map[string]any{{"x": 1, "arr": []int{1, 2}}, {"x": 2, "arr": []int{3}}},
+			"o": []any{objx.Map{"y": 1}, map[string]any{"y": 2}},
+		},
+		"top": []objx.Map{{"x": 1}, {"x": 2}},
+	}
+
+	tests := []struct {
+		suffix   string
+		expected url.Values
+	}{
+		{
+			suffix: objx.URLValuesSliceKeySuffixArray,
+			expected: url.Values{
+				"a[b][c]":       []string{"1"},
+				"a[s][][x]":     []string{"1", "2"},
+				"a[s][][arr][]": []string{"1", "2", "3"},
+				"a[o][][y]":     []string{"1", "2"},
+				"top[][x]":      []string{"1", "2"},
+			},
+		},
+		{
+			suffix: objx.URLValuesSliceKeySuffixEmpty,
+			expected: url.Values{
+				"a[b][c]":   []string{"1"},
+				"a[s][x]":   []string{"1", "2"},
+				"a[s][arr]": []string{"1", "2", "3"},
+				"a[o][y]":   []string{"1", "2"},
+				"top[x]":    []string{"1", "2"},
+			},
+		},
+		{
+			suffix: objx.URLValuesSliceKeySuffixIndex,
+			expected: url.Values{
+				"a[b][c]":         []string{"1"},
+				"a[s][0][x]":      []string{"1"},
+				"a[s][0][arr][0]": []string{"1"},
+				"a[s][0][arr][1]": []string{"2"},
+				"a[s][1][x]":      []string{"2"},
+				"a[s][1][arr][0]": []string{"3"},
+				"a[o][0][y]":      []string{"1"},
+				"a[o][1][y]":      []string{"2"},
+				"top[0][x]":       []string{"1"},
+				"top[1][x]":       []string{"2"},
+			},
+		},
+	}
+
+	t.Cleanup(func() { _ = objx.SetURLValuesSliceKeySuffix(objx.URLValuesSliceKeySuffixArray) })
+	for _, tt := range tests {
+		t.Run(tt.suffix, func(t *testing.T) {
+			require.Nil(t, objx.SetURLValuesSliceKeySuffix(tt.suffix))
+			assert.Equal(t, tt.expected, m.URLValues())
+		})
+	}
+}
+
 func TestValidityURLQuerySliceKeySuffix(t *testing.T) {
 	t.Cleanup(func() { _ = objx.SetURLValuesSliceKeySuffix(objx.URLValuesSliceKeySuffixArray) })
 	err := objx.SetURLValuesSliceKeySuffix("")
