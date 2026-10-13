@@ -42,7 +42,7 @@ func SetURLValuesSliceKeySuffix(s string) error {
 		return nil
 	}
 
-	return errors.New("objx: Invalid URLValuesSliceKeySuffix provided.")
+	return errors.New("objx: invalid URLValuesSliceKeySuffix provided")
 }
 
 // JSON converts the contained object to a JSON string
