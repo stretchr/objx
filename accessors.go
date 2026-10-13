@@ -43,7 +43,7 @@ var mapAccessRegex = regexp.MustCompile(mapAccessRegexString)
 //
 //	o.Get("books[1].chapters[2].title")
 func (m Map) Get(selector string) *Value {
-	rawObj := access(m, selector, nil, false)
+	rawObj, _ := access(m, selector, nil, false)
 	return &Value{data: rawObj}
 }
 
@@ -109,7 +109,7 @@ func getKey(s string) (string, string) {
 
 // access accesses the object using the selector and performs the
 // appropriate action.
-func access(current any, selector string, value any, isSet bool) any {
+func access(current any, selector string, value any, isSet bool) (any, bool) {
 	thisSel, nextSel := getKey(selector)
 
 	indexes := []int{}
@@ -132,7 +132,7 @@ func access(current any, selector string, value any, isSet bool) any {
 		curMSI := current.(map[string]any)
 		if nextSel == "" && isSet && len(indexes) == 0 {
 			curMSI[thisSel] = value
-			return nil
+			return nil, true
 		}
 
 		_, ok := curMSI[thisSel].(map[string]any)
@@ -144,9 +144,12 @@ func access(current any, selector string, value any, isSet bool) any {
 			curMSI[thisSel] = map[string]any{}
 		}
 
-		current = curMSI[thisSel]
+		current, ok = curMSI[thisSel]
+		if !ok {
+			return nil, false
+		}
 	default:
-		current = nil
+		return nil, false
 	}
 
 	// do we need to access the item of an array?
@@ -160,24 +163,22 @@ func access(current any, selector string, value any, isSet bool) any {
 				if index >= 0 && index < len(array) {
 					if isSet && nextSel == "" && num == 0 {
 						array[index] = value
-						return nil
+						return nil, true
 					}
 					current = array[index]
 				} else {
-					current = nil
-					break
+					return nil, false
 				}
 			} else {
-				current = nil
-				break
+				return nil, false
 			}
 		}
 	}
 
 	if nextSel != "" {
-		current = access(current, nextSel, value, isSet)
+		return access(current, nextSel, value, isSet)
 	}
-	return current
+	return current, true
 }
 
 func interSlice(slice any) ([]any, bool) {
@@ -197,59 +198,4 @@ func interSlice(slice any) ([]any, bool) {
 	}
 
 	return ret, true
-}
-
-// has checks whether the specified selector exists within the object.
-func has(current interface{}, selector string) bool {
-	thisSel, nextSel := getKey(selector)
-
-	indexes := []int{}
-	for strings.Contains(thisSel, "[") {
-		prevSel := thisSel
-		index := -1
-		index, thisSel = getIndex(thisSel)
-		indexes = append(indexes, index)
-		if prevSel == thisSel {
-			break
-		}
-	}
-
-	if curMap, ok := current.(Map); ok {
-		current = map[string]interface{}(curMap)
-	}
-
-	switch cur := current.(type) {
-	case map[string]interface{}:
-		val, ok := cur[thisSel]
-		if !ok {
-			return false
-		}
-		current = val
-	default:
-		return false
-	}
-
-	if len(indexes) > 0 {
-		num := len(indexes)
-		for num > 0 {
-			num--
-			index := indexes[num]
-			indexes = indexes[:num]
-			if array, ok := interSlice(current); ok {
-				if index >= 0 && index < len(array) {
-					current = array[index]
-				} else {
-					return false
-				}
-			} else {
-				return false
-			}
-		}
-	}
-
-	if nextSel != "" {
-		return has(current, nextSel)
-	}
-
-	return true
 }

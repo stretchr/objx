@@ -2,6 +2,8 @@ package objx_test
 
 import (
 	"testing"
+
+	"github.com/stretchr/objx"
 )
 
 func TestHas(t *testing.T) {
@@ -28,18 +30,34 @@ func TestHasWithNil(t *testing.T) {
 			"nilChild": nil,
 			"valid":    "hello",
 		},
-		"nilSlice": []interface{}{nil, "value"},
+		"domains": objx.Map{
+			"example.com": objx.Map{
+				"nilApex": nil,
+				"apex":    "example",
+			},
+		},
+		"nilSlice":    []any{nil, "value"},
+		"nestedSlice": []any{[]any{nil, "nestedVal"}},
 	}
 
 	assert.True(t, m.Has("nilField"))
 	assert.True(t, m.Has("nested.nilChild"))
 	assert.True(t, m.Has("nested.valid"))
+	assert.True(t, m.Has("domains[example.com].nilApex"))
+	assert.True(t, m.Has("domains[example.com][nilApex]"))
+	assert.True(t, m.Has("domains[example.com].apex"))
 	assert.True(t, m.Has("nilSlice[0]"))
 	assert.True(t, m.Has("nilSlice[1]"))
+	assert.True(t, m.Has("nestedSlice[0][0]"))
+	assert.True(t, m.Has("nestedSlice[0][1]"))
 
 	assert.False(t, m.Has("nonExistent"))
 	assert.False(t, m.Has("nested.nonExistent"))
+	assert.False(t, m.Has("domains[example.com].nonExistent"))
+	assert.False(t, m.Has("domains[missing.com].nilApex"))
 	assert.False(t, m.Has("nilSlice[2]"))
+	assert.False(t, m.Has("nestedSlice[0][2]"))
+	assert.False(t, m.Has("nestedSlice[1][0]"))
 	assert.False(t, m.Has("nilField.child"))
 	assert.False(t, m.Has("nilSlice[0].child"))
 
@@ -52,8 +70,8 @@ func TestHasWithNil(t *testing.T) {
 }
 
 func TestHasDifferentiateNilFromNotFound(t *testing.T) {
-	obj := objx.Map(map[string]interface{}{
-		"foo": map[string]interface{}{
+	obj := objx.Map(map[string]any{
+		"foo": map[string]any{
 			"bar": 5,
 			"baz": nil,
 		},
