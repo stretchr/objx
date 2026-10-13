@@ -2,12 +2,10 @@ package objx_test
 
 import (
 	"testing"
-
-	"github.com/stretchr/objx"
 )
 
 func TestHas(t *testing.T) {
-	m := objx.Map(TestMap)
+	m := TestMap
 
 	assert.True(t, m.Has("name"))
 	assert.True(t, m.Has("address.state"))

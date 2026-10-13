@@ -100,11 +100,7 @@ func getKey(s string) (string, string) {
 				nextSel = mapMatches[3]
 			}
 
-			if nextSel == "" {
-				selSegs = []string{"", ""}
-			} else if nextSel[0] == '.' {
-				nextSel = nextSel[1:]
-			}
+			nextSel = strings.TrimPrefix(nextSel, ".")
 		}
 	}
 
@@ -119,7 +115,7 @@ func access(current any, selector string, value any, isSet bool) any {
 	indexes := []int{}
 	for strings.Contains(thisSel, "[") {
 		prevSel := thisSel
-		index := -1
+		var index int
 		index, thisSel = getIndex(thisSel)
 		indexes = append(indexes, index)
 		if prevSel == thisSel {
@@ -196,7 +192,7 @@ func interSlice(slice any) ([]any, bool) {
 
 	ret := make([]any, s.Len())
 
-	for i := 0; i < s.Len(); i++ {
+	for i := range ret {
 		ret[i] = s.Index(i).Interface()
 	}
 

@@ -1,0 +1,130 @@
+package objx_test
+
+import (
+	"fmt"
+	"testing"
+
+	"github.com/stretchr/objx"
+)
+{{range .}}
+/*
+Tests for {{.Name}} ({{.Type}} and []{{.Type}})
+*/
+func Test{{.Name}}(t *testing.T) {
+	val := {{.Type}}({{.Example}})
+	m := objx.Map{"value": val, "nothing": nil}
+
+	assert.Equal(t, val, m.Get("value").{{.Name}}())
+	assert.Equal(t, val, m.Get("value").Must{{.Name}}())
+	assert.Equal(t, {{.Type}}({{.Zero}}), m.Get("nothing").{{.Name}}())
+	assert.Equal(t, val, m.Get("nothing").{{.Name}}({{.Example}}))
+	assert.Panics(t, func() {
+		m.Get("age").Must{{.Name}}()
+	})
+}
+
+func Test{{.Name}}Slice(t *testing.T) {
+	val := {{.Type}}({{.Example}})
+	m := objx.Map{"value": []{{.Type}}{val}, "nothing": nil}
+
+	assert.Equal(t, val, m.Get("value").{{.Name}}Slice()[0])
+	assert.Equal(t, val, m.Get("value").Must{{.Name}}Slice()[0])
+	assert.Equal(t, []{{.Type}}(nil), m.Get("nothing").{{.Name}}Slice())
+	assert.Equal(t, val, m.Get("nothing").{{.Name}}Slice([]{{.Type}}{ {{.Type}}({{.Example}})})[0])
+	assert.Panics(t, func() {
+		m.Get("nothing").Must{{.Name}}Slice()
+	})
+}
+
+func TestIs{{.Name}}(t *testing.T) {
+	m := objx.Map{"data": {{.Type}}({{.Example}})}
+
+	assert.True(t, m.Get("data").Is{{.Name}}())
+}
+
+func TestIs{{.Name}}Slice(t *testing.T) {
+	m := objx.Map{"data": []{{.Type}}{ {{.Type}}({{.Example}})}}
+
+	assert.True(t, m.Get("data").Is{{.Name}}Slice())
+}
+
+func TestEach{{.Name}}(t *testing.T) {
+	m := objx.Map{"data": []{{.Type}}{ {{.Type}}({{.Example}}), {{.Type}}({{.Example}}), {{.Type}}({{.Example}}), {{.Type}}({{.Example}}), {{.Type}}({{.Example}})}}
+	count := 0
+	replacedVals := make([]{{.Type}}, 0)
+	assert.Equal(t, m.Get("data"), m.Get("data").Each{{.Name}}(func(i int, val {{.Type}}) bool {
+		count++
+		replacedVals = append(replacedVals, val)
+
+		// abort early
+		return i != 2
+	}))
+
+	assert.Equal(t, count, 3)
+	assert.Equal(t, replacedVals[0], m.Get("data").Must{{.Name}}Slice()[0])
+	assert.Equal(t, replacedVals[1], m.Get("data").Must{{.Name}}Slice()[1])
+	assert.Equal(t, replacedVals[2], m.Get("data").Must{{.Name}}Slice()[2])
+}
+
+func TestWhere{{.Name}}(t *testing.T) {
+	m := objx.Map{"data": []{{.Type}}{ {{.Type}}({{.Example}}), {{.Type}}({{.Example}}), {{.Type}}({{.Example}}), {{.Type}}({{.Example}}), {{.Type}}({{.Example}}), {{.Type}}({{.Example}})}}
+
+	selected := m.Get("data").Where{{.Name}}(func(i int, val {{.Type}}) bool {
+		return i%2 == 0
+	}).Must{{.Name}}Slice()
+
+	assert.Equal(t, 3, len(selected))
+}
+
+func TestGroup{{.Name}}(t *testing.T) {
+	m := objx.Map{"data": []{{.Type}}{ {{.Type}}({{.Example}}), {{.Type}}({{.Example}}), {{.Type}}({{.Example}}), {{.Type}}({{.Example}}), {{.Type}}({{.Example}}), {{.Type}}({{.Example}})}}
+
+	grouped := m.Get("data").Group{{.Name}}(func(i int, val {{.Type}}) string {
+		return fmt.Sprintf("%v", i%2 == 0)
+	}).Data().(map[string][]{{.Type}})
+
+	assert.Equal(t, 2, len(grouped))
+	assert.Equal(t, 3, len(grouped["true"]))
+	assert.Equal(t, 3, len(grouped["false"]))
+}
+
+func TestReplace{{.Name}}(t *testing.T) {
+	m := objx.Map{"data": []{{.Type}}{ {{.Type}}({{.Example}}), {{.Type}}({{.Example}}), {{.Type}}({{.Example}}), {{.Type}}({{.Example}}), {{.Type}}({{.Example}}), {{.Type}}({{.Example}})}}
+	rawArr := m.Get("data").Must{{.Name}}Slice()
+
+	replaced := m.Get("data").Replace{{.Name}}(func(index int, val {{.Type}}) {{.Type}} {
+		if index < len(rawArr)-1 {
+			return rawArr[index+1]
+		}
+		return rawArr[0]
+	})
+	replacedArr := replaced.Must{{.Name}}Slice()
+
+	if assert.Equal(t, 6, len(replacedArr)) {
+		assert.Equal(t, replacedArr[0], rawArr[1])
+		assert.Equal(t, replacedArr[1], rawArr[2])
+		assert.Equal(t, replacedArr[2], rawArr[3])
+		assert.Equal(t, replacedArr[3], rawArr[4])
+		assert.Equal(t, replacedArr[4], rawArr[5])
+		assert.Equal(t, replacedArr[5], rawArr[0])
+	}
+}
+
+func TestCollect{{.Name}}(t *testing.T) {
+	m := objx.Map{"data": []{{.Type}}{ {{.Type}}({{.Example}}), {{.Type}}({{.Example}}), {{.Type}}({{.Example}}), {{.Type}}({{.Example}}), {{.Type}}({{.Example}}), {{.Type}}({{.Example}})}}
+
+	collected := m.Get("data").Collect{{.Name}}(func(index int, val {{.Type}}) any {
+		return index
+	})
+	collectedArr := collected.MustInterSlice()
+
+	if assert.Equal(t, 6, len(collectedArr)) {
+		assert.Equal(t, collectedArr[0], 0)
+		assert.Equal(t, collectedArr[1], 1)
+		assert.Equal(t, collectedArr[2], 2)
+		assert.Equal(t, collectedArr[3], 3)
+		assert.Equal(t, collectedArr[4], 4)
+		assert.Equal(t, collectedArr[5], 5)
+	}
+}
+{{end}}
