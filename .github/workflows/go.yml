@@ -23,6 +23,12 @@ jobs:
       with:
         version: v2.14.0
 
+    - name: Check generated code is up to date
+      run: |
+        go generate ./...
+        git status --porcelain
+        test -z "$(git status --porcelain)"
+
   build:
     runs-on: ubuntu-latest
     strategy:

@@ -1,0 +1,141 @@
+package objx
+{{range .}}
+/*
+   {{.Name}} ({{.Type}} and []{{.Type}})
+*/
+
+// {{.Name}} gets the value as a {{.Type}}, returns the optionalDefault
+// value or a system default object if the value is the wrong type.
+func (v *Value) {{.Name}}(optionalDefault ...{{.Type}}) {{.Type}} {
+	if s, ok := v.data.({{.Type}}); ok {
+		return s
+	}
+{{- if .FromFloat64}}
+	if s, ok := v.data.(float64); ok {
+		if float64({{.Type}}(s)) == s {
+			return {{.Type}}(s)
+		}
+	}
+{{- end}}
+	if len(optionalDefault) == 1 {
+		return optionalDefault[0]
+	}
+	return {{.Zero}}
+}
+
+// Must{{.Name}} gets the value as a {{.Type}}.
+//
+// Panics if the object is not a {{.Type}}.
+func (v *Value) Must{{.Name}}() {{.Type}} {
+{{- if .FromFloat64}}
+	if s, ok := v.data.(float64); ok {
+		if float64({{.Type}}(s)) == s {
+			return {{.Type}}(s)
+		}
+	}
+{{- end}}
+	return v.data.({{.Type}})
+}
+
+// {{.Name}}Slice gets the value as a []{{.Type}}, returns the optionalDefault
+// value or nil if the value is not a []{{.Type}}.
+func (v *Value) {{.Name}}Slice(optionalDefault ...[]{{.Type}}) []{{.Type}} {
+	if s, ok := v.data.([]{{.Type}}); ok {
+		return s
+	}
+	if len(optionalDefault) == 1 {
+		return optionalDefault[0]
+	}
+	return nil
+}
+
+// Must{{.Name}}Slice gets the value as a []{{.Type}}.
+//
+// Panics if the object is not a []{{.Type}}.
+func (v *Value) Must{{.Name}}Slice() []{{.Type}} {
+	return v.data.([]{{.Type}})
+}
+
+// Is{{.Name}} gets whether the object contained is a {{.Type}} or not.
+func (v *Value) Is{{.Name}}() bool {
+	_, ok := v.data.({{.Type}})
+	return ok
+}
+
+// Is{{.Name}}Slice gets whether the object contained is a []{{.Type}} or not.
+func (v *Value) Is{{.Name}}Slice() bool {
+	_, ok := v.data.([]{{.Type}})
+	return ok
+}
+
+// Each{{.Name}} calls the specified callback for each object
+// in the []{{.Type}}.
+//
+// Panics if the object is the wrong type.
+func (v *Value) Each{{.Name}}(callback func(int, {{.Type}}) bool) *Value {
+	for index, val := range v.Must{{.Name}}Slice() {
+		carryon := callback(index, val)
+		if !carryon {
+			break
+		}
+	}
+	return v
+}
+
+// Where{{.Name}} uses the specified decider function to select items
+// from the []{{.Type}}.  The object contained in the result will contain
+// only the selected items.
+func (v *Value) Where{{.Name}}(decider func(int, {{.Type}}) bool) *Value {
+	var selected []{{.Type}}
+	v.Each{{.Name}}(func(index int, val {{.Type}}) bool {
+		shouldSelect := decider(index, val)
+		if !shouldSelect {
+			selected = append(selected, val)
+		}
+		return true
+	})
+	return &Value{data: selected}
+}
+
+// Group{{.Name}} uses the specified grouper function to group the items
+// keyed by the return of the grouper.  The object contained in the
+// result will contain a map[string][]{{.Type}}.
+func (v *Value) Group{{.Name}}(grouper func(int, {{.Type}}) string) *Value {
+	groups := make(map[string][]{{.Type}})
+	v.Each{{.Name}}(func(index int, val {{.Type}}) bool {
+		group := grouper(index, val)
+		if _, ok := groups[group]; !ok {
+			groups[group] = make([]{{.Type}}, 0)
+		}
+		groups[group] = append(groups[group], val)
+		return true
+	})
+	return &Value{data: groups}
+}
+
+// Replace{{.Name}} uses the specified function to replace each {{.Type}}s
+// by iterating each item.  The data in the returned result will be a
+// []{{.Type}} containing the replaced items.
+func (v *Value) Replace{{.Name}}(replacer func(int, {{.Type}}) {{.Type}}) *Value {
+	arr := v.Must{{.Name}}Slice()
+	replaced := make([]{{.Type}}, len(arr))
+	v.Each{{.Name}}(func(index int, val {{.Type}}) bool {
+		replaced[index] = replacer(index, val)
+		return true
+	})
+	return &Value{data: replaced}
+}
+
+// Collect{{.Name}} uses the specified collector function to collect a value
+// for each of the {{.Type}}s in the slice.  The data returned will be a
+// []any.
+func (v *Value) Collect{{.Name}}(collector func(int, {{.Type}}) any) *Value {
+	arr := v.Must{{.Name}}Slice()
+	collected := make([]any, len(arr))
+	v.Each{{.Name}}(func(index int, val {{.Type}}) bool {
+		collected[index] = collector(index, val)
+		return true
+	})
+	return &Value{data: collected}
+}
+{{end}}

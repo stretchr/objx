@@ -64,3 +64,5 @@ For example, to `range` the data, do what you would expect:
 	}
 */
 package objx
+
+//go:generate go run ./codegen

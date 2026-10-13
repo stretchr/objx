@@ -4,6 +4,11 @@ tasks:
   default:
     deps: [test]
 
+  generate:
+    desc: Regenerates type_specific_codegen*.go from codegen/
+    cmds:
+      - go generate ./...
+
   lint:
     desc: Runs golangci-lint
     cmds:

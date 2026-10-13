@@ -89,3 +89,7 @@ We currently support the three recent major Go versions.
 
 ## Contributing
 Please feel free to submit issues, fork the repository and send pull requests!
+
+The type-specific accessors in `type_specific_codegen.go` (and their tests) are
+generated from the templates in `codegen/`. Edit those instead and run
+`go generate ./...` (or `task generate`).
