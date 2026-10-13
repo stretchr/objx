@@ -1,5 +1,10 @@
 package objx
 
+import (
+	"maps"
+	"slices"
+)
+
 // Exclude returns a new Map with the keys in the specified []string
 // excluded.
 func (m Map) Exclude(exclude []string) Map {
@@ -15,9 +20,7 @@ func (m Map) Exclude(exclude []string) Map {
 // Copy creates a shallow copy of the Obj.
 func (m Map) Copy() Map {
 	copied := Map{}
-	for k, v := range m {
-		copied[k] = v
-	}
+	maps.Copy(copied, m)
 	return copied
 }
 
@@ -35,9 +38,7 @@ func (m Map) Merge(merge Map) Map {
 // will be modified. This method requires that
 // the wrapped object be a map[string]any
 func (m Map) MergeHere(merge Map) Map {
-	for k, v := range merge {
-		m[k] = v
-	}
+	maps.Copy(m, merge)
 	return m
 }
 
@@ -68,10 +69,5 @@ func (m Map) TransformKeys(mapping map[string]string) Map {
 
 // Checks if a string slice contains a string
 func contains(s []string, e string) bool {
-	for _, a := range s {
-		if a == e {
-			return true
-		}
-	}
-	return false
+	return slices.Contains(s, e)
 }
