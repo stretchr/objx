@@ -62,16 +62,21 @@ func (m Map) Set(selector string, value any) Map {
 	return m
 }
 
-// Delete deletes the value using the specified selector and
-// returns the object on which Delete was called.
+// Delete removes map keys or slice elements using each selector in order and
+// returns m. It traverses Map, map[string]any, and slices using the same dot and
+// bracket notation as Get. Missing paths and out-of-range indexes are ignored.
+// Calling Delete with no selectors or on a nil Map is a no-op.
 //
-// Delete can only operate directly on map[string]interface{} and []interface.
+// Map keys are deleted in place. Removing a slice element shifts later elements
+// down by one, so subsequent selectors use the updated indexes. Slice deletions
+// preserve slice types and copy affected slices, including enclosing slices,
+// without changing their existing backing arrays.
 //
 // # Example
 //
-// To delete the title of the third chapter of the second book, do:
+// To delete a chapter's title and the draft flag, do:
 //
-//	o.Delete("books[1].chapters[2].title")
+//	o.Delete("books[1].chapters[2].title", "draft")
 func (m Map) Delete(selectors ...string) Map {
 	for _, selector := range selectors {
 		access(m, selector, nil, actionDelete)
@@ -151,16 +156,16 @@ func access(current any, selector string, value any, action accessAction) (any, 
 	if curMap, ok := current.(Map); ok {
 		current = map[string]any(curMap)
 	}
-	var curMSI map[string]any
 	// get the object in question
 	switch current.(type) {
 	case map[string]any:
-		curMSI = current.(map[string]any)
+		curMSI := current.(map[string]any)
 		if nextSel == "" && len(indexes) == 0 {
-			if action == actionSet {
+			switch action {
+			case actionSet:
 				curMSI[thisSel] = value
 				return nil, true
-			} else if action == actionDelete {
+			case actionDelete:
 				delete(curMSI, thisSel)
 				return nil, true
 			}
@@ -179,6 +184,13 @@ func access(current any, selector string, value any, action accessAction) (any, 
 		if !ok {
 			return nil, false
 		}
+		if action == actionDelete && nextSel == "" && len(indexes) > 0 {
+			updated, ok := deleteSliceIndex(current, indexes)
+			if ok {
+				curMSI[thisSel] = updated
+			}
+			return nil, ok
+		}
 	default:
 		return nil, false
 	}
@@ -192,16 +204,9 @@ func access(current any, selector string, value any, action accessAction) (any, 
 			indexes = indexes[:num]
 			if array, ok := interSlice(current); ok {
 				if index >= 0 && index < len(array) {
-					if nextSel == "" && num == 0 {
-						if action == actionSet {
-							array[index] = value
-							return nil, true
-						} else if action == actionDelete {
-							if curMSI != nil {
-								curMSI[thisSel] = append(array[:index], array[index+1:]...)
-							}
-							return nil, true
-						}
+					if action == actionSet && nextSel == "" && num == 0 {
+						array[index] = value
+						return nil, true
 					}
 					current = array[index]
 				} else {
@@ -217,6 +222,33 @@ func access(current any, selector string, value any, action accessAction) (any, 
 		return access(current, nextSel, value, action)
 	}
 	return current, true
+}
+
+// deleteSliceIndex copies slices along an index path, which getIndex builds in
+// reverse order. Nothing is copied or replaced unless the whole path exists.
+func deleteSliceIndex(current any, indexes []int) (any, bool) {
+	s := reflect.ValueOf(current)
+	if s.Kind() != reflect.Slice {
+		return nil, false
+	}
+	index := indexes[len(indexes)-1]
+	if index < 0 || index >= s.Len() {
+		return nil, false
+	}
+	if len(indexes) == 1 {
+		out := reflect.MakeSlice(s.Type(), s.Len()-1, s.Len()-1)
+		reflect.Copy(out, s.Slice(0, index))
+		reflect.Copy(out.Slice(index, out.Len()), s.Slice(index+1, s.Len()))
+		return out.Interface(), true
+	}
+	updated, ok := deleteSliceIndex(s.Index(index).Interface(), indexes[:len(indexes)-1])
+	if !ok {
+		return nil, false
+	}
+	out := reflect.MakeSlice(s.Type(), s.Len(), s.Len())
+	reflect.Copy(out, s)
+	out.Index(index).Set(reflect.ValueOf(updated))
+	return out.Interface(), true
 }
 
 func interSlice(slice any) ([]any, bool) {

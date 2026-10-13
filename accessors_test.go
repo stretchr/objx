@@ -294,8 +294,8 @@ func TestAccessorsDelete(t *testing.T) {
 				"apex": "example",
 			},
 		},
-		"tags": []interface{}{"admin", "user"},
-		"users": []interface{}{
+		"tags": []any{"admin", "user"},
+		"users": []any{
 			objx.Map{"first": "Tyler", "last": "Bunnell"},
 			objx.Map{"first": "Capitol", "last": "Bollocks"},
 		},
@@ -322,7 +322,7 @@ func TestAccessorsDelete(t *testing.T) {
 
 	// Delete array element
 	m.Delete("tags[0]")
-	assert.Equal(t, []interface{}{"user"}, m.Get("tags").Data())
+	assert.Equal(t, []any{"user"}, m.Get("tags").Data())
 
 	// Delete multiple selectors
 	m.Delete("name.last", "users[1]")
@@ -330,8 +330,16 @@ func TestAccessorsDelete(t *testing.T) {
 	assert.Equal(t, 1, len(m.Get("users").InterSlice()))
 
 	// Delete nonexistent key should be a no-op
+	want := objx.Map{
+		"name":    objx.Map{},
+		"domains": objx.Map{"example.com": objx.Map{}},
+		"tags":    []any{"user"},
+		"users":   []any{objx.Map{"last": "Bunnell"}},
+	}
 	m.Delete("nonexistent.nested.key")
+	assert.Equal(t, want, m)
 	m.Delete("tags[99]")
+	assert.Equal(t, want, m)
 
 	// Nil map should not panic
 	var nilMap objx.Map
