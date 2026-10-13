@@ -1,4 +1,4 @@
-Interface,interface{},"something",nil,Inter
+Interface,any,"something",nil,Inter
 ObjxMap,(objx.Map),objx.New(1),objx.New(nil),ObjxMap
 Bool,bool,true,false,Bool
 String,string,"hello","",Str
