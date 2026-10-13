@@ -1,0 +1,60 @@
+name: Bug report
+description: Report something in objx that doesn't work as expected
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to report a bug! Please report security
+        vulnerabilities privately as described in
+        [SECURITY.md](https://github.com/stretchr/objx/blob/master/SECURITY.md)
+        instead of opening a public issue.
+
+  - type: input
+    id: objx-version
+    attributes:
+      label: objx version
+      description: The version from your go.mod, e.g. v0.6.0 or a commit hash.
+    validations:
+      required: true
+
+  - type: input
+    id: go-version
+    attributes:
+      label: Go version
+      description: The output of `go version`.
+    validations:
+      required: true
+
+  - type: textarea
+    id: reproducer
+    attributes:
+      label: Minimal reproducer
+      description: |
+        A short Go program or test that shows the problem. Include the input
+        data and the exact selector or method call you are using.
+      render: go
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behavior
+      description: What you expected to happen.
+    validations:
+      required: true
+
+  - type: textarea
+    id: actual
+    attributes:
+      label: Actual behavior
+      description: What happened instead, including any error or panic output.
+    validations:
+      required: true
+
+  - type: textarea
+    id: context
+    attributes:
+      label: Additional context
+      description: Anything else that might help, such as workarounds you've found.
