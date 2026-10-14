@@ -2,6 +2,7 @@ package objx_test
 
 import (
 	"errors"
+	"strconv"
 	"testing"
 
 	"github.com/stretchr/objx"
@@ -337,6 +338,7 @@ func TestSetIndexAssignableValues(t *testing.T) {
 		{"nil function", []func(){func() {}}, nil, []func(){nil}},
 		{"nil interface", []any{"a"}, nil, []any{nil}},
 		{"nil typed interface", []error{err}, nil, []error{nil}},
+		{"typed nil in interface", []error{err}, (*strconv.NumError)(nil), []error{(*strconv.NumError)(nil)}},
 		{"interface", []error{nil}, err, []error{err}},
 	} {
 		t.Run(tt.name, func(t *testing.T) {
@@ -365,10 +367,12 @@ func TestSetIndexUnsupportedValues(t *testing.T) {
 		{"wrong typed nil", []int{1, 2}, "items[0]", (*int)(nil), []int{1, 2}},
 		{"wrong interface", []error{nil}, "items[0]", "x", []error{nil}},
 		{"out of range", []int{1, 2}, "items[2]", 9, []int{1, 2}},
+		{"nested out of range", [][]int{{1, 2}}, "items[0][2]", 9, [][]int{{1, 2}}},
 		{"nil slice", []int(nil), "items[0]", 9, []int(nil)},
 		{"nil inner slice", [][]int{nil}, "items[0][0]", 9, [][]int{nil}},
 		{"nil value", nil, "items[0]", 9, nil},
 		{"non-slice", 1, "items[0]", 9, 1},
+		{"nested non-slice", []any{1}, "items[0][0]", 9, []any{1}},
 		{"array", [2]int{1, 2}, "items[0]", 9, [2]int{1, 2}},
 	} {
 		t.Run(tt.name, func(t *testing.T) {

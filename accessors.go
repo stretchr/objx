@@ -206,11 +206,11 @@ func access(current any, selector string, value any, action accessAction) (any, 
 			num--
 			index := indexes[num]
 			indexes = indexes[:num]
+			if action == actionSet && nextSel == "" && num == 0 {
+				return nil, setSliceIndex(current, index, value)
+			}
 			if array, ok := interSlice(current); ok {
 				if index >= 0 && index < len(array) {
-					if action == actionSet && nextSel == "" && num == 0 {
-						return nil, setSliceIndex(current, index, value)
-					}
 					current = array[index]
 				} else {
 					return nil, false
@@ -227,15 +227,21 @@ func access(current any, selector string, value any, action accessAction) (any, 
 	return current, true
 }
 
-// setSliceIndex assigns to an existing slice element. The caller checks that
-// current is a slice and index is in range.
+// setSliceIndex assigns to an existing slice element without copying the slice.
 func setSliceIndex(current any, index int, value any) bool {
 	if array, ok := current.([]any); ok {
+		if index < 0 || index >= len(array) {
+			return false
+		}
 		array[index] = value
 		return true
 	}
 
-	element := reflect.ValueOf(current).Index(index)
+	s := reflect.ValueOf(current)
+	if s.Kind() != reflect.Slice || index < 0 || index >= s.Len() {
+		return false
+	}
+	element := s.Index(index)
 	if value == nil {
 		switch element.Kind() {
 		case reflect.Chan, reflect.Func, reflect.Interface, reflect.Map, reflect.Pointer, reflect.Slice, reflect.UnsafePointer:
