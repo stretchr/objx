@@ -70,7 +70,9 @@ func (m Map) Set(selector string, value any) Map {
 // Map keys are deleted in place. Removing a slice element shifts later elements
 // down by one, so subsequent selectors use the updated indexes. Slice deletions
 // preserve slice types and copy affected slices, including enclosing slices,
-// without changing their existing backing arrays.
+// without changing their existing backing arrays. The new slice is stored in
+// the nearest enclosing map, which, like every map on the path, is modified in
+// place.
 //
 // # Example
 //
