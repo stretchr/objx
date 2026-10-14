@@ -50,7 +50,10 @@ func (m Map) Get(selector string) *Value {
 // Set sets the value using the specified selector and
 // returns the object on which Set was called.
 //
-// Set can only operate directly on map[string]any and []interface
+// Set operates on Map, map[string]any, and slices. Indexed writes modify
+// existing slices in place. Values must be assignable to the slice's element
+// type; nil is accepted only for element types that can hold nil. Out-of-range
+// indexes and incompatible element values are ignored.
 //
 // # Example
 //
@@ -206,8 +209,7 @@ func access(current any, selector string, value any, action accessAction) (any, 
 			if array, ok := interSlice(current); ok {
 				if index >= 0 && index < len(array) {
 					if action == actionSet && nextSel == "" && num == 0 {
-						array[index] = value
-						return nil, true
+						return nil, setSliceIndex(current, index, value)
 					}
 					current = array[index]
 				} else {
@@ -223,6 +225,33 @@ func access(current any, selector string, value any, action accessAction) (any, 
 		return access(current, nextSel, value, action)
 	}
 	return current, true
+}
+
+// setSliceIndex assigns to an existing slice element. The caller checks that
+// current is a slice and index is in range.
+func setSliceIndex(current any, index int, value any) bool {
+	if array, ok := current.([]any); ok {
+		array[index] = value
+		return true
+	}
+
+	element := reflect.ValueOf(current).Index(index)
+	if value == nil {
+		switch element.Kind() {
+		case reflect.Chan, reflect.Func, reflect.Interface, reflect.Map, reflect.Pointer, reflect.Slice, reflect.UnsafePointer:
+			element.SetZero()
+			return true
+		default:
+			return false
+		}
+	}
+
+	v := reflect.ValueOf(value)
+	if !v.Type().AssignableTo(element.Type()) {
+		return false
+	}
+	element.Set(v)
+	return true
 }
 
 // deleteSliceIndex copies slices along an index path, which getIndex builds in
