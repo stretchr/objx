@@ -1,6 +1,7 @@
 package objx
 
 import (
+	"errors"
 	"reflect"
 	"regexp"
 	"strconv"
@@ -188,6 +189,16 @@ func access(current any, selector string, value any, action accessAction) (any, 
 		}
 
 		if (curMSI[thisSel] == nil || !ok) && len(indexes) == 0 && action == actionSet {
+			// An overflowing bracket index is parsed as a map key. Do not
+			// replace an existing slice with a map to follow it.
+			if reflect.ValueOf(curMSI[thisSel]).Kind() == reflect.Slice {
+				matches := mapAccessRegex.FindStringSubmatch(nextSel)
+				if len(matches) > 0 && matches[1] == "" {
+					if _, err := strconv.Atoi(matches[2]); errors.Is(err, strconv.ErrRange) {
+						return nil, false
+					}
+				}
+			}
 			curMSI[thisSel] = map[string]any{}
 		}
 
