@@ -1,6 +1,8 @@
 package objx_test
 
 import (
+	"errors"
+	"strconv"
 	"testing"
 
 	"github.com/stretchr/objx"
@@ -280,6 +282,105 @@ func TestSetIndexPreservesSlice(t *testing.T) {
 	m = objx.Map{"nested": []any{[]any{"first", "second"}}}
 	m.Set("nested[0][1]", "changed")
 	assert.Equal(t, []any{[]any{"first", "changed"}}, m["nested"])
+}
+
+func TestSetIndexTypedSlices(t *testing.T) {
+	type tags []string
+	type id int
+	for _, tt := range []struct {
+		name     string
+		slice    any
+		selector string
+		value    any
+		want     any
+	}{
+		{"strings", []string{"a", "b"}, "items[0]", "x", []string{"x", "b"}},
+		{"ints", []int{1, 2}, "items[0]", 9, []int{9, 2}},
+		{"any", []any{"a", "b"}, "items[0]", "x", []any{"x", "b"}},
+		{"named slice", tags{"a", "b"}, "items[0]", "x", tags{"x", "b"}},
+		{"named element", []id{1, 2}, "items[0]", id(9), []id{9, 2}},
+		{"nested", [][]string{{"a", "b"}}, "items[0][1]", "x", [][]string{{"a", "x"}}},
+		{"mixed", []any{[]string{"a", "b"}}, "items[0][1]", "x", []any{[]string{"a", "x"}}},
+	} {
+		t.Run(tt.name, func(t *testing.T) {
+			m := objx.Map{"items": tt.slice}
+			m.Set(tt.selector, tt.value)
+			assert.Equal(t, tt.want, m["items"])
+			// Set must also update the caller's slice, including nested slices.
+			assert.Equal(t, tt.want, tt.slice)
+		})
+	}
+}
+
+func TestSetIndexTypedSliceInMap(t *testing.T) {
+	tags := []string{"a", "b"}
+	m := objx.Map{"groups": []objx.Map{{"tags": tags}}}
+	m.Set("groups[0].tags[1]", "x")
+	assert.Equal(t, []objx.Map{{"tags": []string{"a", "x"}}}, m["groups"])
+	assert.Equal(t, []string{"a", "x"}, tags)
+}
+
+func TestSetIndexAssignableValues(t *testing.T) {
+	old, replacement := 1, 9
+	err := errors.New("replacement")
+	for _, tt := range []struct {
+		name  string
+		slice any
+		value any
+		want  any
+	}{
+		{"pointer", []*int{&old}, &replacement, []*int{&replacement}},
+		{"nil pointer", []*int{&old}, nil, []*int{nil}},
+		{"typed nil pointer", []*int{&old}, (*int)(nil), []*int{nil}},
+		{"nil map", []map[string]any{{"a": 1}}, nil, []map[string]any{nil}},
+		{"nil slice", [][]string{{"a"}}, nil, [][]string{nil}},
+		{"nil channel", []chan int{make(chan int)}, nil, []chan int{nil}},
+		{"nil function", []func(){func() {}}, nil, []func(){nil}},
+		{"nil interface", []any{"a"}, nil, []any{nil}},
+		{"nil typed interface", []error{err}, nil, []error{nil}},
+		{"typed nil in interface", []error{err}, (*strconv.NumError)(nil), []error{(*strconv.NumError)(nil)}},
+		{"interface", []error{nil}, err, []error{err}},
+	} {
+		t.Run(tt.name, func(t *testing.T) {
+			m := objx.Map{"items": tt.slice}
+			m.Set("items[0]", tt.value)
+			assert.Equal(t, tt.want, m["items"])
+			assert.Equal(t, tt.want, tt.slice)
+		})
+	}
+}
+
+func TestSetIndexUnsupportedValues(t *testing.T) {
+	type id int
+	for _, tt := range []struct {
+		name     string
+		slice    any
+		selector string
+		value    any
+		want     any
+	}{
+		{"wrong type", []int{1, 2}, "items[0]", "x", []int{1, 2}},
+		{"nested wrong type", [][]int{{1, 2}}, "items[0][1]", "x", [][]int{{1, 2}}},
+		{"no conversion", []int{1, 2}, "items[0]", int64(9), []int{1, 2}},
+		{"named element", []id{1, 2}, "items[0]", 9, []id{1, 2}},
+		{"nil scalar", []int{1, 2}, "items[0]", nil, []int{1, 2}},
+		{"wrong typed nil", []int{1, 2}, "items[0]", (*int)(nil), []int{1, 2}},
+		{"wrong interface", []error{nil}, "items[0]", "x", []error{nil}},
+		{"out of range", []int{1, 2}, "items[2]", 9, []int{1, 2}},
+		{"nested out of range", [][]int{{1, 2}}, "items[0][2]", 9, [][]int{{1, 2}}},
+		{"nil slice", []int(nil), "items[0]", 9, []int(nil)},
+		{"nil inner slice", [][]int{nil}, "items[0][0]", 9, [][]int{nil}},
+		{"nil value", nil, "items[0]", 9, nil},
+		{"non-slice", 1, "items[0]", 9, 1},
+		{"nested non-slice", []any{1}, "items[0][0]", 9, []any{1}},
+		{"array", [2]int{1, 2}, "items[0]", 9, [2]int{1, 2}},
+	} {
+		t.Run(tt.name, func(t *testing.T) {
+			m := objx.Map{"items": tt.slice}
+			m.Set(tt.selector, tt.value)
+			assert.Equal(t, tt.want, m["items"])
+		})
+	}
 }
 
 func TestAccessorsDelete(t *testing.T) {
