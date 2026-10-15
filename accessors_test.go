@@ -76,6 +76,14 @@ func TestAccessorsGetWithComplexKey(t *testing.T) {
 	assert.Equal(t, "example", m.Get("domains[example.com][apex]").Data())
 }
 
+func BenchmarkGetNestedBracketKeys(b *testing.B) {
+	m := objx.Map{"root": objx.Map{"first": objx.Map{"second": objx.Map{"third": "leaf"}}}}
+	b.ReportAllocs()
+	for b.Loop() {
+		m.Get("root[first][second][third]")
+	}
+}
+
 func TestAccessorsAccessGetInsideArray(t *testing.T) {
 	m := objx.Map{
 		"names": []any{

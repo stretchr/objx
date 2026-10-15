@@ -106,9 +106,30 @@ func getIndex(s string) (int, string) {
 	return -1, s
 }
 
-// getKey returns the current key and the next selector. The boolean flags
-// overflow when splitting off a bracket-style map selector.
-func getKey(s string) (string, string, bool) {
+type keyOverflowState int
+
+const (
+	keyNoOverflow keyOverflowState = iota
+	keyOverflowed
+	keyOverflowPending
+)
+
+// overflows resolves a pending bracket only when Set would replace a slice.
+func (state keyOverflowState) overflows(selector string) bool {
+	if state == keyOverflowPending {
+		matches := mapAccessRegex.FindStringSubmatch(selector)
+		if len(matches) > 0 && matches[1] == "" {
+			_, err := strconv.Atoi(matches[2])
+			return errors.Is(err, strconv.ErrRange)
+		}
+		return false
+	}
+	return state == keyOverflowed
+}
+
+// getKey returns the current key, the next selector, and overflow metadata.
+// A bracket following a consumed key is left pending until needed by Set.
+func getKey(s string) (string, string, keyOverflowState) {
 	selSegs := strings.SplitN(s, PathSeparator, 2)
 	thisSel := selSegs[0]
 	nextSel := ""
@@ -118,7 +139,7 @@ func getKey(s string) (string, string, bool) {
 	}
 
 	mapMatches := mapAccessRegex.FindStringSubmatch(s)
-	overflow := false
+	overflow := keyNoOverflow
 	if len(mapMatches) > 0 {
 		if _, err := strconv.Atoi(mapMatches[2]); err != nil {
 			thisSel = mapMatches[1]
@@ -127,19 +148,12 @@ func getKey(s string) (string, string, bool) {
 			if thisSel == "" {
 				thisSel = mapMatches[2]
 				nextSel = mapMatches[3]
+				overflow = keyOverflowPending
+			} else if errors.Is(err, strconv.ErrRange) {
+				overflow = keyOverflowed
 			}
 
 			nextSel = strings.TrimPrefix(nextSel, ".")
-			if mapMatches[1] == "" {
-				// The leading bracket key has been consumed. Report overflow
-				// for the following bracket instead.
-				matches := mapAccessRegex.FindStringSubmatch(nextSel)
-				err = nil
-				if len(matches) > 0 && matches[1] == "" {
-					_, err = strconv.Atoi(matches[2])
-				}
-			}
-			overflow = errors.Is(err, strconv.ErrRange)
 		}
 	}
 
@@ -202,7 +216,7 @@ func access(current any, selector string, value any, action accessAction) (any, 
 		if (curMSI[thisSel] == nil || !ok) && len(indexes) == 0 && action == actionSet {
 			// An overflowing bracket index is parsed as a map key. Do not
 			// replace an existing slice with a map to follow it.
-			if overflow && reflect.ValueOf(curMSI[thisSel]).Kind() == reflect.Slice {
+			if reflect.ValueOf(curMSI[thisSel]).Kind() == reflect.Slice && overflow.overflows(nextSel) {
 				return nil, false
 			}
 			curMSI[thisSel] = map[string]any{}
