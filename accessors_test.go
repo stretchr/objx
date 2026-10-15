@@ -2,6 +2,7 @@ package objx_test
 
 import (
 	"errors"
+	"fmt"
 	"strconv"
 	"testing"
 
@@ -73,6 +74,14 @@ func TestAccessorsGetWithComplexKey(t *testing.T) {
 
 	assert.Equal(t, "example", m.Get("domains[example.com].apex").Data())
 	assert.Equal(t, "example", m.Get("domains[example.com][apex]").Data())
+}
+
+func BenchmarkGetNestedBracketKeys(b *testing.B) {
+	m := objx.Map{"root": objx.Map{"first": objx.Map{"second": objx.Map{"third": "leaf"}}}}
+	b.ReportAllocs()
+	for b.Loop() {
+		m.Get("root[first][second][third]")
+	}
 }
 
 func TestAccessorsAccessGetInsideArray(t *testing.T) {
@@ -380,6 +389,63 @@ func TestSetIndexUnsupportedValues(t *testing.T) {
 			m.Set(tt.selector, tt.value)
 			assert.Equal(t, tt.want, m["items"])
 		})
+	}
+}
+
+func TestSetOverflowingIndexPreservesSlice(t *testing.T) {
+	const index = "999999999999999999999999"
+	type tags []string
+	for _, slice := range []any{[]any{"a", "b"}, []string{"a", "b"}, tags{"a", "b"}, []any(nil)} {
+		for _, selector := range []string{
+			"items[" + index + "]",
+			"items[" + index + "].name",
+			"items[" + index + "][0]",
+			"items[+" + index + "]",
+			"items[-" + index + "]",
+		} {
+			t.Run(fmt.Sprintf("%T/%s", slice, selector), func(t *testing.T) {
+				m := objx.Map{"items": slice, "other": "kept"}
+				m.Set(selector, "x")
+				assert.Equal(t, objx.Map{"items": slice, "other": "kept"}, m)
+			})
+		}
+	}
+
+	slice := []any{"a", "b"}
+	m := objx.Map{"groups": []any{objx.Map{"items": slice}}}
+	m.Set("groups[0].items["+index+"]", "x")
+	assert.Equal(t, objx.Map{"groups": []any{objx.Map{"items": []any{"a", "b"}}}}, m)
+
+	for _, key := range []string{"name", index} {
+		m := objx.Map{"keys": objx.Map{key: []any{"a", "b"}}}
+		m.Set("keys["+key+"]["+index+"]", "x")
+		assert.Equal(t, objx.Map{"keys": objx.Map{key: []any{"a", "b"}}}, m)
+	}
+}
+
+func TestAccessorsBracketMapKeys(t *testing.T) {
+	const index = "999999999999999999999999"
+	for _, key := range []string{"name", "example.com", "123abc", index, "+" + index, "-" + index} {
+		for _, useObjxMap := range []bool{false, true} {
+			t.Run(fmt.Sprintf("%s/Map=%t", key, useObjxMap), func(t *testing.T) {
+				keys := map[string]any{key: "old", "other": "kept"}
+				m := objx.Map{"keys": keys}
+				if useObjxMap {
+					m["keys"] = objx.Map(keys)
+				}
+				selector := "keys[" + key + "]"
+				assert.Equal(t, "old", m.Get(selector).Data())
+				assert.True(t, m.Has(selector))
+				m.Set(selector, "new")
+				assert.Equal(t, map[string]any{key: "new", "other": "kept"}, keys)
+				m.Delete(selector)
+				assert.Equal(t, map[string]any{"other": "kept"}, keys)
+
+				m = objx.Map{}
+				m.Set(selector+"[value]", "created")
+				assert.Equal(t, objx.Map{"keys": map[string]any{key: map[string]any{"value": "created"}}}, m)
+			})
+		}
 	}
 }
 
