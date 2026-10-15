@@ -425,7 +425,10 @@ func TestSetOverflowingIndexPreservesSlice(t *testing.T) {
 
 func TestAccessorsBracketMapKeys(t *testing.T) {
 	const index = "999999999999999999999999"
-	for _, key := range []string{"name", "example.com", "123abc", index, "+" + index, "-" + index} {
+	for _, key := range []string{
+		"name", "example.com", "123abc", index, "+" + index, "-" + index,
+		index + "x", "+" + index + "x", "-" + index + "x", index + ".com",
+	} {
 		for _, useObjxMap := range []bool{false, true} {
 			t.Run(fmt.Sprintf("%s/Map=%t", key, useObjxMap), func(t *testing.T) {
 				keys := map[string]any{key: "old", "other": "kept"}
@@ -445,6 +448,32 @@ func TestAccessorsBracketMapKeys(t *testing.T) {
 				m.Set(selector+"[value]", "created")
 				assert.Equal(t, objx.Map{"keys": map[string]any{key: map[string]any{"value": "created"}}}, m)
 			})
+		}
+	}
+}
+
+// Nonnumeric bracket keys retain the existing slice-to-map replacement behavior.
+func TestSetNonNumericBracketKeyAfterSlice(t *testing.T) {
+	const index = "999999999999999999999999"
+	type tags []string
+	for _, key := range []string{
+		index + "x", "+" + index + "x", "-" + index + "x",
+		index + ".com", index + "_tag", index + " ", index + "é",
+	} {
+		for _, slice := range []any{[]any{"a", "b"}, []string{"a", "b"}, tags{"a", "b"}, []any(nil)} {
+			for _, selector := range []string{"items[" + key + "]", "[items][" + key + "]"} {
+				t.Run(fmt.Sprintf("%T/%s", slice, selector), func(t *testing.T) {
+					m := objx.Map{"items": slice, "other": "kept"}
+					m.Set(selector, "x")
+					assert.Equal(t, objx.Map{"items": map[string]any{key: "x"}, "other": "kept"}, m)
+				})
+			}
+		}
+
+		for _, parent := range []string{"name", index} {
+			m := objx.Map{"keys": objx.Map{parent: []any{"a", "b"}}}
+			m.Set("keys["+parent+"]["+key+"]", "x")
+			assert.Equal(t, objx.Map{"keys": objx.Map{parent: map[string]any{key: "x"}}}, m)
 		}
 	}
 }

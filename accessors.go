@@ -110,7 +110,7 @@ type keyOverflowState int
 
 const (
 	keyNoOverflow keyOverflowState = iota
-	keyOverflowed
+	keyRangeError                  // Atoi may return ErrRange before reaching nondigits.
 	keyOverflowPending
 )
 
@@ -120,11 +120,33 @@ func (state keyOverflowState) overflows(selector string) bool {
 		matches := mapAccessRegex.FindStringSubmatch(selector)
 		if len(matches) > 0 && matches[1] == "" {
 			_, err := strconv.Atoi(matches[2])
-			return errors.Is(err, strconv.ErrRange)
+			return errors.Is(err, strconv.ErrRange) && isDecimalInteger(matches[2])
 		}
 		return false
 	}
-	return state == keyOverflowed
+	if state == keyRangeError {
+		// getKey leaves the bracket with the range error in selector.
+		end := strings.IndexByte(selector, ']')
+		return end > 1 && selector[0] == '[' && isDecimalInteger(selector[1:end])
+	}
+	return false
+}
+
+// isDecimalInteger checks the whole token because Atoi may report overflow
+// before reaching a trailing nonnumeric character.
+func isDecimalInteger(s string) bool {
+	if len(s) > 0 && (s[0] == '+' || s[0] == '-') {
+		s = s[1:]
+	}
+	if s == "" {
+		return false
+	}
+	for i := range len(s) {
+		if s[i] < '0' || s[i] > '9' {
+			return false
+		}
+	}
+	return true
 }
 
 // getKey returns the current key, the next selector, and overflow metadata.
@@ -150,7 +172,7 @@ func getKey(s string) (string, string, keyOverflowState) {
 				nextSel = mapMatches[3]
 				overflow = keyOverflowPending
 			} else if errors.Is(err, strconv.ErrRange) {
-				overflow = keyOverflowed
+				overflow = keyRangeError
 			}
 
 			nextSel = strings.TrimPrefix(nextSel, ".")
