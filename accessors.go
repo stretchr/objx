@@ -106,9 +106,9 @@ func getIndex(s string) (int, string) {
 	return -1, s
 }
 
-// getKey returns the key which is held in s by two brackets.
-// It also returns the next selector.
-func getKey(s string) (string, string) {
+// getKey returns the current key and the next selector. The boolean flags
+// overflow when splitting off a bracket-style map selector.
+func getKey(s string) (string, string, bool) {
 	selSegs := strings.SplitN(s, PathSeparator, 2)
 	thisSel := selSegs[0]
 	nextSel := ""
@@ -118,6 +118,7 @@ func getKey(s string) (string, string) {
 	}
 
 	mapMatches := mapAccessRegex.FindStringSubmatch(s)
+	overflow := false
 	if len(mapMatches) > 0 {
 		if _, err := strconv.Atoi(mapMatches[2]); err != nil {
 			thisSel = mapMatches[1]
@@ -129,10 +130,20 @@ func getKey(s string) (string, string) {
 			}
 
 			nextSel = strings.TrimPrefix(nextSel, ".")
+			if mapMatches[1] == "" {
+				// The leading bracket key has been consumed. Report overflow
+				// for the following bracket instead.
+				matches := mapAccessRegex.FindStringSubmatch(nextSel)
+				err = nil
+				if len(matches) > 0 && matches[1] == "" {
+					_, err = strconv.Atoi(matches[2])
+				}
+			}
+			overflow = errors.Is(err, strconv.ErrRange)
 		}
 	}
 
-	return thisSel, nextSel
+	return thisSel, nextSel, overflow
 }
 
 type accessAction int
@@ -146,7 +157,7 @@ const (
 // access accesses the object using the selector and performs the
 // appropriate action.
 func access(current any, selector string, value any, action accessAction) (any, bool) {
-	thisSel, nextSel := getKey(selector)
+	thisSel, nextSel, overflow := getKey(selector)
 
 	indexes := []int{}
 	for strings.Contains(thisSel, "[") {
@@ -191,13 +202,8 @@ func access(current any, selector string, value any, action accessAction) (any, 
 		if (curMSI[thisSel] == nil || !ok) && len(indexes) == 0 && action == actionSet {
 			// An overflowing bracket index is parsed as a map key. Do not
 			// replace an existing slice with a map to follow it.
-			if reflect.ValueOf(curMSI[thisSel]).Kind() == reflect.Slice {
-				matches := mapAccessRegex.FindStringSubmatch(nextSel)
-				if len(matches) > 0 && matches[1] == "" {
-					if _, err := strconv.Atoi(matches[2]); errors.Is(err, strconv.ErrRange) {
-						return nil, false
-					}
-				}
+			if overflow && reflect.ValueOf(curMSI[thisSel]).Kind() == reflect.Slice {
+				return nil, false
 			}
 			curMSI[thisSel] = map[string]any{}
 		}

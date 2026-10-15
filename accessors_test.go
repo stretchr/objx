@@ -407,6 +407,12 @@ func TestSetOverflowingIndexPreservesSlice(t *testing.T) {
 	m := objx.Map{"groups": []any{objx.Map{"items": slice}}}
 	m.Set("groups[0].items["+index+"]", "x")
 	assert.Equal(t, objx.Map{"groups": []any{objx.Map{"items": []any{"a", "b"}}}}, m)
+
+	for _, key := range []string{"name", index} {
+		m := objx.Map{"keys": objx.Map{key: []any{"a", "b"}}}
+		m.Set("keys["+key+"]["+index+"]", "x")
+		assert.Equal(t, objx.Map{"keys": objx.Map{key: []any{"a", "b"}}}, m)
+	}
 }
 
 func TestAccessorsBracketMapKeys(t *testing.T) {
