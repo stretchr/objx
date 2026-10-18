@@ -154,6 +154,20 @@ func TestAccessorsAccessSetDeep(t *testing.T) {
 	assert.Equal(t, "Ryer", m.Get("name.last").Data())
 }
 
+func TestAccessorsAccessSetNilNestedMap(t *testing.T) {
+	for name, nested := range map[string]any{
+		"nil":     nil,
+		"map":     map[string]any(nil),
+		"objxMap": objx.Map(nil),
+	} {
+		t.Run(name, func(t *testing.T) {
+			m := objx.Map{"nested": nested}
+			m.Set("nested.answer", 42)
+			assert.Equal(t, 42, m.Get("nested.answer").Data())
+		})
+	}
+}
+
 func TestAccessorsAccessSetDeepDeep(t *testing.T) {
 	m := objx.Map{
 		"one": objx.Map{

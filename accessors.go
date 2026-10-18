@@ -235,7 +235,7 @@ func access(current any, selector string, value any, action accessAction) (any, 
 			_, ok = curMSI[thisSel].(Map)
 		}
 
-		if (curMSI[thisSel] == nil || !ok) && len(indexes) == 0 && action == actionSet {
+		if len(indexes) == 0 && action == actionSet && (!ok || reflect.ValueOf(curMSI[thisSel]).IsNil()) {
 			// An overflowing bracket index is parsed as a map key. Do not
 			// replace an existing slice with a map to follow it.
 			if reflect.ValueOf(curMSI[thisSel]).Kind() == reflect.Slice && overflow.overflows(nextSel) {
