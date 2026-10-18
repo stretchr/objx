@@ -122,6 +122,8 @@ func cleanUp(v any) any {
 		return cleanUpMSIArray(v)
 	case map[any]any:
 		return cleanUpInterfaceMap(v)
+	case map[string]any:
+		return cleanUpStringMap(v)
 	case Map:
 		return cleanUpStringMap(v)
 	case []Map:

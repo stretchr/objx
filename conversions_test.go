@@ -46,6 +46,16 @@ func TestConversionJSONWithError(t *testing.T) {
 	assert.Error(t, err)
 }
 
+func TestConversionJSONNestedStringMaps(t *testing.T) {
+	m := objx.Map{
+		"config": map[string]any{"nested": map[any]any{true: 1}},
+		"items":  []any{map[string]any{"nested": map[any]any{false: 2}}},
+	}
+	result, err := m.JSON()
+	require.NoError(t, err)
+	assert.Equal(t, `{"config":{"nested":{"true":1}},"items":[{"nested":{"false":2}}]}`, result)
+}
+
 func TestConversionBase64(t *testing.T) {
 	o := objx.Map{"name": "Mat"}
 
