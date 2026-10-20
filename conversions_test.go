@@ -56,6 +56,30 @@ func TestConversionJSONNestedStringMaps(t *testing.T) {
 	assert.Equal(t, `{"config":{"nested":{"true":1}},"items":[{"nested":{"false":2}}]}`, result)
 }
 
+func TestConversionJSONDoesNotMutateReceiver(t *testing.T) {
+	for name, encode := range map[string]func(objx.Map) (string, error){
+		"JSON":   objx.Map.JSON,
+		"Base64": objx.Map.Base64,
+		"MustJSON": func(m objx.Map) (string, error) {
+			return m.MustJSON(), nil
+		},
+	} {
+		t.Run(name, func(t *testing.T) {
+			m := objx.Map{
+				"config": map[string]any{"nested": map[any]any{true: 1}},
+				"items":  []any{map[string]any{"nested": map[any]any{false: 2}}},
+			}
+
+			_, err := encode(m)
+			require.NoError(t, err)
+			assert.Equal(t, objx.Map{
+				"config": map[string]any{"nested": map[any]any{true: 1}},
+				"items":  []any{map[string]any{"nested": map[any]any{false: 2}}},
+			}, m)
+		})
+	}
+}
+
 func TestConversionBase64(t *testing.T) {
 	o := objx.Map{"name": "Mat"}
 
