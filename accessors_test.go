@@ -164,8 +164,31 @@ func TestAccessorsAccessSetNilNestedMap(t *testing.T) {
 			m := objx.Map{"nested": nested}
 			m.Set("nested.answer", 42)
 			assert.Equal(t, 42, m.Get("nested.answer").Data())
+			assert.Equal(t, map[string]any{"answer": 42}, m["nested"])
 		})
 	}
+}
+
+func TestAccessorsAccessSetNilMapInSlice(t *testing.T) {
+	for name, items := range map[string]any{
+		"nil":              []any{nil},
+		"map":              []any{map[string]any(nil)},
+		"objxMap":          []any{objx.Map(nil)},
+		"typed map slice":  []map[string]any{nil},
+		"typed objx slice": []objx.Map{nil},
+	} {
+		t.Run(name, func(t *testing.T) {
+			m := objx.Map{"items": items}
+			m.Set("items[0].answer", 42)
+			assert.Nil(t, m.Get("items[0]").Data())
+		})
+	}
+}
+
+func TestAccessorsAccessSetNilMap(t *testing.T) {
+	var m objx.Map
+	m.Set("answer", 42)
+	assert.Nil(t, m)
 }
 
 func TestAccessorsAccessSetDeepDeep(t *testing.T) {
