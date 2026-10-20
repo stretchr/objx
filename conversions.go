@@ -48,11 +48,7 @@ func SetURLValuesSliceKeySuffix(s string) error {
 // JSON converts the contained object to a JSON string
 // representation
 func (m Map) JSON() (string, error) {
-	for k, v := range m {
-		m[k] = cleanUp(v)
-	}
-
-	result, err := json.Marshal(m)
+	result, err := json.Marshal(cleanUpStringMap(m))
 	if err != nil {
 		err = errors.New("objx: JSON encode failed with: " + err.Error())
 	}
@@ -122,6 +118,8 @@ func cleanUp(v any) any {
 		return cleanUpMSIArray(v)
 	case map[any]any:
 		return cleanUpInterfaceMap(v)
+	case map[string]any:
+		return cleanUpStringMap(v)
 	case Map:
 		return cleanUpStringMap(v)
 	case []Map:
