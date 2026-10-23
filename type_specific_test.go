@@ -456,3 +456,79 @@ func TestCollectObjxMap2(t *testing.T) {
 		assert.Equal(t, collectedArr[4], 4)
 	}
 }
+
+func TestObjxMapSliceDefaultFromJSON(t *testing.T) {
+	m := objx.MustFromJSON(`{"rows":[{"id":1},false]}`)
+	fallback := []objx.Map{{"fallback": true}}
+
+	assert.Equal(t, fallback, m.Get("rows").ObjxMapSlice(fallback))
+	assert.Equal(t, []any{map[string]any{"id": float64(1)}, false}, m.Get("rows").Data())
+	assert.Equal(t, []objx.Map{{"fallback": true}}, fallback)
+}
+
+func TestObjxMapSliceInvalidElementDefaults(t *testing.T) {
+	invalid := []struct {
+		name  string
+		value any
+	}{
+		{"nil", nil},
+		{"bool", false},
+		{"string", "invalid"},
+		{"number", 1},
+		{"slice", []any{1}},
+		{"other map", map[int]any{1: "invalid"}},
+	}
+	for _, tt := range invalid {
+		for position := range 3 {
+			t.Run(fmt.Sprintf("%s/position%d", tt.name, position), func(t *testing.T) {
+				source := []any{objx.Map{"id": 1}, map[string]any{"id": 2}, objx.Map{"id": 3}}
+				source[position] = tt.value
+				before := []any{objx.Map{"id": 1}, map[string]any{"id": 2}, objx.Map{"id": 3}}
+				before[position] = tt.value
+				value := objx.Map{"rows": source}.Get("rows")
+				fallback := []objx.Map{{"fallback": true}}
+				empty := []objx.Map{}
+
+				assert.Nil(t, value.ObjxMapSlice())
+				assert.Nil(t, value.ObjxMapSlice(nil))
+				assert.Equal(t, empty, value.ObjxMapSlice(empty))
+				got := value.ObjxMapSlice(fallback)
+				assert.Equal(t, fallback, got)
+				if len(got) == 1 {
+					assert.True(t, &got[0] == &fallback[0], "default slice must be returned directly")
+				}
+				assert.Nil(t, value.ObjxMapSlice(fallback, empty))
+				assert.Equal(t, before, source)
+				assert.Equal(t, []objx.Map{{"fallback": true}}, fallback)
+			})
+		}
+	}
+}
+
+func TestObjxMapSliceValidInputsWithDefault(t *testing.T) {
+	valid := []struct {
+		name  string
+		value any
+		want  []objx.Map
+	}{
+		{"nil Map slice", []objx.Map(nil), nil},
+		{"empty Map slice", []objx.Map{}, []objx.Map{}},
+		{"Map slice", []objx.Map{{"id": 1}}, []objx.Map{{"id": 1}}},
+		{"nil raw map slice", []map[string]any(nil), []objx.Map{}},
+		{"empty raw map slice", []map[string]any{}, []objx.Map{}},
+		{"raw map slice", []map[string]any{{"id": 1}}, []objx.Map{{"id": 1}}},
+		{"nil any slice", []any(nil), []objx.Map{}},
+		{"empty any slice", []any{}, []objx.Map{}},
+		{"mixed maps", []any{objx.Map{"id": 1}, map[string]any{"id": 2}}, []objx.Map{{"id": 1}, {"id": 2}}},
+	}
+	for _, tt := range valid {
+		t.Run(tt.name, func(t *testing.T) {
+			value := objx.Map{"rows": tt.value}.Get("rows")
+			fallback := []objx.Map{{"fallback": true}}
+			assert.Equal(t, tt.want, value.ObjxMapSlice())
+			assert.Equal(t, tt.want, value.ObjxMapSlice(fallback))
+			assert.Equal(t, tt.want, value.ObjxMapSlice(fallback, fallback))
+			assert.Equal(t, []objx.Map{{"fallback": true}}, fallback)
+		})
+	}
+}

@@ -224,6 +224,9 @@ func (v *Value) ObjxMapSlice(optionalDefault ...[]Map) []Map {
 		case map[string]any:
 			result[i] = New(s[i])
 		default:
+			if len(optionalDefault) == 1 {
+				return optionalDefault[0]
+			}
 			return nil
 		}
 	}
