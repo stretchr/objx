@@ -213,9 +213,6 @@ func access(current any, selector string, value any, action accessAction) (any, 
 	switch current.(type) {
 	case map[string]any:
 		curMSI := current.(map[string]any)
-		if curMSI == nil && action == actionSet {
-			return nil, false
-		}
 		if nextSel == "" {
 			switch {
 			case action == actionSet && len(indexes) == 0:
@@ -272,6 +269,11 @@ func access(current any, selector string, value any, action accessAction) (any, 
 					return nil, false
 				}
 			} else {
+				return nil, false
+			}
+		}
+		if action == actionSet {
+			if v := reflect.ValueOf(current); v.Kind() == reflect.Map && v.IsNil() {
 				return nil, false
 			}
 		}

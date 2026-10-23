@@ -187,8 +187,7 @@ func TestAccessorsAccessSetNilMapInSlice(t *testing.T) {
 
 func TestAccessorsAccessSetNilMap(t *testing.T) {
 	var m objx.Map
-	m.Set("answer", 42)
-	assert.Nil(t, m)
+	assert.Panics(t, func() { m.Set("answer", 42) })
 }
 
 func TestAccessorsAccessSetDeepDeep(t *testing.T) {
