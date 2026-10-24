@@ -456,3 +456,19 @@ func TestCollectObjxMap2(t *testing.T) {
 		assert.Equal(t, collectedArr[4], 4)
 	}
 }
+
+func TestObjxMapSliceDefaultFromJSON(t *testing.T) {
+	m := objx.MustFromJSON(`{"rows":[{"id":1},false]}`)
+	fallback := []objx.Map{{"fallback": true}}
+
+	assert.Equal(t, fallback, m.Get("rows").ObjxMapSlice(fallback))
+}
+
+func TestObjxMapSliceInvalidElementDefaults(t *testing.T) {
+	fallback := []objx.Map{{"fallback": true}}
+	for _, invalid := range []any{nil, "not a map"} {
+		value := objx.Map{"rows": []any{invalid}}.Get("rows")
+		assert.Equal(t, fallback, value.ObjxMapSlice(fallback))
+		assert.Nil(t, value.ObjxMapSlice())
+	}
+}
