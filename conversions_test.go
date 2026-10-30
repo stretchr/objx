@@ -23,10 +23,11 @@ func TestConversionJSON(t *testing.T) {
 			"f": []objx.Map{{"g": map[any]any{"h": "i"}}},
 			"j": []map[string]any{{"k": map[any]any{"l": "m"}}},
 			"n": []any{objx.Map{"o": "p"}},
+			"q": []map[any]any{{"r": map[any]any{"s": "t"}}},
 		},
 	}
 
-	jsonString = `{"a":{"b":{"c":{"d":"e"}},"f":[{"g":{"h":"i"}}],"j":[{"k":{"l":"m"}}],"n":[{"o":"p"}]}}`
+	jsonString = `{"a":{"b":{"c":{"d":"e"}},"f":[{"g":{"h":"i"}}],"j":[{"k":{"l":"m"}}],"n":[{"o":"p"}],"q":[{"r":{"s":"t"}}]}}`
 	result, err = i.JSON()
 	require.NoError(t, err)
 	assert.Equal(t, jsonString, result)
@@ -272,15 +273,25 @@ func TestConversionURLValuesNested(t *testing.T) {
 }
 
 func TestValidityURLQuerySliceKeySuffix(t *testing.T) {
-	t.Cleanup(func() { _ = objx.SetURLValuesSliceKeySuffix(objx.URLValuesSliceKeySuffixArray) })
+	orig := objx.URLValuesSliceKeySuffix()
+	assert.Equal(t, objx.URLValuesSliceKeySuffixArray, orig)
+	t.Cleanup(func() { _ = objx.SetURLValuesSliceKeySuffix(orig) })
+
 	err := objx.SetURLValuesSliceKeySuffix("")
 	assert.Nil(t, err)
+	assert.Equal(t, objx.URLValuesSliceKeySuffixEmpty, objx.URLValuesSliceKeySuffix())
+
 	err = objx.SetURLValuesSliceKeySuffix("[]")
 	assert.Nil(t, err)
+	assert.Equal(t, objx.URLValuesSliceKeySuffixArray, objx.URLValuesSliceKeySuffix())
+
 	err = objx.SetURLValuesSliceKeySuffix("[i]")
 	assert.Nil(t, err)
+	assert.Equal(t, objx.URLValuesSliceKeySuffixIndex, objx.URLValuesSliceKeySuffix())
+
 	err = objx.SetURLValuesSliceKeySuffix("{}")
 	assert.Error(t, err)
+	assert.Equal(t, objx.URLValuesSliceKeySuffixIndex, objx.URLValuesSliceKeySuffix())
 }
 
 func getURLQueryMap() objx.Map {
