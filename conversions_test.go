@@ -273,25 +273,15 @@ func TestConversionURLValuesNested(t *testing.T) {
 }
 
 func TestValidityURLQuerySliceKeySuffix(t *testing.T) {
-	orig := objx.URLValuesSliceKeySuffix()
-	assert.Equal(t, objx.URLValuesSliceKeySuffixArray, orig)
-	t.Cleanup(func() { _ = objx.SetURLValuesSliceKeySuffix(orig) })
-
+	t.Cleanup(func() { _ = objx.SetURLValuesSliceKeySuffix(objx.URLValuesSliceKeySuffixArray) })
 	err := objx.SetURLValuesSliceKeySuffix("")
 	assert.Nil(t, err)
-	assert.Equal(t, objx.URLValuesSliceKeySuffixEmpty, objx.URLValuesSliceKeySuffix())
-
 	err = objx.SetURLValuesSliceKeySuffix("[]")
 	assert.Nil(t, err)
-	assert.Equal(t, objx.URLValuesSliceKeySuffixArray, objx.URLValuesSliceKeySuffix())
-
 	err = objx.SetURLValuesSliceKeySuffix("[i]")
 	assert.Nil(t, err)
-	assert.Equal(t, objx.URLValuesSliceKeySuffixIndex, objx.URLValuesSliceKeySuffix())
-
 	err = objx.SetURLValuesSliceKeySuffix("{}")
 	assert.Error(t, err)
-	assert.Equal(t, objx.URLValuesSliceKeySuffixIndex, objx.URLValuesSliceKeySuffix())
 }
 
 func getURLQueryMap() objx.Map {

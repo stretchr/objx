@@ -29,14 +29,6 @@ const (
 	URLValuesSliceKeySuffixIndex = "[i]"
 )
 
-// URLValuesSliceKeySuffix returns the character that is used to
-// specify a suffix for slices parsed by URLValues.
-//
-// The default suffix is "[]".
-func URLValuesSliceKeySuffix() string {
-	return urlValuesSliceKeySuffix
-}
-
 // SetURLValuesSliceKeySuffix sets the character that is used to
 // specify a suffix for slices parsed by URLValues.
 // If the suffix is set to "[i]", then the index of the slice
