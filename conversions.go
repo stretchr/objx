@@ -14,7 +14,7 @@ import (
 // separate the Base64 string from the security signature.
 const SignatureSeparator = "_"
 
-// URLValuesSliceKeySuffix is the character that is used to
+// urlValuesSliceKeySuffix is the character that is used to
 // specify a suffix for slices parsed by URLValues.
 // If the suffix is set to "[i]", then the index of the slice
 // is used in place of i
@@ -110,12 +110,25 @@ func cleanUpMapArray(in []Map) []Map {
 	return result
 }
 
+func cleanUpInterfaceMapArray(in []map[any]any) []Map {
+	if in == nil {
+		return nil
+	}
+	result := make([]Map, len(in))
+	for i, v := range in {
+		result[i] = cleanUpInterfaceMap(v)
+	}
+	return result
+}
+
 func cleanUp(v any) any {
 	switch v := v.(type) {
 	case []any:
 		return cleanUpInterfaceArray(v)
 	case []map[string]any:
 		return cleanUpMSIArray(v)
+	case []map[any]any:
+		return cleanUpInterfaceMapArray(v)
 	case map[any]any:
 		return cleanUpInterfaceMap(v)
 	case map[string]any:
