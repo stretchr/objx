@@ -98,6 +98,18 @@ func TestTransformKeys(t *testing.T) {
 	}, r)
 }
 
+func TestMergeHere_NilMap(t *testing.T) {
+	var m objx.Map
+	res := m.MergeHere(objx.Map{"a": 1})
+	assert.Nil(t, res)
+}
+
+func TestTransform_NilFunc(t *testing.T) {
+	m := objx.Map{"a": 1, "b": 2}
+	res := m.Transform(nil)
+	assert.Equal(t, m, res)
+}
+
 func keyToUpper(s string, v any) (string, any) {
 	return strings.ToUpper(s), v
 }

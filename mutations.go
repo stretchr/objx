@@ -38,6 +38,9 @@ func (m Map) Merge(merge Map) Map {
 // will be modified. This method requires that
 // the wrapped object be a map[string]any
 func (m Map) MergeHere(merge Map) Map {
+	if m == nil {
+		return m
+	}
 	maps.Copy(m, merge)
 	return m
 }
@@ -46,6 +49,9 @@ func (m Map) MergeHere(merge Map) Map {
 // to change the keys and values as it goes. This method requires that
 // the wrapped object be a map[string]any
 func (m Map) Transform(transformer func(key string, value any) (string, any)) Map {
+	if transformer == nil {
+		return m.Copy()
+	}
 	newMap := Map{}
 	for k, v := range m {
 		modifiedKey, modifiedVal := transformer(k, v)
