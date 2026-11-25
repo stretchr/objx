@@ -35,11 +35,12 @@ func (m Map) Merge(merge Map) Map {
 // MergeHere blends the specified map with this map and returns the current map.
 //
 // Keys that appear in both will be selected from the specified map. The original map
-// will be modified. This method requires that
-// the wrapped object be a map[string]any
+// will be modified. If the receiver is nil, a shallow copy of merge is returned;
+// callers that may pass a nil Map must use the return value (m = m.MergeHere(x)).
+// This method requires that the wrapped object be a map[string]any
 func (m Map) MergeHere(merge Map) Map {
 	if m == nil {
-		return m
+		return merge.Copy()
 	}
 	maps.Copy(m, merge)
 	return m
@@ -49,9 +50,6 @@ func (m Map) MergeHere(merge Map) Map {
 // to change the keys and values as it goes. This method requires that
 // the wrapped object be a map[string]any
 func (m Map) Transform(transformer func(key string, value any) (string, any)) Map {
-	if transformer == nil {
-		return m.Copy()
-	}
 	newMap := Map{}
 	for k, v := range m {
 		modifiedKey, modifiedVal := transformer(k, v)

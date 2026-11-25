@@ -100,14 +100,16 @@ func TestTransformKeys(t *testing.T) {
 
 func TestMergeHere_NilMap(t *testing.T) {
 	var m objx.Map
-	res := m.MergeHere(objx.Map{"a": 1})
-	assert.Nil(t, res)
-}
+	merge := objx.Map{"a": 1}
+	res := m.MergeHere(merge)
+	assert.Equal(t, objx.Map{"a": 1}, res)
 
-func TestTransform_NilFunc(t *testing.T) {
-	m := objx.Map{"a": 1, "b": 2}
-	res := m.Transform(nil)
-	assert.Equal(t, m, res)
+	// Verify res is a shallow copy and mutating it does not affect merge
+	res["b"] = 2
+	assert.False(t, merge.Has("b"))
+
+	// Nil receiver with nil merge returns an empty non-nil Map
+	assert.Equal(t, objx.Map{}, m.MergeHere(nil))
 }
 
 func keyToUpper(s string, v any) (string, any) {
