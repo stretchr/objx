@@ -35,9 +35,12 @@ func (m Map) Merge(merge Map) Map {
 // MergeHere blends the specified map with this map and returns the current map.
 //
 // Keys that appear in both will be selected from the specified map. The original map
-// will be modified. This method requires that
-// the wrapped object be a map[string]any
+// will be modified in place. The receiver must be non-nil; calling MergeHere on a
+// nil Map panics. This method requires that the wrapped object be a map[string]any
 func (m Map) MergeHere(merge Map) Map {
+	if m == nil {
+		panic("objx: MergeHere called on nil Map")
+	}
 	maps.Copy(m, merge)
 	return m
 }
